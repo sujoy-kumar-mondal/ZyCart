@@ -26,13 +26,13 @@ connectDB();
 // -----------------------------------
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
   })
 );
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.header("Access-Control-Allow-Origin", process.env.CLIENT_URL);
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
@@ -44,13 +44,13 @@ app.use(cookieParser());
 // -----------------------------------
 // API ROUTES
 // -----------------------------------
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/supplier", supplierRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/products", productRoutes);
-app.use("/api/orders", orderRoutes);
-app.use("/api/cart", cartRoutes);
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
+app.use("/supplier", supplierRoutes);
+app.use("/admin", adminRoutes);
+app.use("/products", productRoutes);
+app.use("/orders", orderRoutes);
+app.use("/cart", cartRoutes);
 
 // -----------------------------------
 // Error Handler (Global)

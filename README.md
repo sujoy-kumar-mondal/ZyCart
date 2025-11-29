@@ -56,16 +56,14 @@ This project supports multiple roles — **User, Supplier, Admin** — along wit
 ## 🧱 Project Structure
 
 ```
-
 / (root)
-│── backend/
+│── server/
 │── client/
 │── README.md
 │── .gitignore
 │── package.json  (monorepo helper scripts)
-│── .env.example
-
-````
+│── .env
+```
 
 ---
 
@@ -73,28 +71,44 @@ This project supports multiple roles — **User, Supplier, Admin** — along wit
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/zycart.git
-cd zycart
-````
+git clone https://github.com/sujoy-kumar-mondal/ZyCart.git
+cd ZyCart
+```
 
 ---
 
 ## ⚙️ Environment Variables
 
-Copy `.env.example` → `.env` inside `/backend`.
+Create `.env` inside `/client`.
+
+```env
+VITE_SERVER_URL=http://localhost:5000
+
+```
+Create `.env` inside `/server`.
 
 ```env
 PORT=5000
-MONGO_URI=
-JWT_SECRET=
+
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<database>?retryWrites=true&w=majority
+
+JWT_SECRET=<your_jwt_secret_key>
+JWT_EXPIRES_IN=7d
+
 OTP_EXPIRY_MINUTES=5
 
-# Cloudinary optional
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
+CLOUDINARY_CLOUD_NAME=<your_cloudinary_cloud_name>
+CLOUDINARY_API_KEY=<your_cloudinary_api_key>
+CLOUDINARY_API_SECRET=<your_cloudinary_api_secret>
 
-PLATFORM_COMMISSION_RATE=0.20
+PLATFORM_COMMISSION_RATE=<percentage_as_number>   # e.g., 0.1 for 10%
+
+CLIENT_URL=http://localhost:5173
+
+EMAIL_HOST=<smtp_host>             # e.g., smtp.gmail.com
+EMAIL_USER=<your_email_address>
+EMAIL_PASS=<your_email_password_or_app_password>
+
 ```
 
 ---
@@ -104,14 +118,14 @@ PLATFORM_COMMISSION_RATE=0.20
 ### Install dependencies
 
 ```bash
-npm install
+npm run install-all
 ```
 
 ### Start backend
 
 ```bash
-cd backend
-npm start
+cd server
+npm run dev
 ```
 
 ### Start frontend
@@ -134,7 +148,7 @@ Create through UI.
 Create only through Postman:
 
 ```
-POST /api/admin/create
+POST /admin/create
 ```
 
 ---
@@ -175,5 +189,3 @@ This project fully satisfies the given topic:
 * Role-based routing
 * Complete MERN architecture
 * Multi-supplier e-commerce workflow
-
----
