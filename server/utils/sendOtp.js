@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import axios from "axios";
 
 export const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
@@ -6,29 +6,38 @@ export const generateOTP = () => {
 
 export const sendOTP = async (email, otp) => {
   try {
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const response = await axios.post(
+      "https://api.brevo.com/v3/smtp/email",
+      {
+        sender: {
+          name: "ZyCart",
+          email: process.env.EMAIL_FROM,  // your Gmail
+        },
+        to: [
+          {
+            email: email,
+          },
+        ],
+        subject: "Your ZyCart OTP Code",
+        htmlContent: `
+          <h2>Your OTP Code</h2>
+          <p>Your OTP for ZyCart registration is:</p>
+          <h1 style="color:#4CAF50; font-size: 32px;">${otp}</h1>
+          <p>This OTP is valid for ${process.env.OTP_EXPIRY_MINUTES || 5} minutes.</p>
+        `,
+      },
+      {
+        headers: {
+          "api-key": process.env.BREVO_API_KEY,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    const { data, error } = await resend.emails.send({
-      from: `ZyCart <${process.env.EMAIL_FROM}>`,
-      to: email,
-      subject: "Your ZyCart OTP Code",
-      html: `
-        <h2>Your OTP Code</h2>
-        <p>Your OTP for ZyCart registration is:</p>
-        <h1 style="color:#4CAF50; font-size: 32px;">${otp}</h1>
-        <p>This OTP is valid for ${process.env.OTP_EXPIRY_MINUTES || 5} minutes.</p>
-      `,
-    });
-
-    if (error) {
-      console.error("Resend error:", error);
-      return false;
-    }
-
-    console.log("OTP email sent:", data);
+    console.log("Brevo response:", response.data);
     return true;
-  } catch (err) {
-    console.error("Resend exception:", err);
+  } catch (error) {
+    console.error("Brevo send error:", error.response?.data || error);
     return false;
   }
 };
