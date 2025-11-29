@@ -1,25 +1,15 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-// Generate OTP (6 digits)
 export const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
 export const sendOTP = async (email, otp) => {
   try {
-    // Correct Gmail configuration using App Password
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const mailOptions = {
-      from: `"ZyCart" <${process.env.EMAIL_USER}>`,
+    const { data, error } = await resend.emails.send({
+      from: `ZyCart <${process.env.EMAIL_FROM}>`,
       to: email,
       subject: "Your ZyCart OTP Code",
       html: `
@@ -28,14 +18,17 @@ export const sendOTP = async (email, otp) => {
         <h1 style="color:#4CAF50; font-size: 32px;">${otp}</h1>
         <p>This OTP is valid for ${process.env.OTP_EXPIRY_MINUTES || 5} minutes.</p>
       `,
-    };
+    });
 
-    await transporter.sendMail(mailOptions);
-    console.log("OTP Email sent to:", email);
+    if (error) {
+      console.error("Resend error:", error);
+      return false;
+    }
+
+    console.log("OTP email sent:", data);
     return true;
-
-  } catch (error) {
-    console.error("Email send error:", error);
+  } catch (err) {
+    console.error("Resend exception:", err);
     return false;
   }
 };

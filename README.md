@@ -105,9 +105,8 @@ PLATFORM_COMMISSION_RATE=<percentage_as_number>   # e.g., 0.1 for 10%
 
 CLIENT_URL=http://localhost:5173
 
-EMAIL_HOST=<smtp_host>             # e.g., smtp.gmail.com
-EMAIL_USER=<your_email_address>
-EMAIL_PASS=<your_email_password_or_app_password>
+RESEND_API_KEY=your_resend_key
+EMAIL_FROM=no-reply@yourdomain.com
 
 ```
 
