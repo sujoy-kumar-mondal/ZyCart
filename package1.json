@@ -1,0 +1,19 @@
+{
+  "name": "zycart",
+  "version": "1.0.0",
+  "description": "Full-featured MERN multi-supplier ecommerce platform",
+  "private": true,
+  "scripts": {
+    "install-all": "npm install --workspaces",
+    "start:backend": "npm --workspace backend start",
+    "dev:backend": "npm --workspace backend run dev",
+    "start:frontend": "npm --workspace client run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run start:frontend\"",
+    "build:frontend": "npm --workspace client run build",
+    "build:backend": "npm --workspace backend run build",
+    "build": "npm run build:backend && npm run build:frontend"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,76 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+pids
+*.pid
+*.seed
+
+# Build / Dist
+dist/
+build/
+.vite/
+.client-dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Backend
+/server/node_modules/
+/server/dist/
+/server/.env
+/server/.parcel-cache
+
+# Frontend (Vite + React)
+/client/node_modules/
+/client/dist/
+/client/.env
+/client/.parcel-cache
+/client/.vite/
+
+# Mac / Linux swap
+*~
+.*.swp
+
+# Docker
+docker-compose.override.yml
+docker-compose.prod.yml
+**/docker-compose.override.yml
+**/docker-compose.prod.yml
+
+# Temporary
+tmp/
+temp/
+
+# Coverage
+coverage/
+
+# Misc
+.Dockerfile.swp
+
+# Optional: lockfiles for contributor preference
+# Uncomment one if you want to ignore lockfile (not recommended)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
