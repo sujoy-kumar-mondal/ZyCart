@@ -1,5 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
@@ -33,6 +34,7 @@ import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 const App = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
+      <Toaster />
       <Navbar />
 
       <main className="grow container-main">
