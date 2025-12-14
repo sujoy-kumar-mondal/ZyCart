@@ -221,7 +221,7 @@ export const login = async (req, res) => {
 // ----------------------------------------------------------
 export const registerAdmin = async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { name, email, mobile, password, address } = req.body;
 
     let admin = await User.findOne({ email });
 
@@ -231,10 +231,12 @@ export const registerAdmin = async (req, res) => {
         .json({ success: false, message: "Admin already exists" });
 
     admin = await User.create({
-      email,
-      password,
       name,
+      email,
+      mobile,
+      password,
       role: "admin",
+      address,
     });
 
     res.status(201).json({
