@@ -110,7 +110,7 @@ const Register = () => {
         className="
           w-full py-3 rounded-xl text-lg font-semibold text-white
           bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
-          hover:opacity-90 transition shadow-md
+          hover:opacity-90 transition shadow-md cursor-pointer disabled:cursor-not-allowed
         "
       >
         {loading ? "Sending OTP..." : "Send OTP"}
@@ -205,7 +205,7 @@ const Register = () => {
         className="
           w-full py-3 rounded-xl text-lg font-semibold text-white
           bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
-          hover:opacity-90 transition shadow-md
+          hover:opacity-90 transition shadow-md cursor-pointer disabled:cursor-not-allowed
         "
       >
         {loading ? "Verifying..." : "Register"}

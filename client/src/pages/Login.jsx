@@ -126,7 +126,7 @@ const Login = () => {
               className="
                 w-full py-3 rounded-xl text-white font-semibold
                 bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
-                hover:opacity-95 transition shadow-lg
+                hover:opacity-95 transition shadow-lg cursor-pointer disabled:cursor-not-allowed
               "
             >
               {loading ? "Logging in..." : "Login"}

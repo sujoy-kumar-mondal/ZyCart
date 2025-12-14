@@ -15,7 +15,7 @@ const ForgotPassword = () => {
 
   const [form, setForm] = useState({
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
   });
 
   // ------------------------------
@@ -112,7 +112,7 @@ const ForgotPassword = () => {
         className="
           w-full py-3 rounded-xl text-lg font-semibold text-white
           bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
-          hover:opacity-90 transition shadow-md
+          hover:opacity-90 transition shadow-md cursor-pointer disabled:cursor-not-allowed
         "
       >
         {loading ? "Sending OTP..." : "Send OTP"}
@@ -169,7 +169,7 @@ const ForgotPassword = () => {
       <div>
         <label className="font-medium text-[#1B2A41]">Confirm Password</label>
         <input
-          type="text"
+          type="password"
           className="
             w-full mt-2 px-4 py-3 rounded-xl
             border border-[#8FD6F6]/40 bg-[#F7FBFF]
@@ -190,7 +190,7 @@ const ForgotPassword = () => {
         className="
           w-full py-3 rounded-xl text-lg font-semibold text-white
           bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
-          hover:opacity-90 transition shadow-md
+          hover:opacity-90 transition shadow-md cursor-pointer disabled:cursor-not-allowed
         "
       >
         {loading ? "Verifying..." : "Change Password"}
