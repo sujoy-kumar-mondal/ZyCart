@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
-const Register = () => {
+const ForgotPassword = () => {
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
@@ -14,9 +14,8 @@ const Register = () => {
   const [otp, setOtp] = useState("");
 
   const [form, setForm] = useState({
-    name: "",
-    mobile: "",
     password: "",
+    confirmPassword: ""
   });
 
   // ------------------------------
@@ -31,7 +30,7 @@ const Register = () => {
     setLoading(true);
 
     try {
-      const res = await axios.post("/auth/send-otp", { email });
+      const res = await axios.post("/auth/send-reset-otp", { email });
 
       if (res.data.success) {
         toast.success("OTP sent to your email!");
@@ -45,26 +44,29 @@ const Register = () => {
   };
 
   // ------------------------------
-  // Verify OTP + Register
+  // Verify OTP + Reset
   // ------------------------------
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
 
-    if (!otp || !form.name || !form.mobile || !form.password) {
+    if (!otp || !form.password || !form.confirmPassword) {
       return toast.error("Please fill all fields");
+    }
+    if (!form.password === form.confirmPassword) {
+      return toast.error("Please fill confirm password as password");
     }
 
     setLoading(true);
 
     try {
-      const res = await axios.post("/auth/verify-otp", {
+      const res = await axios.post("/auth/verify-reset-otp", {
         email,
         otp,
         ...form,
       });
 
       if (res.data.success) {
-        toast.success("Registration successful!");
+        toast.success("Password reset successful!");
         navigate("/login");
       }
     } catch (error) {
@@ -119,7 +121,7 @@ const Register = () => {
   );
 
   // ------------------------------
-  // Step 2 UI (OTP + Details)
+  // Step 2 UI (OTP + Password)
   // ------------------------------
   const Step2 = (
     <motion.form
@@ -148,40 +150,6 @@ const Register = () => {
       </div>
 
       <div>
-        <label className="font-medium text-[#1B2A41]">Full Name</label>
-        <input
-          type="text"
-          className="
-            w-full mt-2 px-4 py-3 rounded-xl
-            border border-[#8FD6F6]/40 bg-[#F7FBFF]
-            text-[#1B2A41] placeholder-gray-400
-            focus:outline-none focus:ring-2 focus:ring-[#6A8EF0]
-            transition
-          "
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          required
-        />
-      </div>
-
-      <div>
-        <label className="font-medium text-[#1B2A41]">Mobile Number</label>
-        <input
-          type="text"
-          className="
-            w-full mt-2 px-4 py-3 rounded-xl
-            border border-[#8FD6F6]/40 bg-[#F7FBFF]
-            text-[#1B2A41] placeholder-gray-400
-            focus:outline-none focus:ring-2 focus:ring-[#6A8EF0]
-            transition
-          "
-          value={form.mobile}
-          onChange={(e) => setForm({ ...form, mobile: e.target.value })}
-          required
-        />
-      </div>
-
-      <div>
         <label className="font-medium text-[#1B2A41]">Password</label>
         <input
           type="password"
@@ -198,6 +166,23 @@ const Register = () => {
         />
       </div>
 
+      <div>
+        <label className="font-medium text-[#1B2A41]">Confirm Password</label>
+        <input
+          type="text"
+          className="
+            w-full mt-2 px-4 py-3 rounded-xl
+            border border-[#8FD6F6]/40 bg-[#F7FBFF]
+            text-[#1B2A41] placeholder-gray-400
+            focus:outline-none focus:ring-2 focus:ring-[#6A8EF0]
+            transition
+          "
+          value={form.confirmPassword}
+          onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+          required
+        />
+      </div>
+
       <motion.button
         whileTap={{ scale: 0.95 }}
         type="submit"
@@ -208,13 +193,13 @@ const Register = () => {
           hover:opacity-90 transition shadow-md
         "
       >
-        {loading ? "Verifying..." : "Register"}
+        {loading ? "Verifying..." : "Change Password"}
       </motion.button>
     </motion.form>
   );
 
   useEffect(() => {
-    document.title = "Register | ZyCart";
+    document.title = "Forgot Password | ZyCart";
   }, []);
 
   return (
@@ -238,7 +223,7 @@ const Register = () => {
               text-[#1B2A41]
             "
         >
-          Register
+          Forgot Password
         </h1>
 
         <AnimatePresence mode="wait">
@@ -260,4 +245,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default ForgotPassword;

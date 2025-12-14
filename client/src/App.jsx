@@ -30,6 +30,7 @@ import AdminOrders from "./pages/admin/AdminOrders.jsx";
 
 // Route Guards
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
 
 const App = () => {
   return (
@@ -45,6 +46,7 @@ const App = () => {
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/resetpassword" element={<ForgotPassword />} />
           <Route path="/products" element={<ProductsPage />} />
 
           {/* User Protected Routes */}

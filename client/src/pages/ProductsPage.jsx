@@ -41,6 +41,10 @@ const ProductsPage = () => {
   const [priceRange, setPriceRange] = useState([0, 50000]);
   const [maxPriceLimit, setMaxPriceLimit] = useState(50000);
 
+  useEffect(() => {
+    document.title = "Products | ZyCart";
+  }, []);
+
   // -------------------------
   // Fetch Products
   // -------------------------
@@ -353,11 +357,10 @@ const ProductsPage = () => {
                   <button
                     key={p}
                     onClick={() => handlePageClick(p)}
-                    className={`pagination-number ${
-                      p === page
-                        ? "pagination-number-active"
-                        : "pagination-number-idle"
-                    }`}
+                    className={`pagination-number ${p === page
+                      ? "pagination-number-active"
+                      : "pagination-number-idle"
+                      }`}
                   >
                     {p}
                   </button>

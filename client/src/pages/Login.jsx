@@ -134,15 +134,25 @@ const Login = () => {
           </form>
 
           {/* Register Link */}
-          <p className="text-center mt-6 text-gray-600">
-            Don’t have an account?{" "}
-            <Link
-              to="/register"
-              className="font-semibold text-[#3F51F4] hover:underline"
-            >
-              Register
-            </Link>
-          </p>
+          <div className=" flex">
+            <p className="text-center mt-6 text-gray-600">
+              <Link
+                to="/resetpassword"
+                className="font-semibold text-[#3F51F4] hover:underline"
+              >
+                Forgotten password?
+              </Link>
+            </p>
+            <p className="text-center mt-6 text-gray-600">
+              Don’t have an account?{" "}
+              <Link
+                to="/register"
+                className="font-semibold text-[#3F51F4] hover:underline"
+              >
+                Register
+              </Link>
+            </p>
+          </div>
         </motion.div>
       </div>
     </>
