@@ -68,7 +68,7 @@ const ProductDetails = () => {
           <img
             src={product.images?.[0] || "/placeholder.png"}
             alt={product.title}
-            className="w-full h-[430px] object-cover"
+            className="w-full h-auto object-cover"
           />
         </motion.div>
 
