@@ -34,255 +34,250 @@ const Navbar = () => {
       "
     >
 
-        {/* Logo */}
-        <Link
-          to="/"
-          className="
+      {/* Logo */}
+      <Link
+        to="/"
+        className="
             text-3xl font-extrabold tracking-tight
             bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
             text-transparent bg-clip-text
           "
+      >
+        ZyCart
+      </Link>
+
+      {/* Desktop Menu */}
+      <div className="hidden md:flex items-center gap-6">
+
+        <NavLink
+          to="/"
+          className={({ isActive }) => (isActive ? activeClass : linkClass)}
         >
-          ZyCart
-        </Link>
+          Home
+        </NavLink>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-6">
+        <NavLink
+          to="/products"
+          className={({ isActive }) => (isActive ? activeClass : linkClass)}
+        >
+          Products
+        </NavLink>
 
-          <NavLink
-            to="/"
-            className={({ isActive }) => (isActive ? activeClass : linkClass)}
-          >
-            Home
-          </NavLink>
+        {/* User */}
+        {role === "user" && (
+          <>
+            <NavLink
+              to="/my-orders"
+              className={({ isActive }) =>
+                isActive ? activeClass : linkClass
+              }
+            >
+              My Orders
+            </NavLink>
 
-          <NavLink
-            to="/products"
-            className={({ isActive }) => (isActive ? activeClass : linkClass)}
-          >
-            Products
-          </NavLink>
-
-          {/* User */}
-          {role === "user" && (
-            <>
-              <NavLink
-                to="/my-orders"
-                className={({ isActive }) =>
-                  isActive ? activeClass : linkClass
-                }
-              >
-                My Orders
-              </NavLink>
-
-              <NavLink
-                to="/cart"
-                className={({ isActive }) =>
-                  isActive ? activeClass : linkClass
-                }
-              >
-                Cart
-                {totalItems > 0 && (
-                  <span
-                    className="
+            <NavLink
+              to="/cart"
+              className={({ isActive }) =>
+                isActive ? activeClass : linkClass
+              }
+            >
+              Cart
+              {totalItems > 0 && (
+                <span
+                  className="
                       ml-1 px-2 py-0.5 rounded-full text-xs text-white
                       bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
                     "
-                  >
-                    {totalItems}
-                  </span>
-                )}
-              </NavLink>
-            </>
-          )}
+                >
+                  {totalItems}
+                </span>
+              )}
+            </NavLink>
+          </>
+        )}
 
-          {/* Supplier */}
-          {role === "supplier" && (
-            <>
-              <NavLink
-                to="/supplier/dashboard"
-                className={({ isActive }) =>
-                  isActive ? activeClass : linkClass
-                }
-              >
-                Dashboard
-              </NavLink>
-              <NavLink
-                to="/supplier/products"
-                className={({ isActive }) =>
-                  isActive ? activeClass : linkClass
-                }
-              >
-                Products
-              </NavLink>
-              <NavLink
-                to="/supplier/orders"
-                className={({ isActive }) =>
-                  isActive ? activeClass : linkClass
-                }
-              >
-                Orders
-              </NavLink>
-            </>
-          )}
+        {/* Supplier */}
+        {role === "supplier" && (
+          <>
+            <NavLink
+              to="/supplier/dashboard"
+              className={({ isActive }) =>
+                isActive ? activeClass : linkClass
+              }
+            >
+              Dashboard
+            </NavLink>
+            <NavLink
+              to="/supplier/products"
+              className={({ isActive }) =>
+                isActive ? activeClass : linkClass
+              }
+            >
+              Products
+            </NavLink>
+            <NavLink
+              to="/supplier/orders"
+              className={({ isActive }) =>
+                isActive ? activeClass : linkClass
+              }
+            >
+              Orders
+            </NavLink>
+          </>
+        )}
 
-          {/* Admin */}
-          {role === "admin" && (
-            <>
-              <NavLink
-                to="/admin/dashboard"
-                className={({ isActive }) =>
-                  isActive ? activeClass : linkClass
-                }
-              >
-                Dashboard
-              </NavLink>
-              <NavLink
-                to="/admin/users"
-                className={({ isActive }) =>
-                  isActive ? activeClass : linkClass
-                }
-              >
-                Users
-              </NavLink>
-              <NavLink
-                to="/admin/suppliers"
-                className={({ isActive }) =>
-                  isActive ? activeClass : linkClass
-                }
-              >
-                Suppliers
-              </NavLink>
-              <NavLink
-                to="/admin/orders"
-                className={({ isActive }) =>
-                  isActive ? activeClass : linkClass
-                }
-              >
-                Orders
-              </NavLink>
-            </>
-          )}
+        {/* Admin */}
+        {role === "admin" && (
+          <>
+            <NavLink
+              to="/admin/dashboard"
+              className={({ isActive }) =>
+                isActive ? activeClass : linkClass
+              }
+            >
+              Dashboard
+            </NavLink>
+            <NavLink
+              to="/admin/users"
+              className={({ isActive }) =>
+                isActive ? activeClass : linkClass
+              }
+            >
+              Users
+            </NavLink>
+            <NavLink
+              to="/admin/suppliers"
+              className={({ isActive }) =>
+                isActive ? activeClass : linkClass
+              }
+            >
+              Suppliers
+            </NavLink>
+            <NavLink
+              to="/admin/orders"
+              className={({ isActive }) =>
+                isActive ? activeClass : linkClass
+              }
+            >
+              Orders
+            </NavLink>
+          </>
+        )}
 
-          {/* Avatar Dropdown */}
-          {user ? (
-            <div className="relative">
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="
+        {/* Avatar Dropdown */}
+        {user ? (
+          <div className="relative">
+            <button
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="
                   w-11 h-11 rounded-full flex items-center justify-center
                   text-white font-bold shadow-md select-none
                   bg-linear-to-br from-[#6A8EF0] to-[#3F51F4]
                   hover:opacity-90 transition
                 "
-              >
-                {getInitials()}
-              </button>
+            >
+              {getInitials()}
+            </button>
 
-              <AnimatePresence>
-                {dropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: -10 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                    transition={{ duration: 0.15 }}
-                    className="
+            <AnimatePresence>
+              {dropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9, y: -10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: -10 }}
+                  transition={{ duration: 0.15 }}
+                  className="
                       absolute right-0 mt-3 w-52 p-3
                       bg-white shadow-xl rounded-xl border border-gray-200
                     "
-                  >
-                    {/* User Menu */}
-                    {role === "user" && (
-                      <>
-                        <Link
-                          to="/profile"
-                          onClick={() => setDropdownOpen(false)}
-                          className="block px-3 py-2 rounded-lg hover:bg-gray-100"
-                        >
-                          Profile
-                        </Link>
-
-                        <Link
-                          to="/supplier/apply"
-                          onClick={() => setDropdownOpen(false)}
-                          className="block px-3 py-2 rounded-lg hover:bg-gray-100"
-                        >
-                          Become Seller
-                        </Link>
-                      </>
-                    )}
-
-                    {/* Supplier */}
-                    {role === "supplier" && (
+                >
+                  {/* User Menu */}
+                  {role === "user" && (
+                    <>
                       <Link
-                        to="/supplier/dashboard"
+                        to="/profile"
                         onClick={() => setDropdownOpen(false)}
                         className="block px-3 py-2 rounded-lg hover:bg-gray-100"
                       >
-                        Supplier Dashboard
+                        Profile
                       </Link>
-                    )}
 
-                    {/* Admin */}
-                    {role === "admin" && (
                       <Link
-                        to="/admin/dashboard"
+                        to="/supplier/apply"
                         onClick={() => setDropdownOpen(false)}
                         className="block px-3 py-2 rounded-lg hover:bg-gray-100"
                       >
-                        Admin Dashboard
+                        Become Seller
                       </Link>
-                    )}
+                    </>
+                  )}
 
-                    <button
-                      onClick={() => {
-                        logout();
-                        navigate("/");
-                      }}
-                      className="
+                  {/* Supplier */}
+                  {role === "supplier" && (
+                    <Link
+                      to="/supplier/dashboard"
+                      onClick={() => setDropdownOpen(false)}
+                      className="block px-3 py-2 rounded-lg hover:bg-gray-100"
+                    >
+                      Supplier Dashboard
+                    </Link>
+                  )}
+
+                  {/* Admin */}
+                  {role === "admin" && (
+                    <Link
+                      to="/admin/dashboard"
+                      onClick={() => setDropdownOpen(false)}
+                      className="block px-3 py-2 rounded-lg hover:bg-gray-100"
+                    >
+                      Admin Dashboard
+                    </Link>
+                  )}
+
+                  <button
+                    onClick={() => {
+                      logout();
+                      navigate("/");
+                    }}
+                    className="
                         w-full text-left px-3 py-2 mt-2
                         bg-red-50 text-red-700 hover:bg-red-100
                         rounded-lg transition
                       "
-                    >
-                      Logout
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ) : (
-            <>
-              <button
-                onClick={() => navigate("/login")}
-                className="
+                  >
+                    Logout
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        ) : (
+          <>
+            <button
+              onClick={() => navigate("/login")}
+              className="
                   px-4 py-2 rounded-lg
                   text-white font-medium shadow
                   bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
                 "
-              >
-                Login
-              </button>
+            >
+              Login
+            </button>
 
-              <button
-                onClick={() => navigate("/register")}
-                className="
+            <button
+              onClick={() => navigate("/register")}
+              className="
                   px-4 py-2 rounded-lg
                   border border-[#3F51F4] text-[#3F51F4]
                   hover:bg-[#3F51F4] hover:text-white
                   transition
                 "
-              >
-                Register
-              </button>
-            </>
-          )}
-        </div>
-
-        {/* Mobile Toggle */}
-        <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
-          {menuOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
+            >
+              Register
+            </button>
+          </>
+        )}
+      </div>
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -291,12 +286,12 @@ const Navbar = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="md:hidden bg-white/95 border-t p-4 space-y-4"
+            className="md:hidden flex flex-col top-5 right-25 border rounded-xl shadow-lg border-opacity-50 absolute bg-white/95 p-4 space-y-4"
           >
             <NavLink
               to="/"
               onClick={() => setMenuOpen(false)}
-              className={({ isActive }) => (isActive ? activeClass : linkClass)}
+              className={` flex justify-center ${({ isActive }) => (isActive ? activeClass : linkClass)}`}
             >
               Home
             </NavLink>
@@ -436,7 +431,7 @@ const Navbar = () => {
                   className="
                     w-full py-2 rounded-lg
                     border border-[#3F51F4] text-[#3F51F4]
-                    hover:bg-[#3F51F4] hover:text-white transition
+                    hover:bg-[#3F51F4] p-2 hover:text-white transition
                   "
                 >
                   Register
@@ -460,6 +455,11 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      
+      {/* Mobile Toggle */}
+      <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+        {menuOpen ? <X size={28} /> : <Menu size={28} />}
+      </button>
     </nav>
   );
 };

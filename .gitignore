@@ -36,3 +36,7 @@ client/.cache/
 
 # VSCode
 .vscode/
+
+
+# Dataset
+server/dataset
