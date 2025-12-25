@@ -88,7 +88,7 @@ const Contact = () => {
             {/* Email */}
             <div className="space-y-6">
               <div className="flex gap-4">
-                <div className="w-12 h-12 bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] rounded-lg flex items-center justify-center shrink-0">
                   <span className="text-white text-xl">✉️</span>
                 </div>
                 <div>
@@ -100,7 +100,7 @@ const Contact = () => {
 
               {/* Phone */}
               <div className="flex gap-4">
-                <div className="w-12 h-12 bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] rounded-lg flex items-center justify-center shrink-0">
                   <span className="text-white text-xl">📞</span>
                 </div>
                 <div>
@@ -112,7 +112,7 @@ const Contact = () => {
 
               {/* Address */}
               <div className="flex gap-4">
-                <div className="w-12 h-12 bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] rounded-lg flex items-center justify-center shrink-0">
                   <span className="text-white text-xl">📍</span>
                 </div>
                 <div>
@@ -129,7 +129,7 @@ const Contact = () => {
 
               {/* Hours */}
               <div className="flex gap-4">
-                <div className="w-12 h-12 bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] rounded-lg flex items-center justify-center shrink-0">
                   <span className="text-white text-xl">🕐</span>
                 </div>
                 <div>
@@ -143,7 +143,7 @@ const Contact = () => {
           </div>
 
           {/* Social Media */}
-          <div className="bg-gradient-to-r from-[#6A8EF0]/10 to-[#3F51F4]/10 rounded-2xl p-8 border border-[#8FD6F6]/40">
+          <div className="bg-linear-to-r from-[#6A8EF0]/10 to-[#3F51F4]/10 rounded-2xl p-8 border border-[#8FD6F6]/40">
             <h3 className="text-xl font-bold text-[#1B2A41] mb-4">Follow Us</h3>
             <div className="flex gap-4">
               <a

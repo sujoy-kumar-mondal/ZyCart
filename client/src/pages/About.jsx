@@ -47,7 +47,7 @@ const About = () => {
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-gradient-to-br from-[#6A8EF0]/10 to-[#3F51F4]/10 rounded-2xl p-8 border border-[#8FD6F6]/40"
+          className="bg-linear-to-br from-[#6A8EF0]/10 to-[#3F51F4]/10 rounded-2xl p-8 border border-[#8FD6F6]/40"
         >
           <h3 className="text-2xl font-bold text-[#1B2A41] mb-3">Our Mission</h3>
           <p className="text-gray-700 leading-relaxed">
@@ -62,7 +62,7 @@ const About = () => {
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-gradient-to-br from-[#6A8EF0]/10 to-[#3F51F4]/10 rounded-2xl p-8 border border-[#8FD6F6]/40"
+          className="bg-linear-to-br from-[#6A8EF0]/10 to-[#3F51F4]/10 rounded-2xl p-8 border border-[#8FD6F6]/40"
         >
           <h3 className="text-2xl font-bold text-[#1B2A41] mb-3">Our Vision</h3>
           <p className="text-gray-700 leading-relaxed">
@@ -155,7 +155,7 @@ const About = () => {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] rounded-2xl shadow-lg p-8 text-white"
+        className="bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] rounded-2xl shadow-lg p-8 text-white"
       >
         <h2 className="text-3xl font-bold mb-6">Powered by Modern Technology</h2>
         <div className="grid md:grid-cols-2 gap-6">
