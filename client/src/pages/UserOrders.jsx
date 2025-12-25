@@ -96,7 +96,7 @@ const UserOrders = () => {
 
                 <div className="flex justify-between items-center mb-3">
                   <h4 className="font-semibold text-[#1B2A41]">
-                    Supplier: {child.supplierId?.shopName || "Supplier"}
+                    Supplier: {child.supplier?.shopName || "Unknown Supplier"}
                   </h4>
 
                   <span

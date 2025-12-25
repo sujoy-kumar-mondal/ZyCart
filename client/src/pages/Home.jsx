@@ -1,29 +1,8 @@
-import React, { useEffect, useState } from "react";
-import axios from "../utils/axiosInstance.js";
-import ProductList from "../components/ProductList";
-import Loader from "../components/Loader";
-import { toast } from "react-hot-toast";
+import React, { useEffect } from "react";
+import TrendsSlider from "../components/TrendsSlider";
 import { motion } from "framer-motion";
 
 const Home = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchProducts = async () => {
-    try {
-      const res = await axios.get("/products");
-      setProducts(res.data.products || []);
-    } catch (error) {
-      console.error("Error loading products", error);
-      toast.error("Failed to load products!");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
   useEffect(() => {
     document.title = "Home | ZyCart";
   }, []);
@@ -32,7 +11,7 @@ const Home = () => {
     <>
       <div
         className="
-        min-h-screen py-12 max-w-screen-2xl container mx-auto px-14
+        min-h-screen py-12 max-w-screen-2xl container mx-auto px-4 md:px-14
         bg-linear-to-br from-[#C3F2EC] via-[#8FD6F6] to-[#3F51F4]
       "
       >
@@ -69,31 +48,11 @@ const Home = () => {
             </motion.p>
           </motion.section>
 
-          {/* 🛒 Latest Products */}
-          <section>
-            <motion.h2
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-2xl md:text-3xl font-bold mb-6 tracking-tight text-[#1B2A41]"
-            >
-              Latest Products
-            </motion.h2>
+          {/* 🛒 Trending by Purchase */}
+          <TrendsSlider type="purchase" title="🏆 Trending by Purchases" />
 
-            {loading ? (
-              <div className="flex justify-center items-center py-20">
-                <Loader />
-              </div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.4 }}
-              >
-                <ProductList products={products} />
-              </motion.div>
-            )}
-          </section>
+          {/* 👁️ Trending by Views */}
+          <TrendsSlider type="views" title="🔥 Trending by Views" />
         </div>
       </div>
     </>

@@ -4,7 +4,7 @@ import { useCart } from "../context/CartProvider";
 import { useNavigate } from "react-router-dom";
 
 const CartPage = () => {
-  const { cartItems, totalPrice } = useCart();
+  const { cartItems, totalPrice, totalQuantity } = useCart();
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -45,7 +45,14 @@ const CartPage = () => {
             <div className="flex justify-between">
               <span>Total Items:</span>
               <span className="font-medium text-[#1B2A41]">
-                {cartItems.length}
+                {cartItems.length} item{cartItems.length > 1 ? 's' : ''}
+              </span>
+            </div>
+
+            <div className="flex justify-between text-sm text-gray-600">
+              <span>Total Quantity:</span>
+              <span>
+                {totalQuantity}
               </span>
             </div>
 

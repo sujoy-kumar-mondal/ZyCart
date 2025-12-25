@@ -309,7 +309,7 @@ const Navbar = () => {
             <NavLink
               to="/"
               onClick={() => setMenuOpen(false)}
-              className={` flex justify-center ${({ isActive }) => (isActive ? activeClass : linkClass)}`}
+              className={`${({ isActive }) => (isActive ? activeClass : linkClass)}`}
             >
               Home
             </NavLink>

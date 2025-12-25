@@ -15,6 +15,8 @@ import UserOrders from "./pages/UserOrders.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
+import About from "./pages/About.jsx";
+import Contact from "./pages/Contact.jsx";
 
 // Supplier Pages
 import SupplierDashboard from "./pages/supplier/SupplierDashboard.jsx";
@@ -49,6 +51,8 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/resetpassword" element={<ForgotPassword />} />
           <Route path="/products" element={<ProductsPage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           <Route
             path="/changepassword"
             element={

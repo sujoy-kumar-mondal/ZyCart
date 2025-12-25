@@ -148,7 +148,8 @@ export const CartProvider = ({ children }) => {
   // =====================================================
   // 7) SUMMARY VALUES
   // =====================================================
-  const totalItems = cartItems.reduce((acc, item) => acc + item.qty, 0);
+  const totalItems = cartItems.length; // Number of unique products
+  const totalQuantity = cartItems.reduce((acc, item) => acc + item.qty, 0); // Total quantity
   const totalPrice = cartItems.reduce(
     (acc, item) => acc + item.qty * item.price,
     0
@@ -163,6 +164,7 @@ export const CartProvider = ({ children }) => {
         updateQty,
         clearCart,
         totalItems,
+        totalQuantity,
         totalPrice,
       }}
     >

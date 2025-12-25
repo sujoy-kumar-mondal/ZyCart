@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../utils/axiosInstance.js";
 import Loader from "../components/Loader";
@@ -15,6 +15,7 @@ const ProductDetails = () => {
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const viewTracked = useRef(false);
 
   // Fetch product
   useEffect(() => {
@@ -22,6 +23,21 @@ const ProductDetails = () => {
       try {
         const res = await axios.get(`/products/${id}`);
         setProduct(res.data.product);
+        
+        // Increment view count only for users, only once per product
+        if (role === "user" && !viewTracked.current) {
+          viewTracked.current = true;
+          
+          // Check if this product was already viewed in this session
+          const viewedProducts = JSON.parse(localStorage.getItem("viewedProducts") || "[]");
+          
+          if (!viewedProducts.includes(id)) {
+            // Add to viewed list and update API
+            viewedProducts.push(id);
+            localStorage.setItem("viewedProducts", JSON.stringify(viewedProducts));
+            await axios.post("/products/update-trend-view", { productId: id });
+          }
+        }
       } catch (error) {
         console.error("Error loading product", error);
         toast.error("Failed to load product!");
@@ -31,7 +47,7 @@ const ProductDetails = () => {
     };
 
     fetchProduct();
-  }, [id]);
+  }, [id, role]);
 
   // Update title
   useEffect(() => {

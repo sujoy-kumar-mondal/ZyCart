@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "../context/CartProvider";
+import { useAuth } from "../context/AuthProvider";
 import axios from "../utils/axiosInstance.js";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 
 const CheckoutPage = () => {
   const { cartItems, totalPrice, clearCart } = useCart();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [address, setAddress] = useState({
@@ -37,6 +39,16 @@ const CheckoutPage = () => {
       });
 
       if (res.data.success) {
+        // Update purchase trends for each item if user role is "user"
+        if (user?.role === "user") {
+          for (const item of cartItems) {
+            await axios.post("/products/update-trend-purchase", {
+              productId: item.productId,
+              quantity: item.qty,
+            });
+          }
+        }
+
         clearCart();
         alert("Order placed successfully!");
         navigate("/my-orders");

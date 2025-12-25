@@ -1,5 +1,6 @@
 import Product from "../models/Product.js";
 import Supplier from "../models/Supplier.js";
+import Trend from "../models/Trend.js";
 
 // ----------------------------------------------------------
 // GET ALL PRODUCTS (Homepage)
@@ -146,6 +147,123 @@ export const checkStock = async (req, res) => {
     });
   } catch (error) {
     console.error("Stock check error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
+export const updateTrendPurchase = async (req, res) => {
+  try {
+    const { productId, quantity } = req.body;
+
+    // Validation
+    if (!productId) {
+      return res.status(400).json({
+        success: false,
+        message: "Product ID is required",
+      });
+    }
+
+    const trend = await Trend.findOneAndUpdate(
+      { product: productId },
+      { $inc: { noOfPurchase: quantity } },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Purchase count updated",
+      trend,
+    });
+
+  } catch (error) {
+    console.error("updateTrendPurchase error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update purchase trend",
+    });
+  }
+};
+
+export const updateTrendView = async (req, res) => {
+  try {
+    const { productId } = req.body;
+
+    // Validation
+    if (!productId) {
+      return res.status(400).json({
+        success: false,
+        message: "Product ID is required",
+      });
+    }
+
+    const trend = await Trend.findOneAndUpdate(
+      { product: productId },
+      { $inc: { noOfViews: 1 } },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "View count updated",
+      trend,
+    });
+
+  } catch (error) {
+    console.error("updateTrendView error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update view trend",
+    });
+  }
+};
+
+export const getTopPurchaseTrends = async (req, res) => {
+  try {
+    const trends = await Trend.find()
+      .populate({
+        path: "product",
+        populate: { path: "supplier", select: "isApproved isBanned shopName" },
+      })
+      .sort({ noOfPurchase: -1 })
+      .limit(10);
+
+    const filtered = trends.filter(
+      (t) => t.product?.isAvailable && t.product?.supplier?.isApproved && !t.product?.supplier?.isBanned
+    );
+
+    res.status(200).json({
+      success: true,
+      trends: filtered,
+    });
+  } catch (error) {
+    console.error("Get top purchase trends error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const getTopViewTrends = async (req, res) => {
+  try {
+    const trends = await Trend.find()
+      .populate({
+        path: "product",
+        populate: { path: "supplier", select: "isApproved isBanned shopName" },
+      })
+      .sort({ noOfViews: -1 })
+      .limit(10);
+
+    const filtered = trends.filter(
+      (t) => t.product?.isAvailable && t.product?.supplier?.isApproved && !t.product?.supplier?.isBanned
+    );
+
+    res.status(200).json({
+      success: true,
+      trends: filtered,
+    });
+  } catch (error) {
+    console.error("Get top view trends error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
