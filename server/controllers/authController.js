@@ -70,34 +70,67 @@ export const forgotPassword = async (req, res) => {
       return res.status(400).json({ success: false, message: "Email required" });
 
     let user = await User.findOne({ email });
-    
+
     const otp = generateOTP();
-    
+
     if (!user) {
       return res
-      .status(400)
-      .json({ success: false, message: "Account not found!" });
+        .status(400)
+        .json({ success: false, message: "Account not found!" });
     } else {
       user.otp = otp;
       user.otpExpires = Date.now() + 5 * 60 * 1000;
       await user.save();
     }
-    
+
     const mailSent = await resetOTP(email, otp);
-    
+
     if (!mailSent) {
       return res.status(500).json({
         success: false,
         message: "Failed to send OTP. Try again.",
       });
     }
-    
+
     res.status(200).json({
       success: true,
       message: "OTP sent successfully",
     });
   } catch (error) {
     console.error("OTP error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const changePassword = async (req, res) => {
+  try {
+    const { password } = req.body;
+    const userId = req.user;
+    const user = await User.findById(userId._id);
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Account not found!" });
+    } else {
+      // Save user info
+      const isMatch = await user.matchPassword(password)
+      if (!isMatch) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Password incorrect!" });
+      } else {
+        user.password = password; // hashed by pre('save')
+        await user.save();
+      }
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "Password change successful!",
+      user,
+    });
+  } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
@@ -138,9 +171,10 @@ export const verifyOtpAndRegister = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
 export const verifyOtpAndReset = async (req, res) => {
   try {
-    const { email, otp, password, confirmPassword } = req.body;
+    const { email, otp, password } = req.body;
 
     const user = await User.findOne({ email });
 

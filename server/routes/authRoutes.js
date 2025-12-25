@@ -4,9 +4,11 @@ import {
   forgotPassword,
   verifyOtpAndRegister,
   verifyOtpAndReset,
+  changePassword,
   login,
   registerAdmin,
 } from "../controllers/authController.js";
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -19,6 +21,8 @@ router.post("/send-reset-otp", forgotPassword);
 router.post("/verify-otp", verifyOtpAndRegister);
 
 router.post("/verify-reset-otp", verifyOtpAndReset);
+
+router.post("/changepassword", protect, changePassword)
 
 // Login (User, Supplier, Admin)
 router.post("/login", login);

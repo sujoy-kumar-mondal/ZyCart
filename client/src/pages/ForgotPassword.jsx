@@ -12,11 +12,22 @@ const ForgotPassword = () => {
 
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
+  const [user, setUser] = useState({});
 
   const [form, setForm] = useState({
     password: "",
     confirmPassword: "",
   });
+  
+
+  useEffect(() => {
+  try {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    setUser(storedUser);
+    setEmail(storedUser.email)
+  } catch (error) {
+  }
+}, []);
 
   // ------------------------------
   // Send OTP
@@ -52,8 +63,8 @@ const ForgotPassword = () => {
     if (!otp || !form.password || !form.confirmPassword) {
       return toast.error("Please fill all fields");
     }
-    if (!form.password === form.confirmPassword) {
-      return toast.error("Please fill confirm password as password");
+    if (form.password !== form.confirmPassword) {
+      return toast.error("Passwords do not match");
     }
 
     setLoading(true);
@@ -67,7 +78,14 @@ const ForgotPassword = () => {
 
       if (res.data.success) {
         toast.success("Password reset successful!");
-        navigate("/login");
+        try {
+          const role = JSON.parse(localStorage.getItem("user")).role;
+          if (role === "user") navigate("/");
+          else if (role === "supplier") navigate("/supplier/dashboard");
+          else if (role === "admin") navigate("/admin/dashboard");
+        } catch {
+          navigate("/login");
+        }
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "OTP verification failed");
@@ -100,6 +118,7 @@ const ForgotPassword = () => {
             transition
           "
           value={email}
+          readOnly={!!user}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
@@ -230,15 +249,17 @@ const ForgotPassword = () => {
           {step === 1 ? Step1 : Step2}
         </AnimatePresence>
 
-        <p className="text-center mt-6 text-gray-600">
-          Already have an account?{" "}
-          <Link
-            to="/login"
-            className="font-semibold text-[#3F51F4] hover:underline"
-          >
-            Login
-          </Link>
-        </p>
+        {!user && (
+          <p className="text-center mt-6 text-gray-600">
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="font-semibold text-[#3F51F4] hover:underline"
+            >
+              Login
+            </Link>
+          </p>
+        )}
       </div>
 
     </div>

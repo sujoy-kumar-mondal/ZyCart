@@ -214,24 +214,42 @@ const Navbar = () => {
 
                   {/* Supplier */}
                   {role === "supplier" && (
-                    <Link
-                      to="/supplier/dashboard"
-                      onClick={() => setDropdownOpen(false)}
-                      className="block px-3 py-2 rounded-lg hover:bg-gray-100"
-                    >
-                      Supplier Dashboard
-                    </Link>
+                    <>
+                      <Link
+                        to="/supplier/dashboard"
+                        onClick={() => setDropdownOpen(false)}
+                        className="block px-3 py-2 rounded-lg hover:bg-gray-100"
+                      >
+                        Supplier Dashboard
+                      </Link>
+                      <Link
+                        to="/changepassword"
+                        onClick={() => setDropdownOpen(false)}
+                        className="block px-3 py-2 rounded-lg hover:bg-gray-100"
+                      >
+                        Change Password
+                      </Link>
+                    </>
                   )}
 
                   {/* Admin */}
                   {role === "admin" && (
-                    <Link
-                      to="/admin/dashboard"
-                      onClick={() => setDropdownOpen(false)}
-                      className="block px-3 py-2 rounded-lg hover:bg-gray-100"
-                    >
-                      Admin Dashboard
-                    </Link>
+                    <>
+                      <Link
+                        to="/admin/dashboard"
+                        onClick={() => setDropdownOpen(false)}
+                        className="block px-3 py-2 rounded-lg hover:bg-gray-100"
+                      >
+                        Admin Dashboard
+                      </Link>
+                      <Link
+                        to="/changepassword"
+                        onClick={() => setDropdownOpen(false)}
+                        className="block px-3 py-2 rounded-lg hover:bg-gray-100"
+                      >
+                        Change Password
+                      </Link>
+                    </>
                   )}
 
                   <button
@@ -361,6 +379,16 @@ const Navbar = () => {
                 >
                   Orders
                 </NavLink>
+
+                <NavLink
+                  to="/changepassword"
+                  onClick={() => setMenuOpen(false)}
+                  className={({ isActive }) =>
+                    isActive ? activeClass : linkClass
+                  }
+                >
+                  Change Password
+                </NavLink>
               </>
             )}
 
@@ -404,6 +432,16 @@ const Navbar = () => {
                   }
                 >
                   Orders
+                </NavLink>
+
+                <NavLink
+                  to="/changepassword"
+                  onClick={() => setMenuOpen(false)}
+                  className={({ isActive }) =>
+                    isActive ? activeClass : linkClass
+                  }
+                >
+                  Change Password
                 </NavLink>
               </>
             )}
@@ -455,7 +493,7 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
-      
+
       {/* Mobile Toggle */}
       <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
         {menuOpen ? <X size={28} /> : <Menu size={28} />}

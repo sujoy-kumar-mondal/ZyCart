@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "../utils/axiosInstance";
 import Loader from "../components/Loader";
 import { useAuth } from "../context/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const UserProfile = () => {
   const { logout } = useAuth();
@@ -191,6 +191,17 @@ const UserProfile = () => {
           >
             Update Profile
           </button>
+
+          <Link
+            to={'/changepassword'}
+            className="
+              flex-1 py-3 rounded-xl text-white font-semibold
+              bg-linear-to-r text-center from-[#6A8EF0] to-[#3F51F4]
+              hover:opacity-90 transition
+            "
+          >
+            Change Password
+          </Link>
 
           <button
             onClick={handleDelete}
