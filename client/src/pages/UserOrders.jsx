@@ -37,7 +37,7 @@ const UserOrders = () => {
   }
 
   return (
-    <div className="max-w-screen-2xl container mx-auto px-14 py-12 space-y-10">
+    <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 py-12 space-y-10">
 
       <h1 className="text-3xl font-extrabold text-[#1B2A41]">
         My Orders

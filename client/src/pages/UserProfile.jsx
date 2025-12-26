@@ -108,7 +108,7 @@ const UserProfile = () => {
   return (
     <div
       className="
-        max-w-screen-2xl container mx-auto px-14
+        max-w-screen-2xl container mx-auto px-4 md:px-14
         py-16 flex justify-center
       "
     >

@@ -7,7 +7,7 @@ const About = () => {
   }, []);
 
   return (
-    <div className="max-w-screen-2xl container mx-auto px-14 py-16 space-y-16">
+    <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 py-16 space-y-16">
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

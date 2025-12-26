@@ -29,7 +29,7 @@ const Navbar = () => {
   return (
     <nav
       className="
-        sticky top-0 z-50 backdrop-blur-md max-w-screen-2xl container mx-auto px-14 flex items-center justify-between h-16
+        sticky top-0 z-50 backdrop-blur-md max-w-screen-2xl container mx-auto px-4 md:px-14 flex items-center justify-between h-16
         bg-white/80 border-b border-white/40 shadow-sm
       "
     >
@@ -113,7 +113,7 @@ const Navbar = () => {
                 isActive ? activeClass : linkClass
               }
             >
-              Products
+              Your Products
             </NavLink>
             <NavLink
               to="/supplier/orders"
@@ -216,13 +216,6 @@ const Navbar = () => {
                   {role === "supplier" && (
                     <>
                       <Link
-                        to="/supplier/dashboard"
-                        onClick={() => setDropdownOpen(false)}
-                        className="block px-3 py-2 rounded-lg hover:bg-gray-100"
-                      >
-                        Supplier Dashboard
-                      </Link>
-                      <Link
                         to="/changepassword"
                         onClick={() => setDropdownOpen(false)}
                         className="block px-3 py-2 rounded-lg hover:bg-gray-100"
@@ -235,13 +228,6 @@ const Navbar = () => {
                   {/* Admin */}
                   {role === "admin" && (
                     <>
-                      <Link
-                        to="/admin/dashboard"
-                        onClick={() => setDropdownOpen(false)}
-                        className="block px-3 py-2 rounded-lg hover:bg-gray-100"
-                      >
-                        Admin Dashboard
-                      </Link>
                       <Link
                         to="/changepassword"
                         onClick={() => setDropdownOpen(false)}
@@ -309,9 +295,16 @@ const Navbar = () => {
             <NavLink
               to="/"
               onClick={() => setMenuOpen(false)}
-              className={`${({ isActive }) => (isActive ? activeClass : linkClass)}`}
+              className={({ isActive }) => (isActive ? activeClass : linkClass)}
             >
               Home
+            </NavLink>
+            <NavLink
+              to="/products"
+              onClick={() => setMenuOpen(false)}
+              className={({ isActive }) => (isActive ? activeClass : linkClass)}
+            >
+              Products
             </NavLink>
 
             {role === "user" && (
@@ -334,6 +327,16 @@ const Navbar = () => {
                   }
                 >
                   Cart ({totalItems})
+                </NavLink>
+
+                <NavLink
+                  to="/profile"
+                  onClick={() => setMenuOpen(false)}
+                  className={({ isActive }) =>
+                    isActive ? activeClass : linkClass
+                  }
+                >
+                  Profile
                 </NavLink>
 
                 <NavLink
@@ -367,7 +370,7 @@ const Navbar = () => {
                     isActive ? activeClass : linkClass
                   }
                 >
-                  Products
+                  Your Products
                 </NavLink>
 
                 <NavLink

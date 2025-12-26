@@ -50,6 +50,13 @@ const CheckoutPage = () => {
         }
 
         clearCart();
+        // Reset address form
+        setAddress({
+          line1: "",
+          city: "",
+          state: "",
+          postalCode: "",
+        });
         alert("Order placed successfully!");
         navigate("/my-orders");
       }
@@ -62,6 +69,20 @@ const CheckoutPage = () => {
   };
   useEffect(() => {
     document.title = "Checkout | ZyCart";
+    
+    // Load user's saved address from database
+    const loadUserAddress = async () => {
+      try {
+        const res = await axios.get("/users/profile");
+        if (res.data.success && res.data.user?.address) {
+          setAddress(res.data.user.address);
+        }
+      } catch (error) {
+        console.error("Failed to load user address:", error);
+      }
+    };
+    
+    loadUserAddress();
   }, []);
 
   if (loading) return <Loader />;
@@ -75,7 +96,7 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className="max-w-screen-2xl container mx-auto px-14 py-16 grid md:grid-cols-3 gap-10">
+    <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 py-16 grid md:grid-cols-3 gap-10">
 
       {/* LEFT: ADDRESS FORM */}
       <div

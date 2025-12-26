@@ -33,7 +33,7 @@ const AdminDashboard = () => {
 
   if (!data) {
     return (
-      <div className="max-w-screen-2xl container mx-auto px-14 text-center py-20 text-gray-600">
+      <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 text-center py-20 text-gray-600">
         Unable to load dashboard.
       </div>
     );
@@ -42,7 +42,7 @@ const AdminDashboard = () => {
   return (
     <div
       className="
-        max-w-screen-2xl container mx-auto px-14 py-12
+        max-w-screen-2xl container mx-auto px-4 md:px-14 py-12
         space-y-10
         bg-linear-to-br from-[#C3F2EC] via-[#8FD6F6] to-[#3F51F4]/10
       "

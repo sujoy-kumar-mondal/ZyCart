@@ -38,7 +38,7 @@ const SupplierDashboard = () => {
   }
 
   return (
-    <div className="max-w-screen-2xl container mx-auto px-14 space-y-12">
+    <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 space-y-12">
 
       {/* HEADER */}
       <div

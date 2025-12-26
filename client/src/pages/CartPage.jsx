@@ -21,7 +21,7 @@ const CartPage = () => {
 
   return (
     <>
-      <div className="max-w-screen-2xl container mx-auto px-14 py-16 grid md:grid-cols-3 gap-10">
+      <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 py-16 grid md:grid-cols-3 gap-10">
 
         {/* LEFT: CART ITEMS */}
         <div className="md:col-span-2 space-y-5">

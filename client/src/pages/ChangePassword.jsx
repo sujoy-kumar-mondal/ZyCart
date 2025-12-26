@@ -50,7 +50,7 @@ const ChangePassword = () => {
         <>
             <div
                 className="
-        min-h-screen flex items-center max-w-screen-2xl container mx-auto px-14 justify-center
+        min-h-screen flex items-center max-w-screen-2xl container mx-auto px-4 md:px-14 justify-center
         bg-linear-to-br from-[#C3F2EC] via-[#8FD6F6] to-[#3F51F4]
         py-12
       "

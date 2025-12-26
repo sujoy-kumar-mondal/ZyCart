@@ -73,7 +73,7 @@ const ProductDetails = () => {
 
   return (
     <>
-      <div className="max-w-screen-2xl container mx-auto px-14 py-16 grid md:grid-cols-2 gap-12">
+      <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 py-16 grid md:grid-cols-2 gap-12">
         {/* PRODUCT IMAGE */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}

@@ -44,14 +44,14 @@ const SupplierOrders = () => {
 
   if (!orders.length) {
     return (
-      <div className="max-w-screen-2xl container mx-auto px-14 text-center text-gray-500 py-20 text-lg">
+      <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 text-center text-gray-500 py-20 text-lg">
         No orders found.
       </div>
     );
   }
 
   return (
-    <div className="max-w-screen-2xl container mx-auto px-14 space-y-10">
+    <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 space-y-10">
 
       <h1
         className="

@@ -57,7 +57,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="max-w-screen-2xl container mx-auto px-14 py-16 space-y-12">
+    <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 py-16 space-y-12">
       {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

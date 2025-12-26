@@ -165,7 +165,7 @@ const ProductsPage = () => {
   // UI
   // -------------------------
   return (
-    <div className="min-h-screen max-w-screen-2xl mx-auto px-14 bg-linear-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen max-w-screen-2xl mx-auto px-4 md:px-14 bg-linear-to-br from-gray-50 to-gray-100">
       <div className="container-main py-10">
 
         {/* HEADER */}

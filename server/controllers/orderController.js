@@ -111,7 +111,7 @@ export const placeOrder = async (req, res) => {
     // --------------------------------------------
     // STEP 7: Save Address to User if First Time
     // --------------------------------------------
-    const userHasAddress = req.user.address !== "";
+    const userHasAddress = req.user.address?.line1;
     if (!userHasAddress && address) {
       await updateAddressOnOrder(userId, address);
     }

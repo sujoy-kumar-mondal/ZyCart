@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer
       className="
-        py-14 mt-1 max-w-screen-2xl container mx-auto px-14 grid md:grid-cols-3 gap-10
+        py-14 mt-1 max-w-screen-2xl container mx-auto px-4 md:px-14 grid md:grid-cols-3 gap-10
         bg-linear-to-br from-[#6A8EF0] via-[#3F51F4] to-[#2C3ACF]
         text-white
       "

@@ -1,28 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Slider from "react-slick";
+import { motion } from "framer-motion";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "../utils/axiosInstance.js";
 import ProductCard from "./ProductCard";
 import Loader from "./Loader";
-import { motion } from "framer-motion";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 
 const TrendsSlider = ({ type, title }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [slidesToShow, setSlidesToShow] = useState(getInitialSlides());
+  const sliderRef = useRef(null);
 
+  // Determine slides based on window width
+  function getInitialSlides() {
+    if (typeof window !== "undefined") {
+      const width = window.innerWidth;
+      if (width < 512) return 1;
+      if (width < 1024) return 2;
+      if (width < 1200) return 3;
+    }
+    return 4;
+  }
+
+  // Fetch trends data
   useEffect(() => {
     const fetchTrends = async () => {
       try {
-        let res;
-        if (type === "purchase") {
-          res = await axios.get("/products/trends/top-purchase");
-        } else if (type === "views") {
-          res = await axios.get("/products/trends/top-views");
-        }
-        setProducts(res.data.trends || []);
+        const endpoint = type === "purchase" ? "/products/trends/top-purchase" : "/products/trends/top-views";
+        const response = await axios.get(endpoint);
+        setProducts(response.data.trends || []);
       } catch (error) {
         console.error(`Error loading ${type} trends:`, error);
       } finally {
@@ -33,42 +41,32 @@ const TrendsSlider = ({ type, title }) => {
     fetchTrends();
   }, [type]);
 
-  const settings = {
+  // Handle window resize for responsive behavior
+  useEffect(() => {
+    const handleResize = () => {
+      setSlidesToShow(getInitialSlides());
+      if (sliderRef.current) {
+        sliderRef.current.slickGoTo(0);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const sliderSettings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 4,
+    slidesToShow,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 5000,
-    arrows: true,
+    arrows: typeof window !== "undefined" && window.innerWidth > 768,
     responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-          arrows: true,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-          arrows: false,
-        },
-      },
-      {
-        breakpoint: 640,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          arrows: false,
-          centerMode: false,
-          dots: true,
-        },
-      },
+      { breakpoint: 1200, settings: { slidesToShow: 3, slidesToScroll: 1, arrows: true } },
+      { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 1, arrows: false } },
+      { breakpoint: 512, settings: { slidesToShow: 1, slidesToScroll: 1, arrows: false } },
     ],
   };
 
@@ -106,89 +104,149 @@ const TrendsSlider = ({ type, title }) => {
         </p>
       </div>
 
-      <div className="bg-white rounded-2xl p-3 md:p-6 shadow-lg border border-[#8FD6F6]/40 w-full overflow-hidden">
+      <div className="bg-gradient-to-br from-white to-[#f8fafb] rounded-2xl p-3 md:p-8 shadow-lg border border-[#8FD6F6]/40 w-full overflow-hidden">
         <style>{`
+          /* Slider Container */
           .trends-slider {
             width: 100%;
+            padding: 0 20px;
           }
+
+          @media (max-width: 768px) {
+            .trends-slider {
+              padding: 0;
+            }
+          }
+
+          /* Slider Base Styles */
           .slick-slider {
             margin: 0;
             padding: 0;
           }
+
           .slick-track {
             display: flex;
             margin: 0;
           }
+
+          /* Slide Styling */
           .slick-slide {
-            padding: 0 6px;
+            padding: 0 8px;
             margin: 0;
             width: 100% !important;
+            box-sizing: border-box;
+            display: block !important;
           }
-          @media (max-width: 768px) {
+
+          @media (max-width: 512px) {
             .slick-slide {
-              padding: 0 4px;
+              padding: 0 !important;
+              margin: 0 !important;
             }
           }
-          @media (max-width: 640px) {
-            .slick-slide {
-              padding: 0 3px;
-            }
-          }
+
+          /* Dots Navigation */
           .slick-dots {
-            bottom: -30px;
+            bottom: -40px;
+            padding: 0;
           }
+
+          .slick-dots li {
+            margin: 0 6px;
+          }
+
           .slick-dots li button:before {
-            color: #6A8EF0;
+            color: #d1d5db;
             font-size: 10px;
+            transition: all 0.3s ease;
           }
+
           .slick-dots li.slick-active button:before {
             color: #3F51F4;
+            transform: scale(1.3);
           }
+
+          /* Arrow Navigation */
           .slick-prev,
           .slick-next {
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             top: 50%;
             transform: translateY(-50%);
             z-index: 1;
+            background: rgba(63, 81, 244, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
           }
+
           .slick-prev {
-            left: -40px;
+            left: -50px;
           }
+
           .slick-next {
-            right: -40px;
+            right: -50px;
           }
+
+          .slick-prev:hover,
+          .slick-next:hover {
+            background: rgba(63, 81, 244, 0.2);
+          }
+
           .slick-prev:before,
           .slick-next:before {
-            color: #6A8EF0;
+            color: #3F51F4;
             font-size: 20px;
           }
+
           .slick-prev:hover:before,
           .slick-next:hover:before {
-            color: #3F51F4;
+            color: #1B2A41;
           }
+
           @media (max-width: 768px) {
             .slick-prev,
             .slick-next {
               display: none !important;
             }
           }
+
+          /* Product Card Hover Effect */
+          .trends-slider .slick-slide {
+            transition: transform 0.3s ease;
+          }
+
+          .trends-slider .slick-slide:hover {
+            transform: translateY(-8px);
+          }
+
+          @media (max-width: 512px) {
+            .trends-slider .slick-slide:hover {
+              transform: translateY(0);
+            }
+          }
         `}</style>
         <div className="trends-slider">
-          <Slider {...settings}>
+          <Slider ref={sliderRef} {...sliderSettings}>
             {products.map((trend, index) => (
-              <div key={trend._id || index} className="px-2 md:px-3 py-4">
-                <ProductCard product={trend.product} />
-                <div className="mt-2 md:mt-3 text-center text-xs md:text-sm text-gray-600 font-medium">
-                  {type === "purchase" ? (
-                    <span className="text-[#3F51F4]">
-                      📊 {trend.noOfPurchase} purchases
-                    </span>
-                  ) : (
-                    <span className="text-[#6A8EF0]">
-                      👁️ {trend.noOfViews} views
-                    </span>
-                  )}
+              <div key={trend._id || index} className="px-2 md:px-3 py-4 w-full">
+                <div className="bg-white rounded-xl p-4 md:p-5 shadow-sm hover:shadow-lg transition-all duration-300 ease-in-out h-full">
+                  <ProductCard product={trend.product} />
+                  <div className="mt-3 md:mt-4 text-center space-y-2">
+                    <p className="text-xs md:text-sm font-semibold text-gray-800 line-clamp-2 h-8">
+                      {trend.product?.name || "Product"}
+                    </p>
+                    <div className="text-xs md:text-sm text-gray-600 font-medium">
+                      {type === "purchase" ? (
+                        <span className="inline-block bg-[#3F51F4]/10 text-[#3F51F4] px-3 py-1 rounded-full">
+                          📊 {trend.noOfPurchase} purchases
+                        </span>
+                      ) : (
+                        <span className="inline-block bg-[#6A8EF0]/10 text-[#6A8EF0] px-3 py-1 rounded-full">
+                          👁️ {trend.noOfViews} views
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}

@@ -48,8 +48,10 @@ const userSchema = new mongoose.Schema(
     // ADDRESS (added when first order)
     // --------------------------------------
     address: {
-      type: String,
-      default: "",
+      line1: { type: String, default: "" },
+      city: { type: String, default: "" },
+      state: { type: String, default: "" },
+      postalCode: { type: String, default: "" },
     },
 
     // --------------------------------------
