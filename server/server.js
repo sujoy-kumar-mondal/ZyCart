@@ -12,6 +12,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
+import wishlistRoutes from "./routes/wishlistRoutes.js";
 
 
 const app = express();
@@ -51,6 +52,7 @@ app.use("/admin", adminRoutes);
 app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
 app.use("/cart", cartRoutes);
+app.use("/wishlist", wishlistRoutes);
 
 // -----------------------------------
 // Error Handler (Global)

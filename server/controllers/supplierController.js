@@ -101,7 +101,7 @@ export const addProduct = async (req, res) => {
     const supplierId = req.user.supplierId;
 
     const { title, price, stock, description } = req.body;
-    const imageUrl = req.fileUrl;
+    const imageUrls = req.fileUrls || [];
 
     if (!title || !price || !stock) {
       return res.status(400).json({
@@ -115,7 +115,7 @@ export const addProduct = async (req, res) => {
       price,
       stock,
       description,
-      images: imageUrl ? [imageUrl] : [],
+      images: imageUrls.length > 0 ? imageUrls : [],
       supplier: supplierId,
     });
 
@@ -142,7 +142,7 @@ export const updateProduct = async (req, res) => {
     const { id } = req.params;
 
     const { title, price, stock, description } = req.body;
-    const newImage = req.fileUrl;
+    const newImages = req.fileUrls || [];
 
     const product = await Product.findOne({ _id: id, supplier: supplierId });
 
@@ -158,8 +158,8 @@ export const updateProduct = async (req, res) => {
     product.stock = stock || product.stock;
     product.description = description || product.description;
 
-    if (newImage) {
-      product.images = [newImage]; // replace image
+    if (newImages.length > 0) {
+      product.images = newImages; // replace all images
     }
 
     await product.save();

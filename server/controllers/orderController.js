@@ -157,3 +157,45 @@ export const getUserOrders = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+// ------------------------------------------------------------
+// UPDATE ORDER (PAYMENT INFO)
+// ------------------------------------------------------------
+export const updateOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { paymentMethod, paymentStatus } = req.body;
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // Verify user owns this order
+    if (order.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized to update this order",
+      });
+    }
+
+    // Update payment info
+    if (paymentMethod) order.paymentMethod = paymentMethod;
+    if (paymentStatus) order.paymentStatus = paymentStatus;
+
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Order updated successfully",
+      order,
+    });
+  } catch (error) {
+    console.error("Update order error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};

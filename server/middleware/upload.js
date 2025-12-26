@@ -50,6 +50,41 @@ export const uploadSingle = (folder) => {
 };
 
 // ----------------------------------------------
+// Middleware to handle multiple file uploads
+// Usage: uploadMultiple("images", "products", 5)
+// ----------------------------------------------
+export const uploadMultiple = (folder, maxFiles = 5) => {
+  return async (req, res, next) => {
+    console.log("REQ FILES:", req.files);
+    try {
+      if (!req.files || req.files.length === 0) {
+        req.fileUrls = [];
+        return next();
+      }
+
+      // Limit to max files
+      const filesToUpload = req.files.slice(0, maxFiles);
+
+      // Upload all files in parallel
+      const uploadPromises = filesToUpload.map((file) =>
+        uploadToCloudinary(file.buffer, folder)
+      );
+
+      const results = await Promise.all(uploadPromises);
+      req.fileUrls = results.map((result) => result.secure_url);
+
+      next();
+    } catch (err) {
+      console.error("Cloudinary multiple upload error:", err);
+      return res.status(500).json({
+        success: false,
+        message: "Image upload failed",
+      });
+    }
+  };
+};
+
+// ----------------------------------------------
 // Export multer instance to use in routes
 // ----------------------------------------------
 export default upload;

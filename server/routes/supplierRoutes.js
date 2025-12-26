@@ -1,6 +1,6 @@
 import express from "express";
 import { protect, authorize } from "../middleware/authMiddleware.js";
-import upload, { uploadSingle } from "../middleware/upload.js";
+import upload, { uploadSingle, uploadMultiple } from "../middleware/upload.js";
 
 import {
   applySupplier,
@@ -38,8 +38,8 @@ router.post(
   "/products",
   protect,
   authorize("supplier"),
-  upload.single("image"),
-  uploadSingle("products"),   // ✅ FIXED
+  upload.array("images", 5),
+  uploadMultiple("products", 5),
   addProduct
 );
 
@@ -50,8 +50,8 @@ router.put(
   "/products/:id",
   protect,
   authorize("supplier"),
-  upload.single("image"),
-  uploadSingle("products"),   // ✅ FIXED
+  upload.array("images", 5),
+  uploadMultiple("products", 5),
   updateProduct
 );
 

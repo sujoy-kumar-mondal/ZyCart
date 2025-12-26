@@ -50,15 +50,14 @@ const CheckoutPage = () => {
         }
 
         clearCart();
-        // Reset address form
-        setAddress({
-          line1: "",
-          city: "",
-          state: "",
-          postalCode: "",
+        // Redirect to payment page
+        navigate("/payment", { 
+          state: { 
+            orderId: res.data.order._id,
+            totalAmount: totalPrice,
+            cartItems: cartItems 
+          } 
         });
-        alert("Order placed successfully!");
-        navigate("/my-orders");
       }
     } catch (error) {
       console.error("Order error:", error);

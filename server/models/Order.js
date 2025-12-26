@@ -81,6 +81,19 @@ const parentOrderSchema = new mongoose.Schema(
       ],
       default: "Confirmed",
     },
+
+    // Payment Information
+    paymentMethod: {
+      type: String,
+      enum: ["cod", "upi", "card", "wallet", "emi"],
+      default: "cod",
+    },
+
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "completed", "failed"],
+      default: "pending",
+    },
   },
   { timestamps: true }
 );

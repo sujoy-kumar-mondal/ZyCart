@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 import { useCart } from "../context/CartProvider";
+import { useWishlist } from "../context/WishlistProvider";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const { totalItems } = useCart();
+  const { wishlist } = useWishlist();
   const navigate = useNavigate();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -73,6 +75,25 @@ const Navbar = () => {
               }
             >
               My Orders
+            </NavLink>
+
+            <NavLink
+              to="/wishlist"
+              className={({ isActive }) =>
+                isActive ? activeClass : linkClass
+              }
+            >
+              Wishlist
+              {wishlist.length > 0 && (
+                <span
+                  className="
+                      ml-1 px-2 py-0.5 rounded-full text-xs text-white
+                      bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
+                    "
+                >
+                  {wishlist.length}
+                </span>
+              )}
             </NavLink>
 
             <NavLink
@@ -290,7 +311,7 @@ const Navbar = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="md:hidden flex flex-col top-5 right-25 border rounded-xl shadow-lg border-opacity-50 absolute bg-white/95 p-4 space-y-4"
+            className="md:hidden flex flex-col top-5 right-15 border rounded-xl shadow-lg border-opacity-50 absolute bg-white p-4 space-y-4"
           >
             <NavLink
               to="/"
@@ -317,6 +338,16 @@ const Navbar = () => {
                   }
                 >
                   My Orders
+                </NavLink>
+
+                <NavLink
+                  to="/wishlist"
+                  onClick={() => setMenuOpen(false)}
+                  className={({ isActive }) =>
+                    isActive ? activeClass : linkClass
+                  }
+                >
+                  Wishlist ({wishlist.length})
                 </NavLink>
 
                 <NavLink

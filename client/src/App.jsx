@@ -11,8 +11,10 @@ import ProductsPage from "./pages/ProductsPage";
 import ProductDetails from "./pages/ProductDetails.jsx";
 import CartPage from "./pages/CartPage.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
+import PaymentPage from "./pages/PaymentPage.jsx";
 import UserOrders from "./pages/UserOrders.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
+import WishlistPage from "./pages/WishlistPage.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import About from "./pages/About.jsx";
@@ -80,10 +82,28 @@ const App = () => {
           />
 
           <Route
+            path="/payment"
+            element={
+              <ProtectedRoute roles={["user"]}>
+                <PaymentPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
             path="/my-orders"
             element={
               <ProtectedRoute roles={["user"]}>
                 <UserOrders />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/wishlist"
+            element={
+              <ProtectedRoute roles={["user"]}>
+                <WishlistPage />
               </ProtectedRoute>
             }
           />

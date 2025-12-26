@@ -104,7 +104,7 @@ const TrendsSlider = ({ type, title }) => {
         </p>
       </div>
 
-      <div className="bg-gradient-to-br from-white to-[#f8fafb] rounded-2xl p-3 md:p-8 shadow-lg border border-[#8FD6F6]/40 w-full overflow-hidden">
+      <div className="bg-linear-to-br from-white to-[#f8fafb] rounded-2xl p-3 md:p-8 shadow-lg border border-[#8FD6F6]/40 w-full overflow-hidden">
         <style>{`
           /* Slider Container */
           .trends-slider {
