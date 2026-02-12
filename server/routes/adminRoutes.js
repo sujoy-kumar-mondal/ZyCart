@@ -6,6 +6,7 @@ import {
   getUsers,
   banUser,
   unbanUser,
+  deleteUser,
   getSellers,
   approveSeller,
   banSeller,
@@ -48,6 +49,12 @@ router.patch(
   "/users/unban/:id",
   protectAdmin,
   unbanUser
+);
+
+router.delete(
+  "/users/:id",
+  protectAdmin,
+  deleteUser
 );
 
 // -------------------------
