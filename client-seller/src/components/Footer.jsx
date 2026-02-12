@@ -75,12 +75,12 @@ const Footer = () => {
             <h3 className="text-lg font-bold text-[#1B2A41] mb-4">Other Portals</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="http://localhost:5173" className="inline-flex items-center gap-2 text-gray-600 hover:text-red-600 transition font-medium px-3 py-2 bg-blue-100 rounded-lg hover:bg-blue-200">
+                <a href="https://zycart.netlify.app/" className="inline-flex items-center gap-2 text-gray-600 hover:text-red-600 transition font-medium px-3 py-2 bg-blue-100 rounded-lg hover:bg-blue-200">
                   🛍️ Customer Portal
                 </a>
               </li>
               <li>
-                <a href="http://localhost:5175" className="inline-flex items-center gap-2 text-gray-600 hover:text-red-600 transition font-medium px-3 py-2 bg-red-100 rounded-lg hover:bg-red-200">
+                <a href="https://zycart-admin.netlify.app/" className="inline-flex items-center gap-2 text-gray-600 hover:text-red-600 transition font-medium px-3 py-2 bg-red-100 rounded-lg hover:bg-red-200">
                   ⚙️ Admin Portal
                 </a>
               </li>
