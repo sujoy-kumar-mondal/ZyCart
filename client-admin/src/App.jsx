@@ -1,0 +1,130 @@
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+
+import Navbar from "./components/Navbar.jsx";
+import Footer from "./components/Footer.jsx";
+
+// Admin Pages
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import AdminUsers from "./pages/admin/AdminUsers.jsx";
+import AdminUserDetails from "./pages/admin/AdminUserDetails.jsx";
+import AdminSellers from "./pages/admin/AdminSellers.jsx";
+import AdminSellerDetails from "./pages/admin/AdminSellerDetails.jsx";
+import AdminOrders from "./pages/admin/AdminOrders.jsx";
+import AdminOrderDetails from "./pages/admin/AdminOrderDetails.jsx";
+import AdminProfile from "./pages/admin/AdminProfile.jsx";
+
+// Auth Pages
+import Home from "./pages/Home.jsx";
+import Login from "./pages/Login.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ChangePassword from "./pages/ChangePassword.jsx";
+
+// Route Guards
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+
+const App = () => {
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      <Toaster />
+      <Navbar />
+
+      <main className="grow container-main">
+        <Routes>
+
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/resetpassword" element={<ForgotPassword />} />
+          <Route
+            path="/changepassword"
+            element={
+              <ProtectedRoute>
+                <ChangePassword />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin Routes */}
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute>
+                <AdminUsers />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/users/:userId"
+            element={
+              <ProtectedRoute>
+                <AdminUserDetails />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/sellers"
+            element={
+              <ProtectedRoute>
+                <AdminSellers />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/sellers/:sellerId"
+            element={
+              <ProtectedRoute>
+                <AdminSellerDetails />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/orders"
+            element={
+              <ProtectedRoute>
+                <AdminOrders />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/orders/:orderId"
+            element={
+              <ProtectedRoute>
+                <AdminOrderDetails />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/profile"
+            element={
+              <ProtectedRoute>
+                <AdminProfile />
+              </ProtectedRoute>
+            }
+          />
+
+        </Routes>
+      </main>
+
+      <Footer />
+    </div>
+  );
+};
+
+export default App;
