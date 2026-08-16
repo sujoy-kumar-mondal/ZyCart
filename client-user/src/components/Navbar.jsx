@@ -54,9 +54,10 @@ const Navbar = () => {
         {/* Logo */}
         <Link
           to="/"
-          className="text-3xl font-extrabold tracking-tight bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] text-transparent bg-clip-text"
+          className="flex items-center gap-2 text-3xl font-extrabold tracking-tight bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] text-transparent bg-clip-text"
         >
-          ZyCart
+          <img src="/logo_cart.svg" alt="ZyCart Logo" className="h-9 w-auto object-contain" />
+          <span>ZyCart</span>
         </Link>
 
         {/* Desktop Navigation */}
