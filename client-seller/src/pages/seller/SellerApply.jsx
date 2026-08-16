@@ -49,6 +49,20 @@ const SellerApply = () => {
 
     if (!email) return toast.error("Email is required!");
     if (!email.includes("@")) return toast.error("Please enter a valid email!");
+    if (!registrationForm.name.trim()) return toast.error("Full Name is required!");
+    
+    if (!registrationForm.mobile || !/^[0-9]{10}$/.test(registrationForm.mobile.trim())) {
+      return toast.error("Mobile number must be a valid 10-digit number!");
+    }
+
+    const pwd = registrationForm.password;
+    const hasUpper = /[A-Z]/.test(pwd);
+    const hasLower = /[a-z]/.test(pwd);
+    const hasNumber = /[0-9]/.test(pwd);
+    const hasSymbol = /[^A-Za-z0-9]/.test(pwd);
+    if (!pwd || pwd.length < 8 || !hasUpper || !hasLower || !hasNumber || !hasSymbol) {
+      return toast.error("Password must be at least 8 characters long and include an uppercase letter, lowercase letter, number, and special symbol!");
+    }
 
     setLoading(true);
 
@@ -71,6 +85,19 @@ const SellerApply = () => {
 
     if (!email || !otp || !registrationForm.name || !registrationForm.mobile || !registrationForm.password) {
       return toast.error("Please fill all required fields!");
+    }
+
+    if (!/^[0-9]{10}$/.test(registrationForm.mobile.trim())) {
+      return toast.error("Mobile number must be a valid 10-digit number!");
+    }
+
+    const pwd = registrationForm.password;
+    const hasUpper = /[A-Z]/.test(pwd);
+    const hasLower = /[a-z]/.test(pwd);
+    const hasNumber = /[0-9]/.test(pwd);
+    const hasSymbol = /[^A-Za-z0-9]/.test(pwd);
+    if (!pwd || pwd.length < 8 || !hasUpper || !hasLower || !hasNumber || !hasSymbol) {
+      return toast.error("Password must be at least 8 characters long and include an uppercase letter, lowercase letter, number, and special symbol!");
     }
 
     setLoading(true);
@@ -118,14 +145,36 @@ const SellerApply = () => {
     e.preventDefault();
 
     if (
-      !form.shopName ||
-      !form.shopType ||
-      !form.pan ||
-      !form.aadhar ||
-      !form.bankAccount ||
-      !form.gst
+      !form.shopName.trim() ||
+      !form.shopType.trim() ||
+      !form.pan.trim() ||
+      !form.aadhar.trim() ||
+      !form.bankAccount.trim() ||
+      !form.gst.trim()
     ) {
       return toast.error("Please fill all required fields!");
+    }
+
+    // Format validations
+    const cleanPan = form.pan.trim().toUpperCase();
+    const cleanAadhar = form.aadhar.replace(/\s+/g, "");
+    const cleanBank = form.bankAccount.trim();
+    const cleanGst = form.gst.trim().toUpperCase();
+
+    if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(cleanPan)) {
+      return toast.error("Invalid PAN format! (Must be 10 characters e.g. ABCDE1234F)");
+    }
+
+    if (!/^\d{12}$/.test(cleanAadhar)) {
+      return toast.error("Invalid Aadhaar number! (Must be 12 digits)");
+    }
+
+    if (!/^\d{9,18}$/.test(cleanBank)) {
+      return toast.error("Invalid Bank Account number! (Must be 9 to 18 digits)");
+    }
+
+    if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(cleanGst)) {
+      return toast.error("Invalid GST number format! (15 characters e.g. 22AAAAA0000A1Z5)");
     }
 
     const sellerIdToUse = sellerId || localStorage.getItem("sellerId") || user?.id;
@@ -138,12 +187,12 @@ const SellerApply = () => {
 
     const data = new FormData();
     data.append("sellerId", sellerIdToUse);
-    data.append("shopName", form.shopName);
-    data.append("shopType", form.shopType);
-    data.append("pan", form.pan);
-    data.append("aadhar", form.aadhar);
-    data.append("bankAccount", form.bankAccount);
-    data.append("gst", form.gst);
+    data.append("shopName", form.shopName.trim());
+    data.append("shopType", form.shopType.trim());
+    data.append("pan", cleanPan);
+    data.append("aadhar", cleanAadhar);
+    data.append("bankAccount", cleanBank);
+    data.append("gst", cleanGst);
 
     if (form.license) {
       data.append("license", form.license);
@@ -154,7 +203,6 @@ const SellerApply = () => {
 
       if (res.data.success) {
         toast.success("Application submitted! Wait for admin approval.");
-        // Clear sellerId from localStorage
         localStorage.removeItem("sellerId");
         navigate("/");
       }
@@ -188,9 +236,12 @@ const SellerApply = () => {
               <>
                 {/* Email */}
                 <div>
-                  <label className="font-medium text-gray-700">Email Address</label>
+                  <label className="font-medium text-gray-700">
+                    Email Address <span className="text-red-600">*</span>
+                  </label>
                   <input
                     type="email"
+                    required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
@@ -200,9 +251,12 @@ const SellerApply = () => {
 
                 {/* Name */}
                 <div>
-                  <label className="font-medium text-gray-700">Full Name</label>
+                  <label className="font-medium text-gray-700">
+                    Full Name <span className="text-red-600">*</span>
+                  </label>
                   <input
                     type="text"
+                    required
                     value={registrationForm.name}
                     onChange={(e) => setRegistrationForm({ ...registrationForm, name: e.target.value })}
                     className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
@@ -212,11 +266,15 @@ const SellerApply = () => {
 
                 {/* Mobile */}
                 <div>
-                  <label className="font-medium text-gray-700">Mobile Number</label>
+                  <label className="font-medium text-gray-700">
+                    Mobile Number <span className="text-red-600">*</span>
+                  </label>
                   <input
                     type="tel"
+                    required
+                    maxLength={10}
                     value={registrationForm.mobile}
-                    onChange={(e) => setRegistrationForm({ ...registrationForm, mobile: e.target.value })}
+                    onChange={(e) => setRegistrationForm({ ...registrationForm, mobile: e.target.value.replace(/\D/g, "") })}
                     className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
                     placeholder="9876543210"
                   />
@@ -224,14 +282,18 @@ const SellerApply = () => {
 
                 {/* Password */}
                 <div>
-                  <label className="font-medium text-gray-700">Password</label>
+                  <label className="font-medium text-gray-700">
+                    Password <span className="text-red-600">*</span>
+                  </label>
                   <input
                     type="password"
+                    required
                     value={registrationForm.password}
                     onChange={(e) => setRegistrationForm({ ...registrationForm, password: e.target.value })}
                     className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
                     placeholder="••••••••"
                   />
+                  <p className="text-xs text-gray-500 mt-1">Min 8 characters including uppercase, lowercase, number & special symbol</p>
                 </div>
 
                 <button
@@ -250,9 +312,12 @@ const SellerApply = () => {
 
                 {/* OTP */}
                 <div>
-                  <label className="font-medium text-gray-700">Enter OTP</label>
+                  <label className="font-medium text-gray-700">
+                    Enter OTP <span className="text-red-600">*</span>
+                  </label>
                   <input
                     type="text"
+                    required
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
                     maxLength="6"
@@ -294,9 +359,12 @@ const SellerApply = () => {
 
             {/* Shop Name */}
             <div>
-              <label className="font-medium text-gray-700">Shop Name</label>
+              <label className="font-medium text-gray-700">
+                Shop Name <span className="text-red-600">*</span>
+              </label>
               <input
                 type="text"
+                required
                 name="shopName"
                 className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
                 value={form.shopName}
@@ -307,9 +375,12 @@ const SellerApply = () => {
 
             {/* Shop Type */}
             <div>
-              <label className="font-medium text-gray-700">Shop Type</label>
+              <label className="font-medium text-gray-700">
+                Shop Type <span className="text-red-600">*</span>
+              </label>
               <select
                 name="shopType"
+                required
                 className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
                 value={form.shopType}
                 onChange={handleChange}
@@ -326,11 +397,15 @@ const SellerApply = () => {
             {/* PAN & Aadhar */}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="font-medium text-gray-700">PAN</label>
+                <label className="font-medium text-gray-700">
+                  PAN <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="text"
+                  required
                   name="pan"
-                  className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
+                  maxLength={10}
+                  className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition uppercase"
                   value={form.pan}
                   onChange={handleChange}
                   placeholder="ABCDE1234F"
@@ -338,10 +413,14 @@ const SellerApply = () => {
               </div>
 
               <div>
-                <label className="font-medium text-gray-700">Aadhar Number</label>
+                <label className="font-medium text-gray-700">
+                  Aadhar Number <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="text"
+                  required
                   name="aadhar"
+                  maxLength={14}
                   className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
                   value={form.aadhar}
                   onChange={handleChange}
@@ -352,10 +431,14 @@ const SellerApply = () => {
 
             {/* Bank Account */}
             <div>
-              <label className="font-medium text-gray-700">Bank Account Number</label>
+              <label className="font-medium text-gray-700">
+                Bank Account Number <span className="text-red-600">*</span>
+              </label>
               <input
                 type="text"
+                required
                 name="bankAccount"
+                maxLength={18}
                 className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
                 value={form.bankAccount}
                 onChange={handleChange}
@@ -365,14 +448,18 @@ const SellerApply = () => {
 
             {/* GST */}
             <div>
-              <label className="font-medium text-gray-700">GST Number</label>
+              <label className="font-medium text-gray-700">
+                GST Number <span className="text-red-600">*</span>
+              </label>
               <input
                 type="text"
+                required
                 name="gst"
-                className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
+                maxLength={15}
+                className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition uppercase"
                 value={form.gst}
                 onChange={handleChange}
-                placeholder="GST Number"
+                placeholder="22AAAAA0000A1Z5"
               />
             </div>
 

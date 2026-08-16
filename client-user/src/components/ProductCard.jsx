@@ -71,8 +71,12 @@ const ProductCard = ({ product }) => {
       {/* Product Image */}
       <Link to={`/product/${product._id}`}>
         <img
-          src={product.images?.[0] || "/placeholder.png"}
+          src={product.images?.[0] || "https://placehold.co/400x400/e2e8f0/1e293b?text=Product+Image"}
           alt={product.title}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "https://placehold.co/400x400/e2e8f0/1e293b?text=Product+Image";
+          }}
           className="w-full h-52 object-cover rounded-xl"
         />
       </Link>

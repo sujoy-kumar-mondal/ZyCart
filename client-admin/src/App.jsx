@@ -14,6 +14,7 @@ import AdminSellerDetails from "./pages/admin/AdminSellerDetails.jsx";
 import AdminOrders from "./pages/admin/AdminOrders.jsx";
 import AdminOrderDetails from "./pages/admin/AdminOrderDetails.jsx";
 import AdminProfile from "./pages/admin/AdminProfile.jsx";
+import AdminManagement from "./pages/admin/AdminManagement.jsx";
 
 // Auth Pages
 import Home from "./pages/Home.jsx";
@@ -115,6 +116,15 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <AdminProfile />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/admins"
+            element={
+              <ProtectedRoute>
+                <AdminManagement />
               </ProtectedRoute>
             }
           />

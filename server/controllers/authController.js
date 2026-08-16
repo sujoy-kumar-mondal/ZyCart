@@ -80,6 +80,13 @@ export const verifyOtpAndRegister = async (req, res) => {
     if (user.otpExpires < Date.now())
       return res.status(400).json({ success: false, message: "OTP expired" });
 
+    if (!isStrongPassword(password)) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (symbol).",
+      });
+    }
+
     // Save user info
     user.name = name;
     user.mobile = mobile;
@@ -98,7 +105,7 @@ export const verifyOtpAndRegister = async (req, res) => {
   }
 };
 
-// 3. USER LOGIN
+// 3. USER LOGIN (STEP 1: PASSWORD -> OTP)
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -127,6 +134,53 @@ export const loginUser = async (req, res) => {
         success: false,
         message: "Incorrect password.",
       });
+
+    // Generate 6-digit OTP for 2FA login
+    const otp = generateOTP();
+    user.otp = otp;
+    user.otpExpires = Date.now() + 5 * 60 * 1000;
+    await user.save();
+
+    await sendOTP(email, otp);
+
+    res.status(200).json({
+      success: true,
+      requireOtp: true,
+      email: user.email,
+      message: "Password verified! 2FA OTP has been sent to your email.",
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// 3B. VERIFY USER LOGIN OTP (STEP 2: OTP -> JWT TOKEN)
+export const verifyLoginOtpUser = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: "Email and OTP are required" });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if (user.otp !== otp) {
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    }
+
+    if (user.otpExpires < Date.now()) {
+      return res.status(400).json({ success: false, message: "OTP expired. Please log in again." });
+    }
+
+    // Clear OTP fields
+    user.otp = "";
+    user.otpExpires = null;
+    await user.save();
 
     const token = generateToken(user._id);
 
@@ -196,6 +250,15 @@ export const sellerSendOtp = async (req, res) => {
   }
 };
 
+const isStrongPassword = (pwd) => {
+  if (!pwd || pwd.length < 8) return false;
+  const hasUpper = /[A-Z]/.test(pwd);
+  const hasLower = /[a-z]/.test(pwd);
+  const hasNumber = /[0-9]/.test(pwd);
+  const hasSymbol = /[^A-Za-z0-9]/.test(pwd);
+  return hasUpper && hasLower && hasNumber && hasSymbol;
+};
+
 // 5. VERIFY OTP + STEP 2 SELLER REGISTRATION
 export const verifySellerOtpAndRegister = async (req, res) => {
   try {
@@ -203,6 +266,20 @@ export const verifySellerOtpAndRegister = async (req, res) => {
 
     if (!email || !otp || !name || !mobile || !password) {
       return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+
+    if (!/^[0-9]{10}$/.test(String(mobile).trim())) {
+      return res.status(400).json({
+        success: false,
+        message: "Mobile number must be a valid 10-digit number.",
+      });
+    }
+
+    if (!isStrongPassword(password)) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (symbol).",
+      });
     }
 
     const seller = await Seller.findOne({ email });
@@ -217,8 +294,8 @@ export const verifySellerOtpAndRegister = async (req, res) => {
       return res.status(400).json({ success: false, message: "OTP expired" });
 
     // Save basic info from Step 2
-    seller.name = name;
-    seller.mobile = mobile;
+    seller.name = name.trim();
+    seller.mobile = String(mobile).trim();
     seller.password = password; // hashed by pre('save')
     seller.otp = "";
     seller.otpExpires = null;
@@ -260,6 +337,39 @@ export const submitSellerDetails = async (req, res) => {
       return res.status(400).json({ 
         success: false, 
         message: `Please fill all required fields: ${missingFields.join(", ")}` 
+      });
+    }
+
+    const cleanPan = pan.trim().toUpperCase();
+    const cleanAadhar = aadhar.replace(/\s+/g, "");
+    const cleanBank = bankAccount.trim();
+    const cleanGst = gst.trim().toUpperCase();
+
+    if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(cleanPan)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid PAN card format (Must be 10 characters: e.g. ABCDE1234F).",
+      });
+    }
+
+    if (!/^\d{12}$/.test(cleanAadhar)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Aadhaar number format (Must be 12 digits).",
+      });
+    }
+
+    if (!/^\d{9,18}$/.test(cleanBank)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Bank Account number (Must be 9 to 18 digits).",
+      });
+    }
+
+    if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(cleanGst)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid GST number format (15 characters: e.g. 22AAAAA0000A1Z5).",
       });
     }
 
@@ -311,7 +421,7 @@ export const submitSellerDetails = async (req, res) => {
   }
 };
 
-// 7. SELLER LOGIN
+// 7. SELLER LOGIN (STEP 1: PASSWORD -> OTP)
 export const loginSeller = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -347,6 +457,51 @@ export const loginSeller = async (req, res) => {
         message: "Incorrect password.",
       });
 
+    // Generate 6-digit OTP for 2FA login
+    const otp = generateOTP();
+    seller.otp = otp;
+    seller.otpExpires = Date.now() + 5 * 60 * 1000;
+    await seller.save();
+
+    await sendOTP(email, otp);
+
+    res.status(200).json({
+      success: true,
+      requireOtp: true,
+      email: seller.email,
+      message: "Password verified! 2FA OTP has been sent to your email.",
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// 7B. VERIFY SELLER LOGIN OTP (STEP 2: OTP -> JWT TOKEN)
+export const verifyLoginOtpSeller = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: "Email and OTP are required" });
+    }
+
+    const seller = await Seller.findOne({ email });
+
+    if (!seller) {
+      return res.status(404).json({ success: false, message: "Seller not found" });
+    }
+
+    if (seller.otp !== otp) {
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    }
+
+    if (seller.otpExpires < Date.now()) {
+      return res.status(400).json({ success: false, message: "OTP expired. Please log in again." });
+    }
+
+    // Clear OTP fields
+    seller.otp = "";
+    seller.otpExpires = null;
     seller.lastLogin = new Date();
     await seller.save();
 
@@ -402,7 +557,7 @@ export const registerAdmin = async (req, res) => {
   }
 };
 
-// 9. ADMIN LOGIN
+// 9. ADMIN LOGIN (STEP 1: PASSWORD -> OTP)
 export const loginAdmin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -444,7 +599,51 @@ export const loginAdmin = async (req, res) => {
       });
     }
 
-    // Reset login attempts on successful login
+    // Generate 6-digit OTP for 2FA login
+    const otp = generateOTP();
+    admin.otp = otp;
+    admin.otpExpires = Date.now() + 5 * 60 * 1000;
+    await admin.save();
+
+    await sendOTP(email, otp);
+
+    res.status(200).json({
+      success: true,
+      requireOtp: true,
+      email: admin.email,
+      message: "Password verified! 2FA OTP has been sent to your email.",
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// 9B. VERIFY ADMIN LOGIN OTP (STEP 2: OTP -> JWT TOKEN)
+export const verifyLoginOtpAdmin = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: "Email and OTP are required" });
+    }
+
+    const admin = await Admin.findOne({ email });
+
+    if (!admin) {
+      return res.status(404).json({ success: false, message: "Admin not found" });
+    }
+
+    if (admin.otp !== otp) {
+      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    }
+
+    if (admin.otpExpires < Date.now()) {
+      return res.status(400).json({ success: false, message: "OTP expired. Please log in again." });
+    }
+
+    // Clear OTP fields & reset login attempts
+    admin.otp = "";
+    admin.otpExpires = null;
     admin.loginAttempts = 0;
     admin.lockedUntil = null;
     admin.lastLogin = new Date();
@@ -586,6 +785,13 @@ export const verifyOtpAndResetUser = async (req, res) => {
       return res.status(400).json({ success: false, message: "Email, OTP, and password are required" });
     }
 
+    if (!isStrongPassword(password)) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (symbol).",
+      });
+    }
+
     const user = await User.findOne({ email });
 
     if (!user)
@@ -617,6 +823,13 @@ export const verifyOtpAndResetSeller = async (req, res) => {
 
     if (!email || !otp || !password) {
       return res.status(400).json({ success: false, message: "Email, OTP, and password are required" });
+    }
+
+    if (!isStrongPassword(password)) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (symbol).",
+      });
     }
 
     const seller = await Seller.findOne({ email });
@@ -652,6 +865,13 @@ export const verifyOtpAndResetAdmin = async (req, res) => {
       return res.status(400).json({ success: false, message: "Email, OTP, and password are required" });
     }
 
+    if (!isStrongPassword(password)) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (symbol).",
+      });
+    }
+
     const admin = await Admin.findOne({ email });
 
     if (!admin)
@@ -679,7 +899,8 @@ export const verifyOtpAndResetAdmin = async (req, res) => {
 // ---------------------------------------------------------------
 export const changePasswordUser = async (req, res) => {
   try {
-    const { password } = req.body;
+    const { password, nPassword, newPassword } = req.body;
+    const targetNewPassword = nPassword || newPassword;
     const user = req.user.userDoc;
 
     if (!user) {
@@ -691,7 +912,16 @@ export const changePasswordUser = async (req, res) => {
       return res.status(400).json({ success: false, message: "Password incorrect!" });
     }
 
-    user.password = password;
+    if (targetNewPassword) {
+      if (!isStrongPassword(targetNewPassword)) {
+        return res.status(400).json({
+          success: false,
+          message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (symbol).",
+        });
+      }
+      user.password = targetNewPassword;
+    }
+
     await user.save();
 
     res.status(201).json({
@@ -709,7 +939,8 @@ export const changePasswordUser = async (req, res) => {
 // ---------------------------------------------------------------
 export const changePasswordSeller = async (req, res) => {
   try {
-    const { password } = req.body;
+    const { password, nPassword, newPassword } = req.body;
+    const targetNewPassword = nPassword || newPassword;
     const seller = req.user.userDoc;
 
     if (!seller) {
@@ -721,7 +952,16 @@ export const changePasswordSeller = async (req, res) => {
       return res.status(400).json({ success: false, message: "Password incorrect!" });
     }
 
-    seller.password = password;
+    if (targetNewPassword) {
+      if (!isStrongPassword(targetNewPassword)) {
+        return res.status(400).json({
+          success: false,
+          message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (symbol).",
+        });
+      }
+      seller.password = targetNewPassword;
+    }
+
     await seller.save();
 
     res.status(201).json({
@@ -739,7 +979,8 @@ export const changePasswordSeller = async (req, res) => {
 // ---------------------------------------------------------------
 export const changePasswordAdmin = async (req, res) => {
   try {
-    const { password } = req.body;
+    const { password, nPassword, newPassword } = req.body;
+    const targetNewPassword = nPassword || newPassword;
     const admin = req.user.userDoc;
 
     if (!admin) {
@@ -751,7 +992,16 @@ export const changePasswordAdmin = async (req, res) => {
       return res.status(400).json({ success: false, message: "Password incorrect!" });
     }
 
-    admin.password = password;
+    if (targetNewPassword) {
+      if (!isStrongPassword(targetNewPassword)) {
+        return res.status(400).json({
+          success: false,
+          message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (symbol).",
+        });
+      }
+      admin.password = targetNewPassword;
+    }
+
     await admin.save();
 
     res.status(201).json({

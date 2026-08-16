@@ -82,6 +82,15 @@ const ForgotPassword = () => {
       return toast.error("Passwords do not match");
     }
 
+    const pwd = form.password;
+    const hasUpper = /[A-Z]/.test(pwd);
+    const hasLower = /[a-z]/.test(pwd);
+    const hasNumber = /[0-9]/.test(pwd);
+    const hasSymbol = /[^A-Za-z0-9]/.test(pwd);
+    if (pwd.length < 8 || !hasUpper || !hasLower || !hasNumber || !hasSymbol) {
+      return toast.error("Password must be at least 8 characters long and include an uppercase letter, lowercase letter, number, and special symbol!");
+    }
+
     setLoading(true);
 
     try {

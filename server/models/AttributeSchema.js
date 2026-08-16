@@ -11,7 +11,7 @@ const attributeFieldSchema = new mongoose.Schema(
     // Data type: text, decimal, integer, select, multi-select
     dataType: {
       type: String,
-      enum: ["Text", "Decimal", "Integer", "Select (Enum)", "Multi-Select"],
+      enum: ["Text", "Select", "Multi-Select", "Integer", "Decimal", "Date", "Range"],
       required: true,
     },
 
@@ -28,9 +28,9 @@ const attributeFieldSchema = new mongoose.Schema(
     },
 
     // For Select/Multi-Select types: array of valid options
-    // For Text/Integer/Decimal: validation rules (optional)
+    // For Range/Text: string or array
     options: {
-      type: [String],
+      type: mongoose.Schema.Types.Mixed,
       default: [],
     },
 

@@ -37,7 +37,9 @@ const SellerProducts = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+  const [productToDelete, setProductToDelete] = useState(null);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
@@ -124,13 +126,14 @@ const SellerProducts = () => {
   // HANDLE MAIN CATEGORY CHANGE
   const handleMainCategoryChange = async (mainCat) => {
     setForm({ ...form, mainCategory: mainCat, subCategory: "", subSubCategory: "", attributes: {} });
-    
+    setAttributesSchema({});
+
     if (mainCat) {
       try {
-        const res = await axios.get(`/products/categories/${mainCat}`);
+        const res = await axios.get(`/products/categories/${encodeURIComponent(mainCat)}`);
         setSubCategories(res.data.subCategories || []);
       } catch (error) {
-  
+        setSubCategories([]);
       }
     } else {
       setSubCategories([]);
@@ -142,13 +145,14 @@ const SellerProducts = () => {
   const handleSubCategoryChange = async (subCat) => {
     const mainCat = form.mainCategory;
     setForm({ ...form, subCategory: subCat, subSubCategory: "", attributes: {} });
-    
+    setAttributesSchema({});
+
     if (mainCat && subCat) {
       try {
-        const res = await axios.get(`/products/categories/${mainCat}/${subCat}`);
+        const res = await axios.get(`/products/categories/${encodeURIComponent(mainCat)}/${encodeURIComponent(subCat)}`);
         setSubSubCategories(res.data.subSubCategories || []);
       } catch (error) {
-  
+        setSubSubCategories([]);
       }
     } else {
       setSubSubCategories([]);
@@ -157,11 +161,11 @@ const SellerProducts = () => {
 
   const handleSubSubCategoryChange = async (subSubCat) => {
     const { mainCategory, subCategory } = form;
-    setForm({ ...form, subSubCategory: subSubCat });
-    
+    setForm({ ...form, subSubCategory: subSubCat, attributes: {} });
+
     if (mainCategory && subCategory && subSubCat) {
       try {
-        const url = `/products/categories/${mainCategory}/${subCategory}/${subSubCat}/attributes`;
+        const url = `/products/categories/${encodeURIComponent(mainCategory)}/${encodeURIComponent(subCategory)}/${encodeURIComponent(subSubCat)}/attributes`;
         const res = await axios.get(url);
         setAttributesSchema(res.data.attributes || {});
       } catch (error) {
@@ -206,6 +210,26 @@ const SellerProducts = () => {
       return;
     }
 
+    if (!form.maxQuantityPerPurchase || parseInt(form.maxQuantityPerPurchase) < 1) {
+      toast.error("Max Quantity Per Purchase is required (at least 1)!");
+      return;
+    }
+
+    if (parseInt(form.discount) > 0 && !form.discountPeriod) {
+      toast.error("If Discount (%) is entered, Discount Expiry Date must be entered!");
+      return;
+    }
+
+    if (form.images.length < 2) {
+      toast.error("At least 2 product images must be uploaded!");
+      return;
+    }
+
+    if (form.images.length > 5) {
+      toast.error("Maximum 5 product images allowed!");
+      return;
+    }
+
     // Validate required attributes
     const requiredAttributes = Object.entries(attributesSchema)
       .filter(([_, config]) => config.required)
@@ -231,13 +255,14 @@ const SellerProducts = () => {
     data.append("attributes", JSON.stringify(form.attributes));
     data.append("discount", form.discount || 0);
     data.append("discountPeriod", form.discountPeriod ? new Date(form.discountPeriod).toISOString() : "");
-    data.append("maxQuantityPerPurchase", form.maxQuantityPerPurchase || "");
+    data.append("maxQuantityPerPurchase", form.maxQuantityPerPurchase || "1");
 
     form.images.forEach((image) => {
       data.append("images", image);
     });
 
     try {
+      setIsSubmitting(true);
       await axios.post("/seller/products", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -247,6 +272,8 @@ const SellerProducts = () => {
       fetchProducts();
     } catch (error) {
       toast.error(error.response?.data?.message || "Add product failed!");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -254,14 +281,14 @@ const SellerProducts = () => {
   const handleEdit = (product) => {
     setIsEditing(true);
     setEditId(product._id);
-    
+
     // Convert ISO date to datetime-local format (YYYY-MM-DDTHH:mm)
     let discountPeriodValue = "";
     if (product.discountPeriod) {
       const date = new Date(product.discountPeriod);
       discountPeriodValue = date.toISOString().slice(0, 16);
     }
-    
+
     setForm({
       title: product.title,
       price: product.price,
@@ -274,21 +301,26 @@ const SellerProducts = () => {
       images: [],
       discount: product.discount || "",
       discountPeriod: discountPeriodValue,
-      maxQuantityPerPurchase: product.maxQuantityPerPurchase || "",
+      maxQuantityPerPurchase: product.maxQuantityPerPurchase || "1",
     });
     setImagePreviews(product.images || []);
     setShowForm(true);
 
-    // Load subcategories
+    // Load subcategories, sub-subcategories, and attributes schema via API
     if (product.mainCategory) {
-      setSubCategories(Object.keys(categories[product.mainCategory] || {}));
+      axios.get(`/products/categories/${encodeURIComponent(product.mainCategory)}`)
+        .then((res) => setSubCategories(res.data.subCategories || []))
+        .catch(() => setSubCategories([]));
     }
     if (product.mainCategory && product.subCategory) {
-      setSubSubCategories(Object.keys(categories[product.mainCategory]?.[product.subCategory] || {}));
+      axios.get(`/products/categories/${encodeURIComponent(product.mainCategory)}/${encodeURIComponent(product.subCategory)}`)
+        .then((res) => setSubSubCategories(res.data.subSubCategories || []))
+        .catch(() => setSubSubCategories([]));
     }
     if (product.mainCategory && product.subCategory && product.subSubCategory) {
-      const schema = categories[product.mainCategory]?.[product.subCategory]?.[product.subSubCategory] || {};
-      setAttributesSchema(schema);
+      axios.get(`/products/categories/${encodeURIComponent(product.mainCategory)}/${encodeURIComponent(product.subCategory)}/${encodeURIComponent(product.subSubCategory)}/attributes`)
+        .then((res) => setAttributesSchema(res.data.attributes || {}))
+        .catch(() => setAttributesSchema({}));
     }
   };
 
@@ -296,6 +328,23 @@ const SellerProducts = () => {
   const handleUpdate = async () => {
     if (!form.title || !form.price || !form.stock || !form.mainCategory || !form.subCategory || !form.subSubCategory) {
       toast.error("Title, price, stock, and all categories are required!");
+      return;
+    }
+
+    if (!form.maxQuantityPerPurchase || parseInt(form.maxQuantityPerPurchase) < 1) {
+      toast.error("Max Quantity Per Purchase is required (at least 1)!");
+      return;
+    }
+
+    if (parseInt(form.discount) > 0 && !form.discountPeriod) {
+      toast.error("If Discount (%) is entered, Discount Expiry Date must be entered!");
+      return;
+    }
+
+    // Check image count (existing imagePreviews or newly selected form.images)
+    const newFilesCount = form.images.filter(i => typeof i !== "string").length;
+    if (newFilesCount > 0 && newFilesCount < 2) {
+      toast.error("At least 2 product images must be uploaded!");
       return;
     }
 
@@ -310,7 +359,7 @@ const SellerProducts = () => {
     data.append("attributes", JSON.stringify(form.attributes));
     data.append("discount", form.discount || 0);
     data.append("discountPeriod", form.discountPeriod ? new Date(form.discountPeriod).toISOString() : "");
-    data.append("maxQuantityPerPurchase", form.maxQuantityPerPurchase || "");
+    data.append("maxQuantityPerPurchase", form.maxQuantityPerPurchase || "1");
 
     form.images.forEach((image) => {
       if (typeof image === "string") return; // Skip existing images
@@ -318,6 +367,7 @@ const SellerProducts = () => {
     });
 
     try {
+      setIsSubmitting(true);
       await axios.put(`/seller/products/${editId}`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -327,17 +377,18 @@ const SellerProducts = () => {
       fetchProducts();
     } catch (error) {
       toast.error(error.response?.data?.message || "Update failed!");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   // DELETE PRODUCT
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
-
+  const confirmDeleteProduct = async (id) => {
     try {
       setDeletingId(id);
       await axios.delete(`/seller/products/${id}`);
       toast.success("Product deleted successfully!");
+      setProductToDelete(null);
       fetchProducts();
     } catch (error) {
       toast.error(error.response?.data?.message || "Delete failed!");
@@ -467,7 +518,9 @@ const SellerProducts = () => {
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Basic Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Product Title *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Product Title <span className="text-red-600">*</span>
+                    </label>
                     <input
                       type="text"
                       name="title"
@@ -479,7 +532,9 @@ const SellerProducts = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Price (₹) *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Price (₹) <span className="text-red-600">*</span>
+                    </label>
                     <input
                       type="number"
                       name="price"
@@ -491,7 +546,9 @@ const SellerProducts = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Stock Quantity *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Stock Quantity <span className="text-red-600">*</span>
+                    </label>
                     <input
                       type="number"
                       name="stock"
@@ -517,7 +574,9 @@ const SellerProducts = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Discount Expiry Date</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Discount Expiry Date {parseInt(form.discount) > 0 && <span className="text-red-600">*</span>}
+                    </label>
                     <input
                       type="datetime-local"
                       name="discountPeriod"
@@ -528,7 +587,9 @@ const SellerProducts = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Max Quantity Per Purchase</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Max Quantity Per Purchase <span className="text-red-600">*</span>
+                    </label>
                     <input
                       type="number"
                       name="maxQuantityPerPurchase"
@@ -556,11 +617,15 @@ const SellerProducts = () => {
 
               {/* CATEGORIES */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Product Category *</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  Product Category <span className="text-red-600">*</span>
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                   {/* Main Category */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Main Category</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Main Category <span className="text-red-600">*</span>
+                    </label>
                     <select
                       value={form.mainCategory}
                       onChange={(e) => handleMainCategoryChange(e.target.value)}
@@ -577,7 +642,9 @@ const SellerProducts = () => {
 
                   {/* Sub Category */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Sub Category</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Sub Category <span className="text-red-600">*</span>
+                    </label>
                     <select
                       value={form.subCategory}
                       onChange={(e) => handleSubCategoryChange(e.target.value)}
@@ -595,7 +662,9 @@ const SellerProducts = () => {
 
                   {/* Sub Sub Category */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Product Type</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Product Type <span className="text-red-600">*</span>
+                    </label>
                     <select
                       value={form.subSubCategory}
                       onChange={(e) => handleSubSubCategoryChange(e.target.value)}
@@ -688,6 +757,36 @@ const SellerProducts = () => {
                               />
                             )}
 
+                            {/* DATE INPUT */}
+                            {dataType === "Date" && (
+                              <div>
+                                <input
+                                  type="date"
+                                  value={form.attributes[key] || ""}
+                                  onChange={(e) => handleAttributeChange(key, e.target.value)}
+                                  required={isRequired}
+                                  placeholder={config.placeholder || `Enter ${config.fieldName || key}`}
+                                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                                />
+                                <p className="mt-1 text-sm text-gray-500">{config.note || "Enter the date"}</p>
+                              </div>
+                            )}
+
+                            {/* RANGE INPUT */}
+                            {dataType === "Range" && (
+                              <input
+                                type="text"
+                                value={form.attributes[key] || ""}
+                                onChange={(e) => handleAttributeChange(key, e.target.value)}
+                                required={isRequired}
+                                placeholder={
+                                  config.placeholder ||
+                                  (typeof config.options === "string" ? config.options : `e.g., 1-4 players, 2-8 players`)
+                                }
+                                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                              />
+                            )}
+
                             {/* INTEGER INPUT */}
                             {dataType === "Integer" && (
                               <input
@@ -714,34 +813,6 @@ const SellerProducts = () => {
                               />
                             )}
 
-                            {/* BOOLEAN (Yes/No) */}
-                            {dataType === "Boolean" && (
-                              <div className="flex gap-4">
-                                <label className="flex items-center gap-2">
-                                  <input
-                                    type="radio"
-                                    name={key}
-                                    value="Yes"
-                                    checked={form.attributes[key] === "Yes"}
-                                    onChange={(e) => handleAttributeChange(key, e.target.value)}
-                                    className="w-4 h-4"
-                                  />
-                                  <span className="text-sm text-gray-700">Yes</span>
-                                </label>
-                                <label className="flex items-center gap-2">
-                                  <input
-                                    type="radio"
-                                    name={key}
-                                    value="No"
-                                    checked={form.attributes[key] === "No"}
-                                    onChange={(e) => handleAttributeChange(key, e.target.value)}
-                                    className="w-4 h-4"
-                                  />
-                                  <span className="text-sm text-gray-700">No</span>
-                                </label>
-                              </div>
-                            )}
-
                             {/* HELP TEXT */}
                             {config.helpText && (
                               <p className="text-xs text-gray-500 mt-1">{config.helpText}</p>
@@ -755,7 +826,9 @@ const SellerProducts = () => {
 
               {/* IMAGES */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Product Images</h3>
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  Product Images (Min 2, Max 5) <span className="text-red-600">*</span>
+                </h3>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
                   <input
                     type="file"
@@ -766,7 +839,7 @@ const SellerProducts = () => {
                     className="block w-full text-sm text-gray-500"
                   />
                   <p className="text-xs text-gray-500 mt-2">
-                    Upload up to 5 images. Supported formats: JPG, PNG, GIF
+                    Upload at least 2 and up to 5 images. Supported formats: JPG, PNG, WEBP, GIF
                   </p>
                 </div>
 
@@ -791,16 +864,25 @@ const SellerProducts = () => {
               <div className="flex gap-4 pt-4">
                 <button
                   onClick={isEditing ? handleUpdate : handleAdd}
-                  className="flex-1 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 rounded-lg transition transform hover:scale-105"
+                  disabled={isSubmitting}
+                  className="flex-1 bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 rounded-lg transition transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
-                  {isEditing ? "Update Product" : "Add Product"}
+                  {isSubmitting ? (
+                    <>
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                      {isEditing ? "Updating Product..." : "Adding Product..."}
+                    </>
+                  ) : (
+                    isEditing ? "Update Product" : "Add Product"
+                  )}
                 </button>
                 <button
                   onClick={() => {
                     setShowForm(false);
                     resetForm();
                   }}
-                  className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-3 rounded-lg transition"
+                  disabled={isSubmitting}
+                  className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-3 rounded-lg transition disabled:opacity-50"
                 >
                   Cancel
                 </button>
@@ -929,11 +1011,10 @@ const SellerProducts = () => {
 
                         <td className="px-6 py-4">
                           <span
-                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                              product.stock > 0
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${product.stock > 0
                                 ? "bg-green-100 text-green-800"
                                 : "bg-red-100 text-red-800"
-                            }`}
+                              }`}
                           >
                             {product.stock} units
                           </span>
@@ -941,11 +1022,10 @@ const SellerProducts = () => {
 
                         <td className="px-6 py-4">
                           <span
-                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                              product.isAvailable
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${product.isAvailable
                                 ? "bg-blue-100 text-blue-800"
                                 : "bg-gray-100 text-gray-800"
-                            }`}
+                              }`}
                           >
                             {product.isAvailable ? "✓ Available" : "✕ Unavailable"}
                           </span>
@@ -962,21 +1042,19 @@ const SellerProducts = () => {
 
                             <button
                               onClick={() => toggleAvailability(product)}
-                              className={`font-semibold text-sm transition ${
-                                product.isAvailable
+                              className={`font-semibold text-sm transition ${product.isAvailable
                                   ? "text-orange-600 hover:text-orange-800"
                                   : "text-green-600 hover:text-green-800"
-                              }`}
+                                }`}
                             >
                               {product.isAvailable ? "Hide" : "Show"}
                             </button>
 
                             <button
-                              onClick={() => handleDelete(product._id)}
-                              disabled={deletingId === product._id}
-                              className="text-red-600 hover:text-red-800 font-semibold text-sm transition disabled:opacity-50"
+                              onClick={() => setProductToDelete(product)}
+                              className="text-red-600 hover:text-red-800 font-semibold text-sm transition"
                             >
-                              {deletingId === product._id ? "Deleting..." : "Delete"}
+                              Delete
                             </button>
                           </div>
                         </td>
@@ -1011,11 +1089,10 @@ const SellerProducts = () => {
                         <button
                           key={idx + 1}
                           onClick={() => setCurrentPage(idx + 1)}
-                          className={`px-3 py-2 rounded-lg font-semibold text-sm transition ${
-                            currentPage === idx + 1
+                          className={`px-3 py-2 rounded-lg font-semibold text-sm transition ${currentPage === idx + 1
                               ? "bg-linear-to-r from-blue-600 to-blue-700 text-white"
                               : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                          }`}
+                            }`}
                         >
                           {idx + 1}
                         </button>
@@ -1036,6 +1113,55 @@ const SellerProducts = () => {
           )}
         </div>
       </div>
+
+      {/* DELETE CONFIRMATION MODAL */}
+      {productToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-4 border border-gray-200">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                🗑️ Delete Product
+              </h3>
+              <button
+                onClick={() => setProductToDelete(null)}
+                disabled={deletingId === productToDelete._id}
+                className="text-gray-400 hover:text-gray-600 transition"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <p className="text-gray-600 text-sm">
+              Are you sure you want to delete <span className="font-semibold text-gray-900">"{productToDelete.title}"</span>?
+              This action cannot be undone and will permanently remove the product and its images from Cloudinary.
+            </p>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                onClick={() => setProductToDelete(null)}
+                disabled={deletingId === productToDelete._id}
+                className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold text-sm transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => confirmDeleteProduct(productToDelete._id)}
+                disabled={deletingId === productToDelete._id}
+                className="px-5 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold text-sm shadow-md transition disabled:opacity-50 flex items-center gap-2"
+              >
+                {deletingId === productToDelete._id ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    Deleting...
+                  </>
+                ) : (
+                  "Delete Product"
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

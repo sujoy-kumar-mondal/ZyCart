@@ -250,7 +250,7 @@ export const validateProductAttributes = async (req, res) => {
           }
           validatedAttributes[field.fieldName] = parseFloat(providedValue);
         } else if (field.dataType === "Select") {
-          if (!field.options.includes(providedValue)) {
+          if (field.options && field.options.length > 0 && !field.options.includes(providedValue)) {
             errors.push(
               `${field.fieldName} must be one of: ${field.options.join(", ")}`
             );
@@ -261,14 +261,22 @@ export const validateProductAttributes = async (req, res) => {
           const values = Array.isArray(providedValue)
             ? providedValue
             : [providedValue];
-          const invalidValues = values.filter((v) => !field.options.includes(v));
-          if (invalidValues.length > 0) {
-            errors.push(
-              `${field.fieldName} contains invalid values: ${invalidValues.join(", ")}`
-            );
-            return;
+          if (field.options && field.options.length > 0) {
+            const invalidValues = values.filter((v) => !field.options.includes(v));
+            if (invalidValues.length > 0) {
+              errors.push(
+                `${field.fieldName} contains invalid values: ${invalidValues.join(", ")}`
+              );
+              return;
+            }
           }
           validatedAttributes[field.fieldName] = values;
+        } else if (field.dataType === "Date") {
+          if (isNaN(Date.parse(providedValue))) {
+            errors.push(`${field.fieldName} must be a valid date`);
+            return;
+          }
+          validatedAttributes[field.fieldName] = providedValue;
         } else {
           // Text field
           validatedAttributes[field.fieldName] = String(providedValue).trim();

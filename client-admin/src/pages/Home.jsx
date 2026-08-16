@@ -12,8 +12,11 @@ import {
   Star,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 
 const Home = () => {
+  const { user } = useAuth();
+
   useEffect(() => {
     document.title = "ZyCart Admin - Platform Management";
   }, []);
@@ -96,10 +99,10 @@ const Home = () => {
 
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Link
-                  to="/login"
+                  to={user ? "/admin/dashboard" : "/login"}
                   className="bg-linear-to-r from-red-600 to-red-700 text-white px-8 py-4 rounded-lg font-bold text-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
                 >
-                  Admin Login <ArrowRight className="w-5 h-5" />
+                  {user ? "Go to Dashboard" : "Admin Login"} <ArrowRight className="w-5 h-5" />
                 </Link>
                 <button
                   onClick={() => alert("Admin accounts are created via API only. Contact system administrator.")}
@@ -298,10 +301,10 @@ const Home = () => {
               Login to your admin dashboard and take control of your multi-seller marketplace
             </p>
             <Link
-              to="/login"
+              to={user ? "/admin/dashboard" : "/login"}
               className="inline-block bg-white text-red-600 px-10 py-4 rounded-lg font-bold text-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
             >
-              Go to Admin Login
+              {user ? "Go to Dashboard" : "Go to Admin Login"}
             </Link>
           </div>
         </motion.section>

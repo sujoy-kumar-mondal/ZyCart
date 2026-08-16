@@ -5,16 +5,19 @@ import {
   registerWithEmail,
   verifyOtpAndRegister,
   loginUser,
+  verifyLoginOtpUser,
 
   // Seller Auth
   sellerSendOtp,
   verifySellerOtpAndRegister,
   submitSellerDetails,
   loginSeller,
+  verifyLoginOtpSeller,
 
   // Admin Auth
   registerAdmin,
   loginAdmin,
+  verifyLoginOtpAdmin,
 
   // Forgot Password (domain-specific)
   forgotPasswordUser,
@@ -51,8 +54,9 @@ router.post("/user/send-otp", registerWithEmail);
 // User Registration - Step 2: Verify OTP
 router.post("/user/verify-otp", verifyOtpAndRegister);
 
-// User Login
+// User Login Step 1 (Password -> OTP) & Step 2 (OTP -> JWT)
 router.post("/user/login", loginUser);
+router.post("/user/verify-login-otp", verifyLoginOtpUser);
 
 // User Forgot Password
 router.post("/user/send-reset-otp", forgotPasswordUser);
@@ -76,8 +80,9 @@ router.post("/seller/verify-otp", verifySellerOtpAndRegister);
 // Seller Registration - Step 3: Submit Shop Details (Step 2 of 2-step process)
 router.post("/seller/submit-details", upload.single("license"), submitSellerDetails);
 
-// Seller Login
+// Seller Login Step 1 (Password -> OTP) & Step 2 (OTP -> JWT)
 router.post("/seller/login", loginSeller);
+router.post("/seller/verify-login-otp", verifyLoginOtpSeller);
 
 // Seller Forgot Password
 router.post("/seller/send-reset-otp", forgotPasswordSeller);
@@ -95,8 +100,9 @@ router.post("/seller/change-password", protectSeller, changePasswordSeller);
 // Admin Registration (POSTMAN ONLY)
 router.post("/admin/register", registerAdmin);
 
-// Admin Login
+// Admin Login Step 1 (Password -> OTP) & Step 2 (OTP -> JWT)
 router.post("/admin/login", loginAdmin);
+router.post("/admin/verify-login-otp", verifyLoginOtpAdmin);
 
 // Admin Forgot Password
 router.post("/admin/send-reset-otp", forgotPasswordAdmin);

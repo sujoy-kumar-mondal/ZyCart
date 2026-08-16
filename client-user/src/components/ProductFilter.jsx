@@ -89,7 +89,7 @@ const ProductFilter = ({ onFilterChange, onPriceChange, productCount = 0 }) => {
           if (response.data.success) {
             const filterable = {};
             Object.entries(response.data.attributes).forEach(([key, config]) => {
-              if (config.filterable && config.options && config.options.length > 0) {
+              if (config.filterable && Array.isArray(config.options) && config.options.length > 0) {
                 filterable[key] = config;
               }
             });

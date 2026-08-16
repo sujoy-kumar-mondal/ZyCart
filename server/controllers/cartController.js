@@ -28,16 +28,33 @@ export const addToCart = async (req, res) => {
     if (!product)
       return res.status(404).json({ success: false, message: "Product not found" });
 
+    const maxAllowed = product.maxQuantityPerPurchase
+      ? Math.min(product.stock, product.maxQuantityPerPurchase)
+      : product.stock;
+
     const user = await User.findById(req.user._id);
 
     const existing = user.cart.find((item) => item.product.toString() === productId);
 
     if (existing) {
-      existing.qty = Math.min(existing.qty + qty, product.stock);
+      const newQty = existing.qty + qty;
+      if (newQty > maxAllowed) {
+        return res.status(400).json({
+          success: false,
+          message: `Maximum ${maxAllowed} unit(s) allowed per purchase for this product.`,
+        });
+      }
+      existing.qty = newQty;
     } else {
+      if (qty > maxAllowed) {
+        return res.status(400).json({
+          success: false,
+          message: `Maximum ${maxAllowed} unit(s) allowed per purchase for this product.`,
+        });
+      }
       user.cart.push({
         product: productId,
-        qty: Math.min(qty, product.stock),
+        qty: qty,
       });
     }
 
@@ -62,6 +79,21 @@ export const updateCartItem = async (req, res) => {
     const { qty } = req.body;
 
     const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    const maxAllowed = product.maxQuantityPerPurchase
+      ? Math.min(product.stock, product.maxQuantityPerPurchase)
+      : product.stock;
+
+    if (qty > maxAllowed) {
+      return res.status(400).json({
+        success: false,
+        message: `Maximum ${maxAllowed} unit(s) allowed per purchase for this product.`,
+      });
+    }
+
     const user = await User.findById(req.user._id);
 
     const item = user.cart.find((i) => i.product.toString() === productId);
@@ -69,12 +101,12 @@ export const updateCartItem = async (req, res) => {
     if (!item)
       return res.status(404).json({ success: false, message: "Item not found" });
 
-    item.qty = Math.min(qty, product.stock);
+    item.qty = qty;
 
     await user.save();
 
     res.json({ success: true, message: "Updated", cart: user.cart });
-  } catch {
+  } catch (err) {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };

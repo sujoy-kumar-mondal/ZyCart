@@ -147,6 +147,8 @@ export const protectAdmin = async (req, res, next) => {
     req.user = {
       _id: admin._id,
       userId: admin._id,
+      role: admin.role || "admin",
+      permissions: admin.permissions || [],
       userDoc: admin,
     };
 
@@ -157,4 +159,53 @@ export const protectAdmin = async (req, res, next) => {
       message: "Not authorized. Invalid or expired token.",
     });
   }
+};
+
+// ===========================================================
+// PERMISSION CHECK MIDDLEWARE
+// ===========================================================
+export const requirePermission = (permission) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required.",
+      });
+    }
+
+    // Super Admin bypasses all individual permission checks
+    if (req.user.role === "super_admin") {
+      return next();
+    }
+
+    if (req.user.permissions && req.user.permissions.includes(permission)) {
+      return next();
+    }
+
+    return res.status(403).json({
+      success: false,
+      message: `Access denied. Requires '${permission}' permission.`,
+    });
+  };
+};
+
+// ===========================================================
+// SUPER ADMIN ONLY MIDDLEWARE
+// ===========================================================
+export const requireSuperAdmin = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Authentication required.",
+    });
+  }
+
+  if (req.user.role === "super_admin") {
+    return next();
+  }
+
+  return res.status(403).json({
+    success: false,
+    message: "Access denied. Super Admin privileges required.",
+  });
 };

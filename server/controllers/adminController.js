@@ -433,3 +433,178 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+// ============================================================
+// SUPER ADMIN MANAGEMENT CONTROLLERS
+// ============================================================
+
+// 1. GET ALL ADMINS (Super Admin only)
+export const getAllAdmins = async (req, res) => {
+  try {
+    const admins = await Admin.find().select("-password").sort({ createdAt: -1 });
+    res.status(200).json({
+      success: true,
+      admins,
+    });
+  } catch (error) {
+    console.error("Get all admins error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+const isStrongPassword = (pwd) => {
+  if (!pwd || pwd.length < 8) return false;
+  const hasUpper = /[A-Z]/.test(pwd);
+  const hasLower = /[a-z]/.test(pwd);
+  const hasNumber = /[0-9]/.test(pwd);
+  const hasSymbol = /[^A-Za-z0-9]/.test(pwd);
+  return hasUpper && hasLower && hasNumber && hasSymbol;
+};
+
+// 2. CREATE NEW ADMIN ACCOUNT (Super Admin only)
+export const createAdminAccount = async (req, res) => {
+  try {
+    const { name, email, password, mobile, role, permissions } = req.body;
+
+    if (!name || !email || !password || !mobile) {
+      return res.status(400).json({
+        success: false,
+        message: "Name, email, password, and mobile number are required.",
+      });
+    }
+
+    if (!/^[0-9]{10}$/.test(String(mobile).trim())) {
+      return res.status(400).json({
+        success: false,
+        message: "Mobile number must be a valid 10-digit number.",
+      });
+    }
+
+    if (!isStrongPassword(password)) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (symbol).",
+      });
+    }
+
+    const existing = await Admin.findOne({ email: email.toLowerCase() });
+    if (existing) {
+      return res.status(400).json({
+        success: false,
+        message: "An admin account with this email already exists.",
+      });
+    }
+
+    const adminRole = role === "super_admin" ? "super_admin" : "admin";
+
+    const newAdmin = await Admin.create({
+      name,
+      email: email.toLowerCase(),
+      password,
+      mobile: String(mobile).trim(),
+      role: adminRole,
+      permissions: permissions || ["manage_users", "manage_sellers"],
+      isActive: true,
+    });
+
+    const adminResponse = newAdmin.toObject();
+    delete adminResponse.password;
+
+    res.status(201).json({
+      success: true,
+      message: "Admin account created successfully",
+      admin: adminResponse,
+    });
+  } catch (error) {
+    console.error("Create admin error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// 3. UPDATE ADMIN ACCOUNT (Super Admin only)
+export const updateAdminAccount = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, mobile, role, permissions, isActive, password } = req.body;
+
+    const admin = await Admin.findById(id);
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: "Admin account not found",
+      });
+    }
+
+    if (mobile !== undefined) {
+      if (!mobile || !/^[0-9]{10}$/.test(String(mobile).trim())) {
+        return res.status(400).json({
+          success: false,
+          message: "Mobile number must be a valid 10-digit number.",
+        });
+      }
+      admin.mobile = String(mobile).trim();
+    }
+
+    if (password) {
+      if (!isStrongPassword(password)) {
+        return res.status(400).json({
+          success: false,
+          message: "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (symbol).",
+        });
+      }
+      admin.password = password; // pre('save') will hash it automatically
+    }
+
+    if (name) admin.name = name;
+    if (email) admin.email = email.toLowerCase();
+    if (role && ["super_admin", "admin"].includes(role)) admin.role = role;
+    if (Array.isArray(permissions)) admin.permissions = permissions;
+    if (isActive !== undefined) admin.isActive = isActive;
+
+    await admin.save();
+
+    const adminResponse = admin.toObject();
+    delete adminResponse.password;
+
+    res.status(200).json({
+      success: true,
+      message: "Admin updated successfully",
+      admin: adminResponse,
+    });
+  } catch (error) {
+    console.error("Update admin error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// 4. DELETE ADMIN ACCOUNT (Super Admin only)
+export const deleteAdminAccount = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (id === req.user._id.toString()) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot delete your own admin account.",
+      });
+    }
+
+    const admin = await Admin.findById(id);
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: "Admin account not found",
+      });
+    }
+
+    await Admin.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Admin account deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete admin error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};

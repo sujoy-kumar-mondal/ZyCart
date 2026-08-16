@@ -12,8 +12,11 @@ import {
   Star,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 
 const Home = () => {
+  const { user } = useAuth();
+
   useEffect(() => {
     document.title = "ZyCart Seller - Start Your Online Business Today";
   }, []);
@@ -123,16 +126,16 @@ const Home = () => {
 
               <div className="flex flex-col sm:flex-row gap-4 mb-8">
                 <Link
-                  to="/seller/apply"
+                  to={user ? "/seller/dashboard" : "/seller/apply"}
                   className="bg-linear-to-r from-indigo-600 to-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
                 >
-                  Get Started Free <ArrowRight className="w-5 h-5" />
+                  {user ? "Go to Dashboard" : "Get Started Free"} <ArrowRight className="w-5 h-5" />
                 </Link>
                 <Link
-                  to="/login"
+                  to={user ? "/seller/dashboard" : "/login"}
                   className="border-2 border-indigo-600 text-indigo-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-indigo-50 transition-all duration-300"
                 >
-                  Sign In
+                  {user ? "Seller Dashboard" : "Sign In"}
                 </Link>
               </div>
 

@@ -17,7 +17,7 @@ const adminSchema = new mongoose.Schema(
 
     mobile: {
       type: String,
-      default: "",
+      required: true,
     },
 
     password: {
@@ -33,7 +33,13 @@ const adminSchema = new mongoose.Schema(
       postalCode: { type: String, default: "" },
     },
 
-    // Admin Status
+    // Admin Role & Status
+    role: {
+      type: String,
+      enum: ["super_admin", "admin"],
+      default: "admin",
+    },
+
     isActive: {
       type: Boolean,
       default: true,
@@ -49,6 +55,7 @@ const adminSchema = new mongoose.Schema(
           "manage_orders",
           "manage_products",
           "manage_categories",
+          "manage_admins",
           "view_analytics",
           "system_settings",
         ],

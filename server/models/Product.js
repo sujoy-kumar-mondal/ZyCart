@@ -96,7 +96,9 @@ const productSchema = new mongoose.Schema(
     // --------------------------------------
     maxQuantityPerPurchase: {
       type: Number,
-      default: null,
+      required: true,
+      min: 1,
+      default: 1,
     },
   },
   { timestamps: true }

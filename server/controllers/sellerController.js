@@ -3,6 +3,23 @@ import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import User from "../models/User.js";
 import CategoryAttribute from "../models/CategoryAttribute.js";
+import cloudinary from "../config/cloudinary.js";
+
+// Helper function to extract Cloudinary Public ID from image URL
+export const extractCloudinaryPublicId = (url) => {
+  if (!url || typeof url !== "string" || !url.includes("cloudinary.com")) return null;
+  try {
+    const parts = url.split("/upload/");
+    if (parts.length < 2) return null;
+    let pathAfterUpload = parts[1];
+    pathAfterUpload = pathAfterUpload.replace(/^v\d+\//, ""); // remove version (v12345/)
+    const publicId = pathAfterUpload.replace(/\.[^/.]+$/, ""); // remove extension (.jpg, .png)
+    return publicId;
+  } catch (err) {
+    console.error("Error extracting Cloudinary public_id:", err);
+    return null;
+  }
+};
 
 // ----------------------------------------------------------
 // HELPER: Validate Attributes against Schema
@@ -78,8 +95,14 @@ async function validateAttributes(mainCategory, subCategory, subSubCategory, pro
             }
           }
           validatedAttributes[field.fieldName] = values;
+        } else if (field.dataType === "Date") {
+          if (isNaN(Date.parse(providedValue))) {
+            errors.push(`${field.fieldName} must be a valid date`);
+            return;
+          }
+          validatedAttributes[field.fieldName] = providedValue;
         } else if (field.dataType === "Boolean") {
-          if (!["Yes", "No"].includes(providedValue)) {
+          if (!["Yes", "No", true, false, "true", "false"].includes(providedValue)) {
             errors.push(`${field.fieldName} must be Yes or No`);
             return;
           }
@@ -143,19 +166,46 @@ export const addProduct = async (req, res) => {
       });
     }
 
-    if (!attributes || Object.keys(attributes).length === 0) {
+    // 1. Max Quantity Per Purchase validation
+    const parsedMaxQty = maxQuantityPerPurchase ? parseInt(maxQuantityPerPurchase) : null;
+    if (!parsedMaxQty || isNaN(parsedMaxQty) || parsedMaxQty < 1) {
       return res.status(400).json({
         success: false,
-        message: "Product attributes are required.",
+        message: "Max Quantity Per Purchase is required and must be at least 1.",
       });
     }
+
+    // 2. Discount & Discount Expiry Date validation
+    const parsedDiscount = discount ? parseInt(discount) : 0;
+    if (parsedDiscount > 0 && !discountPeriod) {
+      return res.status(400).json({
+        success: false,
+        message: "If Discount (%) is entered, Discount Expiry Date is required.",
+      });
+    }
+
+    // 3. Image Count Validation (at least 2 images, max 5 images)
+    if (imageUrls.length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: "At least 2 product images must be uploaded.",
+      });
+    }
+    if (imageUrls.length > 5) {
+      return res.status(400).json({
+        success: false,
+        message: "Maximum 5 product images allowed.",
+      });
+    }
+
+    const attrs = attributes || {};
 
     // Validate attributes against schema
     const validation = await validateAttributes(
       mainCategory,
       subCategory,
       subSubCategory,
-      attributes
+      attrs
     );
 
     if (!validation.valid) {
@@ -171,15 +221,15 @@ export const addProduct = async (req, res) => {
       price,
       stock,
       description,
-      images: imageUrls.length > 0 ? imageUrls : [],
+      images: imageUrls,
       seller: sellerId,
       mainCategory,
       subCategory,
       subSubCategory,
-      attributes: validation.attributes, // Use validated attributes
-      discount: discount ? parseInt(discount) : 0,
-      discountPeriod: discountPeriod ? new Date(discountPeriod) : null,
-      maxQuantityPerPurchase: maxQuantityPerPurchase ? parseInt(maxQuantityPerPurchase) : null,
+      attributes: validation.attributes,
+      discount: parsedDiscount,
+      discountPeriod: parsedDiscount > 0 && discountPeriod ? new Date(discountPeriod) : null,
+      maxQuantityPerPurchase: parsedMaxQty,
     });
 
     // Increase seller product count
@@ -331,15 +381,42 @@ export const updateProduct = async (req, res) => {
       product.attributes = validation.attributes;
     }
 
+    // Validate Max Quantity Per Purchase
+    if (maxQuantityPerPurchase !== undefined && maxQuantityPerPurchase !== "") {
+      const parsedMaxQty = parseInt(maxQuantityPerPurchase);
+      if (isNaN(parsedMaxQty) || parsedMaxQty < 1) {
+        return res.status(400).json({
+          success: false,
+          message: "Max Quantity Per Purchase must be at least 1.",
+        });
+      }
+      product.maxQuantityPerPurchase = parsedMaxQty;
+    }
+
+    // Validate Discount & Discount Expiry Date
+    const finalDiscount = discount !== undefined && discount !== "" ? parseInt(discount) : product.discount;
+    const finalDiscountPeriod = discountPeriod !== undefined && discountPeriod !== "" ? new Date(discountPeriod) : product.discountPeriod;
+    if (finalDiscount > 0 && !finalDiscountPeriod) {
+      return res.status(400).json({
+        success: false,
+        message: "If Discount (%) is entered, Discount Expiry Date is required.",
+      });
+    }
+
     product.title = title || product.title;
     product.price = price || product.price;
     product.stock = stock || product.stock;
     product.description = description || product.description;
-    product.discount = discount !== undefined && discount !== "" ? parseInt(discount) : product.discount;
-    product.discountPeriod = discountPeriod !== undefined && discountPeriod !== "" ? new Date(discountPeriod) : product.discountPeriod;
-    product.maxQuantityPerPurchase = maxQuantityPerPurchase !== undefined && maxQuantityPerPurchase !== "" ? parseInt(maxQuantityPerPurchase) : product.maxQuantityPerPurchase;
+    product.discount = finalDiscount;
+    product.discountPeriod = finalDiscount > 0 ? finalDiscountPeriod : null;
 
     if (newImages.length > 0) {
+      if (newImages.length < 2 || newImages.length > 5) {
+        return res.status(400).json({
+          success: false,
+          message: "Uploaded images must be between 2 and 5 images.",
+        });
+      }
       product.images = newImages; // replace all images
     }
 
@@ -362,7 +439,7 @@ export const updateProduct = async (req, res) => {
 export const markUnavailable = async (req, res) => {
   try {
     const { id } = req.params;
-    const sellerId = req.user.userId; // Now comes from Seller collection directly
+    const sellerId = req.user.userId || req.user._id;
 
     const product = await Product.findOneAndUpdate(
       { _id: id, seller: sellerId },
@@ -392,7 +469,7 @@ export const markUnavailable = async (req, res) => {
 export const markAvailable = async (req, res) => {
   try {
     const { id } = req.params;
-    const sellerId = req.user.userId; // Now comes from Seller collection directly
+    const sellerId = req.user.userId || req.user._id;
 
     const product = await Product.findOneAndUpdate(
       { _id: id, seller: sellerId },
@@ -417,29 +494,55 @@ export const markAvailable = async (req, res) => {
 };
 
 // ----------------------------------------------------------
-// DELETE PRODUCT
+// DELETE PRODUCT (With Cloudinary Image Deletion)
 // ----------------------------------------------------------
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const sellerId = req.user.userId; // Now comes from Seller collection directly
+    const sellerId = req.user.userId || req.user._id;
 
-    const product = await Product.findOneAndDelete(
-      { _id: id, seller: sellerId }
-    );
+    // Find the product first to verify ownership and access its images
+    const product = await Product.findById(id);
 
-    if (!product)
+    if (!product) {
       return res.status(404).json({
         success: false,
         message: "Product not found.",
       });
+    }
+
+    // Ensure ownership matching both String and ObjectId formats
+    if (product.seller.toString() !== sellerId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to delete this product.",
+      });
+    }
+
+    // Delete associated images from Cloudinary
+    if (product.images && product.images.length > 0) {
+      for (const imgUrl of product.images) {
+        const publicId = extractCloudinaryPublicId(imgUrl);
+        if (publicId) {
+          try {
+            console.log(`🗑️ Deleting Cloudinary image: ${publicId}`);
+            await cloudinary.uploader.destroy(publicId);
+          } catch (cloudErr) {
+            console.error(`⚠️ Failed to delete Cloudinary image (${publicId}):`, cloudErr.message);
+          }
+        }
+      }
+    }
+
+    // Remove product from database
+    await Product.findByIdAndDelete(product._id);
 
     // Decrease seller product count
     await Seller.findByIdAndUpdate(sellerId, { $inc: { totalProducts: -1 } });
 
     res.status(200).json({
       success: true,
-      message: "Product deleted successfully.",
+      message: "Product and associated images deleted successfully.",
     });
   } catch (error) {
     console.error("Delete product error:", error);

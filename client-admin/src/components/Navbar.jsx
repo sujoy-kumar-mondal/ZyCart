@@ -28,6 +28,9 @@ const Navbar = () => {
   const linkClass = "px-3 py-2 font-medium text-gray-700 hover:text-[#3F51F4] transition";
   const activeClass = "text-[#3F51F4] font-semibold border-b-2 border-[#3F51F4]";
 
+  const isSuperAdmin = user?.role === "super_admin";
+  const hasPerm = (perm) => isSuperAdmin || (user?.permissions && user.permissions.includes(perm));
+
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/90 border-b border-gray-200 shadow-sm">
       <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 flex items-center justify-between h-16">
@@ -53,28 +56,44 @@ const Navbar = () => {
               </NavLink>
 
               {/* Users Management Link */}
-              <NavLink
-                to="/admin/users"
-                className={({ isActive }) => (isActive ? activeClass : linkClass)}
-              >
-                Users
-              </NavLink>
+              {hasPerm("manage_users") && (
+                <NavLink
+                  to="/admin/users"
+                  className={({ isActive }) => (isActive ? activeClass : linkClass)}
+                >
+                  Users
+                </NavLink>
+              )}
 
               {/* Sellers Management Link */}
-              <NavLink
-                to="/admin/sellers"
-                className={({ isActive }) => (isActive ? activeClass : linkClass)}
-              >
-                Sellers
-              </NavLink>
+              {hasPerm("manage_sellers") && (
+                <NavLink
+                  to="/admin/sellers"
+                  className={({ isActive }) => (isActive ? activeClass : linkClass)}
+                >
+                  Sellers
+                </NavLink>
+              )}
 
               {/* Orders Link */}
-              <NavLink
-                to="/admin/orders"
-                className={({ isActive }) => (isActive ? activeClass : linkClass)}
-              >
-                Orders
-              </NavLink>
+              {hasPerm("manage_orders") && (
+                <NavLink
+                  to="/admin/orders"
+                  className={({ isActive }) => (isActive ? activeClass : linkClass)}
+                >
+                  Orders
+                </NavLink>
+              )}
+
+              {/* Admins Management Link (Super Admin Exclusive) */}
+              {(isSuperAdmin || hasPerm("manage_admins")) && (
+                <NavLink
+                  to="/admin/admins"
+                  className={({ isActive }) => (isActive ? activeClass : linkClass)}
+                >
+                  Admins
+                </NavLink>
+              )}
 
               {/* Admin Dropdown */}
               <div className="relative">
@@ -167,29 +186,45 @@ const Navbar = () => {
                     Dashboard
                   </NavLink>
 
-                  <NavLink
-                    to="/admin/users"
-                    onClick={() => setMenuOpen(false)}
-                    className="block px-3 py-2 text-gray-700 hover:text-[#3F51F4] transition"
-                  >
-                    Users
-                  </NavLink>
+                  {hasPerm("manage_users") && (
+                    <NavLink
+                      to="/admin/users"
+                      onClick={() => setMenuOpen(false)}
+                      className="block px-3 py-2 text-gray-700 hover:text-[#3F51F4] transition"
+                    >
+                      Users
+                    </NavLink>
+                  )}
 
-                  <NavLink
-                    to="/admin/sellers"
-                    onClick={() => setMenuOpen(false)}
-                    className="block px-3 py-2 text-gray-700 hover:text-[#3F51F4] transition"
-                  >
-                    Sellers
-                  </NavLink>
+                  {hasPerm("manage_sellers") && (
+                    <NavLink
+                      to="/admin/sellers"
+                      onClick={() => setMenuOpen(false)}
+                      className="block px-3 py-2 text-gray-700 hover:text-[#3F51F4] transition"
+                    >
+                      Sellers
+                    </NavLink>
+                  )}
 
-                  <NavLink
-                    to="/admin/orders"
-                    onClick={() => setMenuOpen(false)}
-                    className="block px-3 py-2 text-gray-700 hover:text-[#3F51F4] transition"
-                  >
-                    Orders
-                  </NavLink>
+                  {hasPerm("manage_orders") && (
+                    <NavLink
+                      to="/admin/orders"
+                      onClick={() => setMenuOpen(false)}
+                      className="block px-3 py-2 text-gray-700 hover:text-[#3F51F4] transition"
+                    >
+                      Orders
+                    </NavLink>
+                  )}
+
+                  {(isSuperAdmin || hasPerm("manage_admins")) && (
+                    <NavLink
+                      to="/admin/admins"
+                      onClick={() => setMenuOpen(false)}
+                      className="block px-3 py-2 text-gray-700 hover:text-[#3F51F4] transition"
+                    >
+                      Admins
+                    </NavLink>
+                  )}
 
                   <NavLink
                     to="/admin/profile"

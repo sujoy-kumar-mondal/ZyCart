@@ -32,7 +32,17 @@ const ChangePassword = () => {
     const handlePassword = async (e) => {
         e.preventDefault();
         if (form.nPassword !== form.cPassword) {
-            toast.error("Passwords do not match")
+            toast.error("Passwords do not match");
+            return;
+        }
+
+        const pwd = form.nPassword;
+        const hasUpper = /[A-Z]/.test(pwd);
+        const hasLower = /[a-z]/.test(pwd);
+        const hasNumber = /[0-9]/.test(pwd);
+        const hasSymbol = /[^A-Za-z0-9]/.test(pwd);
+        if (pwd.length < 8 || !hasUpper || !hasLower || !hasNumber || !hasSymbol) {
+            toast.error("Password must be at least 8 characters long and include an uppercase letter, lowercase letter, number, and special symbol!");
             return;
         }
 

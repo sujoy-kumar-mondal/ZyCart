@@ -1,16 +1,21 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartProvider";
+import toast from "react-hot-toast";
 
 const CartItem = ({ item }) => {
   const { removeFromCart, updateQty } = useCart();
   const navigate = useNavigate();
 
+  const maxAllowed = item.maxQuantityPerPurchase
+    ? Math.min(item.stock, item.maxQuantityPerPurchase)
+    : item.stock;
+
   const increase = () => {
-    if (item.qty < item.stock) {
+    if (item.qty < maxAllowed) {
       updateQty(item.productId, item.qty + 1);
     } else {
-      alert(`Maximum stock available: ${item.stock}`);
+      toast.error(`Maximum ${maxAllowed} unit(s) allowed per purchase for this product.`);
     }
   };
 
@@ -45,6 +50,11 @@ const CartItem = ({ item }) => {
         <p className="text-[#3F51F4] font-bold text-lg">₹{item.price}</p>
 
         <p className="text-gray-600 text-sm">Stock: {item.stock}</p>
+        {item.maxQuantityPerPurchase && item.maxQuantityPerPurchase < item.stock && (
+          <p className="text-xs text-orange-600 font-semibold mt-0.5">
+            ⚠️ Max {item.maxQuantityPerPurchase} unit(s) allowed per purchase
+          </p>
+        )}
 
         {/* Quantity Controls - Not clickable for navigation */}
         <div className="flex items-center gap-3 mt-3">
@@ -53,11 +63,11 @@ const CartItem = ({ item }) => {
               e.stopPropagation();
               decrease();
             }}
-            className="
-              w-9 h-9 flex items-center justify-center rounded-lg
-              bg-[#F1F8FF] border border-[#8FD6F6]/50 text-[#1B2A41]
-              hover:bg-[#e4f3ff] transition
-            "
+            disabled={item.qty <= 1}
+            className={`
+              w-9 h-9 flex items-center justify-center rounded-lg border text-[#1B2A41] transition
+              ${item.qty <= 1 ? "bg-gray-100 border-gray-200 opacity-50 cursor-not-allowed" : "bg-[#F1F8FF] border-[#8FD6F6]/50 hover:bg-[#e4f3ff]"}
+            `}
           >
             -
           </button>
@@ -69,11 +79,12 @@ const CartItem = ({ item }) => {
               e.stopPropagation();
               increase();
             }}
-            className="
-              w-9 h-9 flex items-center justify-center rounded-lg
-              bg-[#F1F8FF] border border-[#8FD6F6]/50 text-[#1B2A41]
-              hover:bg-[#e4f3ff] transition
-            "
+            disabled={item.qty >= maxAllowed}
+            className={`
+              w-9 h-9 flex items-center justify-center rounded-lg border text-[#1B2A41] transition
+              ${item.qty >= maxAllowed ? "bg-gray-100 border-gray-200 opacity-50 cursor-not-allowed" : "bg-[#F1F8FF] border-[#8FD6F6]/50 hover:bg-[#e4f3ff]"}
+            `}
+            title={item.qty >= maxAllowed ? `Maximum ${maxAllowed} allowed` : "Increase quantity"}
           >
             +
           </button>

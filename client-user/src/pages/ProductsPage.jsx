@@ -259,12 +259,12 @@ const ProductsPage = () => {
         </motion.div>
 
         {/* MAIN LAYOUT - Filter (Left Sticky) + Products (Right) */}
-        <div className="flex gap-6">
+        <div className="flex flex-col lg:flex-row gap-6">
           {/* LEFT SIDE - STICKY FILTER */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="w-80 shrink-0"
+            className="w-full lg:w-80 shrink-0"
           >
             <ProductFilter 
               onFilterChange={handleFiltersChange}

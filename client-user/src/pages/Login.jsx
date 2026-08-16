@@ -19,12 +19,20 @@ const EyeOffIcon = () => (
 );
 
 const Login = () => {
-  const { login } = useAuth();
+  const { user, login } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ email: "", password: "" });
+  const [step, setStep] = useState(1); // Step 1: Email/Password, Step 2: 2FA OTP
+  const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/profile", { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -36,10 +44,12 @@ const Login = () => {
     try {
       const res = await axios.post("/auth/user/login", form);
 
-      if (res.data.success) {
+      if (res.data.requireOtp) {
+        toast.success(res.data.message || "Password verified! OTP sent to email.");
+        setStep(2);
+      } else if (res.data.success) {
         login(res.data);
         localStorage.setItem("token", res.data.token);
-
         toast.success("Login successful!");
         navigate("/");
       }
@@ -49,6 +59,32 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    if (!otp) return toast.error("Please enter the OTP!");
+
+    setLoading(true);
+
+    try {
+      const res = await axios.post("/auth/user/verify-login-otp", {
+        email: form.email,
+        otp: otp.trim(),
+      });
+
+      if (res.data.success) {
+        login(res.data);
+        localStorage.setItem("token", res.data.token);
+        toast.success("Login successful!");
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "OTP verification failed!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     document.title = "Login | ZyCart";
   }, []);
@@ -62,7 +98,6 @@ const Login = () => {
         py-12
       "
       >
-
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -75,82 +110,130 @@ const Login = () => {
         >
           {/* Title */}
           <h1 className="text-3xl font-extrabold text-center text-[#1B2A41]">
-            Welcome Back
+            {step === 1 ? "Welcome Back" : "Security Verification"}
           </h1>
 
           <p className="text-center mt-2 text-gray-600">
-            Login to continue your journey
+            {step === 1
+              ? "Login to continue your journey"
+              : `Enter the 6-digit OTP sent to ${form.email}`}
           </p>
 
-          {/* Form */}
-          <form onSubmit={handleLogin} className="space-y-6 mt-8">
-
-            {/* Email */}
-            <div>
-              <label className="font-medium text-[#1B2A41]">Email</label>
-              <input
-                type="email"
-                name="email"
-                onChange={handleChange}
-                value={form.email}
-                required
-                className="
-                  w-full mt-2 px-4 py-3 rounded-xl
-                  border border-[#8FD6F6]/40 
-                  bg-[#F7FBFF] text-[#1B2A41]
-                  placeholder-gray-400
-                  focus:outline-none focus:ring-2 focus:ring-[#6A8EF0]
-                  transition
-                "
-                placeholder="Enter your email"
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="font-medium text-[#1B2A41]">Password</label>
-              <div className="relative mt-2">
+          {/* Form Step 1: Email + Password */}
+          {step === 1 ? (
+            <form onSubmit={handleLogin} className="space-y-6 mt-8">
+              {/* Email */}
+              <div>
+                <label className="font-medium text-[#1B2A41]">Email</label>
                 <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
+                  type="email"
+                  name="email"
                   onChange={handleChange}
-                  value={form.password}
+                  value={form.email}
                   required
                   className="
-                    w-full px-4 py-3 pr-12 rounded-xl
+                    w-full mt-2 px-4 py-3 rounded-xl
                     border border-[#8FD6F6]/40 
                     bg-[#F7FBFF] text-[#1B2A41]
                     placeholder-gray-400
                     focus:outline-none focus:ring-2 focus:ring-[#6A8EF0]
                     transition
                   "
-                  placeholder="Enter your password"
+                  placeholder="Enter your email"
                 />
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="font-medium text-[#1B2A41]">Password</label>
+                <div className="relative mt-2">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    onChange={handleChange}
+                    value={form.password}
+                    required
+                    className="
+                      w-full px-4 py-3 pr-12 rounded-xl
+                      border border-[#8FD6F6]/40 
+                      bg-[#F7FBFF] text-[#1B2A41]
+                      placeholder-gray-400
+                      focus:outline-none focus:ring-2 focus:ring-[#6A8EF0]
+                      transition
+                    "
+                    placeholder="Enter your password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-[#3F51F4] transition"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Login Button */}
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                type="submit"
+                disabled={loading}
+                className="
+                  w-full py-3 rounded-xl text-white font-semibold
+                  bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
+                  hover:opacity-95 transition shadow-lg cursor-pointer disabled:cursor-not-allowed
+                "
+              >
+                {loading ? "Verifying Password..." : "Verify & Continue"}
+              </motion.button>
+            </form>
+          ) : (
+            /* Form Step 2: 2FA OTP */
+            <form onSubmit={handleVerifyOtp} className="space-y-6 mt-8">
+              <div>
+                <label className="font-medium text-[#1B2A41]">Enter 6-Digit OTP</label>
+                <input
+                  type="text"
+                  maxLength={6}
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                  required
+                  autoFocus
+                  className="
+                    w-full mt-2 px-4 py-3 rounded-xl
+                    border border-[#8FD6F6]/40 
+                    bg-[#F7FBFF] text-[#1B2A41] text-center text-2xl tracking-widest font-bold
+                    focus:outline-none focus:ring-2 focus:ring-[#6A8EF0]
+                    transition
+                  "
+                  placeholder="000000"
+                />
+              </div>
+
+              <div className="flex gap-3">
                 <button
                   type="button"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-[#3F51F4] transition"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  onClick={() => setStep(1)}
+                  className="w-1/3 py-3 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition"
                 >
-                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  Back
                 </button>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  type="submit"
+                  disabled={loading}
+                  className="
+                    w-2/3 py-3 rounded-xl text-white font-semibold
+                    bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
+                    hover:opacity-95 transition shadow-lg cursor-pointer disabled:cursor-not-allowed
+                  "
+                >
+                  {loading ? "Logging in..." : "Verify OTP & Login"}
+                </motion.button>
               </div>
-            </div>
-
-            {/* Login Button */}
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              type="submit"
-              disabled={loading}
-              className="
-                w-full py-3 rounded-xl text-white font-semibold
-                bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
-                hover:opacity-95 transition shadow-lg cursor-pointer disabled:cursor-not-allowed
-              "
-            >
-              {loading ? "Logging in..." : "Login"}
-            </motion.button>
-          </form>
+            </form>
+          )}
 
           {/* Register Link */}
           <div className=" flex">

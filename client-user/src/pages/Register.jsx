@@ -3,6 +3,7 @@ import axios from "../utils/axiosInstance.js";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "../context/AuthProvider";
 
 const EyeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -18,7 +19,14 @@ const EyeOffIcon = () => (
 );
 
 const Register = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/profile", { replace: true });
+    }
+  }, [user, navigate]);
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -67,6 +75,15 @@ const Register = () => {
 
     if (!otp || !form.name || !form.mobile || !form.password) {
       return toast.error("Please fill all fields");
+    }
+
+    const pwd = form.password;
+    const hasUpper = /[A-Z]/.test(pwd);
+    const hasLower = /[a-z]/.test(pwd);
+    const hasNumber = /[0-9]/.test(pwd);
+    const hasSymbol = /[^A-Za-z0-9]/.test(pwd);
+    if (pwd.length < 8 || !hasUpper || !hasLower || !hasNumber || !hasSymbol) {
+      return toast.error("Password must be at least 8 characters long and include an uppercase letter, lowercase letter, number, and special symbol!");
     }
 
     setLoading(true);
@@ -221,6 +238,7 @@ const Register = () => {
             {showPassword ? <EyeOffIcon /> : <EyeIcon />}
           </button>
         </div>
+        <p className="text-xs text-gray-500 mt-1">Min 8 characters including uppercase, lowercase, number & symbol</p>
       </div>
 
       <motion.button

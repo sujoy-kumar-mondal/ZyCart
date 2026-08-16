@@ -4,9 +4,16 @@ import Loader from "../../components/Loader";
 import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
+import { useAuth } from "../../context/AuthProvider";
+import { ShieldCheck } from "lucide-react";
+
 const AdminDashboard = () => {
+  const { user } = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const isSuperAdmin = user?.role === "super_admin";
+  const hasPerm = (perm) => isSuperAdmin || (user?.permissions && user.permissions.includes(perm));
 
   // FETCH ADMIN DASHBOARD DATA
   const fetchDashboard = async () => {
@@ -50,21 +57,39 @@ const AdminDashboard = () => {
       <div
         className="
           w-full p-6 rounded-2xl
-          bg-white shadow-xl border border-[#8FD6F6]/40
+          bg-white shadow-xl border border-[#8FD6F6]/40 flex flex-col md:flex-row md:items-center justify-between gap-4
         "
       >
-        <h1
-          className="
-            text-3xl md:text-4xl font-extrabold
-            bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
-            text-transparent bg-clip-text
-          "
-        >
-          Admin Dashboard
-        </h1>
-        <p className="text-gray-700 mt-2">
-          Overview of system users, sellers, and orders.
-        </p>
+        <div>
+          <div className="flex items-center gap-3">
+            <h1
+              className="
+                text-3xl md:text-4xl font-extrabold
+                bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
+                text-transparent bg-clip-text
+              "
+            >
+              Admin Dashboard
+            </h1>
+            {isSuperAdmin && (
+              <span className="px-3 py-1 text-xs font-extrabold uppercase rounded-full bg-purple-100 text-purple-700 border border-purple-200">
+                ⚡ SUPER ADMIN
+              </span>
+            )}
+          </div>
+          <p className="text-gray-700 mt-2">
+            Overview of system users, sellers, and orders.
+          </p>
+        </div>
+
+        {isSuperAdmin && (
+          <Link
+            to="/admin/admins"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-bold bg-linear-to-r from-purple-600 to-indigo-600 hover:opacity-90 transition shadow-md shrink-0"
+          >
+            <ShieldCheck className="w-5 h-5" /> Manage Admins
+          </Link>
+        )}
       </div>
 
       {/* Stats */}
@@ -150,39 +175,58 @@ const AdminDashboard = () => {
       >
         <h2 className="text-2xl font-semibold mb-4 text-[#1B2A41]">Manage</h2>
 
-        <div className="grid sm:grid-cols-3 gap-6">
-          <Link
-            to="/admin/users"
-            className="
-              block w-full text-center py-3 rounded-xl
-              bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
-              text-white font-semibold shadow-md hover:opacity-95 transition
-            "
-          >
-            Users
-          </Link>
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {hasPerm("manage_users") && (
+            <Link
+              to="/admin/users"
+              className="
+                block w-full text-center py-3 rounded-xl
+                bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
+                text-white font-semibold shadow-md hover:opacity-95 transition
+              "
+            >
+              Users
+            </Link>
+          )}
 
-          <Link
-            to="/admin/sellers"
-            className="
-              block w-full text-center py-3 rounded-xl
-              border border-[#6A8EF0] text-[#1B2A41] bg-white
-              hover:bg-[#F7FBFF] transition shadow-sm font-semibold
-            "
-          >
-            Sellers
-          </Link>
+          {hasPerm("manage_sellers") && (
+            <Link
+              to="/admin/sellers"
+              className="
+                block w-full text-center py-3 rounded-xl
+                border border-[#6A8EF0] text-[#1B2A41] bg-white
+                hover:bg-[#F7FBFF] transition shadow-sm font-semibold
+              "
+            >
+              Sellers
+            </Link>
+          )}
 
-          <Link
-            to="/admin/orders"
-            className="
-              block w-full text-center py-3 rounded-xl
-              bg-green-500 hover:bg-green-600 text-white font-semibold shadow-md
-              transition
-            "
-          >
-            Orders
-          </Link>
+          {hasPerm("manage_orders") && (
+            <Link
+              to="/admin/orders"
+              className="
+                block w-full text-center py-3 rounded-xl
+                bg-green-500 hover:bg-green-600 text-white font-semibold shadow-md
+                transition
+              "
+            >
+              Orders
+            </Link>
+          )}
+
+          {(isSuperAdmin || hasPerm("manage_admins")) && (
+            <Link
+              to="/admin/admins"
+              className="
+                block w-full text-center py-3 rounded-xl
+                bg-purple-600 hover:bg-purple-700 text-white font-semibold shadow-md
+                transition
+              "
+            >
+              Admins Management
+            </Link>
+          )}
         </div>
       </div>
     </div>

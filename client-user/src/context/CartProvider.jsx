@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "../utils/axiosInstance.js";
 import { useAuth } from "./AuthProvider";
+import toast from "react-hot-toast";
 
 const CartContext = createContext();
 
@@ -27,6 +28,7 @@ export const CartProvider = ({ children }) => {
           title: item.product.title,
           price: Number(item.product.price),
           stock: Number(item.product.stock),
+          maxQuantityPerPurchase: item.product.maxQuantityPerPurchase || item.product.stock,
           qty: Number(item.qty),
           image: item.product.images?.[0] || "",
         }));
@@ -52,19 +54,32 @@ export const CartProvider = ({ children }) => {
   // 3) ADD ITEM TO CART + Sync DB if logged in
   // =====================================================
   const addToCart = async (product, qty = 1) => {
+    const maxAllowed = product.maxQuantityPerPurchase
+      ? Math.min(product.stock, product.maxQuantityPerPurchase)
+      : product.stock;
+
+    let canProceed = true;
+
     setCartItems((prev) => {
       const existing = prev.find((i) => i.productId === product._id);
 
       if (existing) {
         const newQty = existing.qty + qty;
-        if (newQty > product.stock) {
-          alert(`Only ${product.stock} left!`);
+        if (newQty > maxAllowed) {
+          toast.error(`Maximum ${maxAllowed} unit(s) allowed per purchase for this product.`);
+          canProceed = false;
           return prev;
         }
 
         return prev.map((i) =>
-          i.productId === product._id ? { ...i, qty: newQty } : i
+          i.productId === product._id ? { ...i, qty: newQty, maxQuantityPerPurchase: maxAllowed } : i
         );
+      }
+
+      if (qty > maxAllowed) {
+        toast.error(`Maximum ${maxAllowed} unit(s) allowed per purchase for this product.`);
+        canProceed = false;
+        return prev;
       }
 
       return [
@@ -74,11 +89,14 @@ export const CartProvider = ({ children }) => {
           title: product.title,
           price: product.price,
           stock: product.stock,
+          maxQuantityPerPurchase: maxAllowed,
           qty,
           image: product.images?.[0] || "",
         },
       ];
     });
+
+    if (!canProceed) return;
 
     // ---- Sync with DB if logged in ----
     if (user) {
@@ -88,6 +106,7 @@ export const CartProvider = ({ children }) => {
           qty,
         });
       } catch (err) {
+        toast.error(err.response?.data?.message || "Failed to update cart in database.");
       }
     }
   };
@@ -110,18 +129,28 @@ export const CartProvider = ({ children }) => {
   // 5) UPDATE QUANTITY
   // =====================================================
   const updateQty = async (productId, qty) => {
+    let finalQty = qty;
+
     setCartItems((prev) =>
-      prev.map((item) =>
-        item.productId === productId
-          ? { ...item, qty: Math.min(qty, item.stock) }
-          : item
-      )
+      prev.map((item) => {
+        if (item.productId === productId) {
+          const maxAllowed = Math.min(item.stock, item.maxQuantityPerPurchase || item.stock);
+          if (qty > maxAllowed) {
+            toast.error(`Maximum ${maxAllowed} unit(s) allowed per purchase for this product.`);
+            finalQty = maxAllowed;
+            return { ...item, qty: maxAllowed };
+          }
+          return { ...item, qty: Math.max(1, qty) };
+        }
+        return item;
+      })
     );
 
     if (user) {
       try {
-        await axios.patch(`/cart/update/${productId}`, { qty });
+        await axios.patch(`/cart/update/${productId}`, { qty: finalQty });
       } catch (err) {
+        toast.error(err.response?.data?.message || "Failed to update quantity.");
       }
     }
   };

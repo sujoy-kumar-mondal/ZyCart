@@ -318,12 +318,16 @@ const ProductDetailsPage = () => {
               </div>
             )}
 
-            {/* If only one image */}
-            {product.images.length === 1 && (
+            {/* If only one or no images */}
+            {(!product.images || product.images.length <= 1) && (
               <div className="relative w-full bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 h-96 flex items-center justify-center mb-4">
                 <img
-                  src={product.images[selectedImage]}
+                  src={product.images?.[selectedImage] || "https://placehold.co/600x600/e2e8f0/1e293b?text=Product+Image"}
                   alt={product.title}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://placehold.co/600x600/e2e8f0/1e293b?text=Product+Image";
+                  }}
                   className="w-full h-full object-contain p-4"
                 />
               </div>
