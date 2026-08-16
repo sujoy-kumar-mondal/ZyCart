@@ -2,6 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
+  const userUrl = import.meta.env.VITE_USER_URL || "http://localhost:5173";
+  const adminUrl = import.meta.env.VITE_ADMIN_URL || "http://localhost:5175";
+
   return (
     <footer className="py-16 mt-12 bg-linear-to-br from-red-50 to-orange-50 border-t border-gray-200">
       <div className="max-w-screen-2xl container mx-auto px-4 md:px-14">
@@ -75,12 +78,12 @@ const Footer = () => {
             <h3 className="text-lg font-bold text-[#1B2A41] mb-4">Other Portals</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="https://zycart.netlify.app/" className="inline-flex items-center gap-2 text-gray-600 hover:text-red-600 transition font-medium px-3 py-2 bg-blue-100 rounded-lg hover:bg-blue-200">
+                <a href={userUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-gray-600 hover:text-red-600 transition font-medium px-3 py-2 bg-blue-100 rounded-lg hover:bg-blue-200">
                   🛍️ Customer Portal
                 </a>
               </li>
               <li>
-                <a href="https://zycart-admin.netlify.app/" className="inline-flex items-center gap-2 text-gray-600 hover:text-red-600 transition font-medium px-3 py-2 bg-red-100 rounded-lg hover:bg-red-200">
+                <a href={adminUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-gray-600 hover:text-red-600 transition font-medium px-3 py-2 bg-red-100 rounded-lg hover:bg-red-200">
                   ⚙️ Admin Portal
                 </a>
               </li>
