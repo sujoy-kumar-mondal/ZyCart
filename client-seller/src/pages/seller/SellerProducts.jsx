@@ -360,9 +360,11 @@ const SellerProducts = () => {
       discountPeriodValue = date.toISOString().slice(0, 16);
     }
 
-    const initialDiscountedPrice = (product.discount > 0 && product.price > 0)
-      ? Math.floor(product.price * (1 - product.discount / 100))
-      : "";
+    const initialDiscountedPrice = (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price)
+      ? product.discountedPrice
+      : ((product.discount > 0 && product.price > 0)
+        ? Math.floor(product.price * (1 - product.discount / 100))
+        : "");
 
     setForm({
       title: product.title,
@@ -937,10 +939,10 @@ const SellerProducts = () => {
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {product.discount > 0 ? (
+                        {product.discount > 0 && (!product.discountPeriod || new Date(product.discountPeriod) > new Date()) ? (
                           <div className="flex items-center gap-2 whitespace-nowrap">
                             <span className="font-black text-emerald-600 text-sm">
-                              ₹{(product.discountedPrice && product.discountedPrice > 0
+                              ₹{(product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price
                                 ? product.discountedPrice
                                 : Math.round(product.price * (1 - product.discount / 100))
                               ).toLocaleString()}
@@ -949,8 +951,19 @@ const SellerProducts = () => {
                               {product.discount}% OFF
                             </span>
                           </div>
+                        ) : product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price ? (
+                          <div className="flex items-center gap-2 whitespace-nowrap">
+                            <span className="font-black text-emerald-600 text-sm">
+                              ₹{product.discountedPrice.toLocaleString()}
+                            </span>
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 whitespace-nowrap shrink-0">
+                              {Math.round(((product.price - product.discountedPrice) / product.price) * 100)}% OFF
+                            </span>
+                          </div>
                         ) : (
-                          <span className="text-slate-400 font-bold">—</span>
+                          <span className="font-black text-slate-900 text-sm">
+                            ₹{product.price?.toLocaleString()}
+                          </span>
                         )}
                       </td>
 
