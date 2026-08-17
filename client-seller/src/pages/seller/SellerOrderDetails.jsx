@@ -211,21 +211,41 @@ const SellerOrderDetails = () => {
                 <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
                   <span className="text-[10px] font-extrabold text-slate-400 uppercase">Order Placed Date &amp; Time</span>
                   <p className="font-extrabold text-slate-900">
-                    {order?.placedAt ? new Date(order.placedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : order?.createdAt ? new Date(order.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : "N/A"}
+                    {order?.placedAt
+                      ? new Date(order.placedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                      : order?.parentOrderId?.placedAt
+                      ? new Date(order.parentOrderId.placedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                      : order?.parentOrderId?.createdAt
+                      ? new Date(order.parentOrderId.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                      : order?.createdAt
+                      ? new Date(order.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                      : "N/A"}
                   </p>
                 </div>
 
                 <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
                   <span className="text-[10px] font-extrabold text-purple-600 uppercase">Packed Date &amp; Time</span>
                   <p className="font-extrabold text-slate-900">
-                    {order?.packedAt ? new Date(order.packedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : order?.status === "Packed" || order?.status === "Shipped" ? "Packed by merchant" : "Pending packaging"}
+                    {order?.packedAt
+                      ? new Date(order.packedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                      : order?.parentOrderId?.packedAt
+                      ? new Date(order.parentOrderId.packedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                      : ["Packed", "Shipped", "Out for Delivery", "Delivered"].includes(order?.status)
+                      ? "Packed by merchant"
+                      : "Pending packaging"}
                   </p>
                 </div>
 
                 <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
                   <span className="text-[10px] font-extrabold text-blue-600 uppercase">Shipped Date &amp; Time</span>
                   <p className="font-extrabold text-slate-900">
-                    {order?.shippedAt ? new Date(order.shippedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : order?.status === "Shipped" ? "Shipped to customer" : "Pending dispatch"}
+                    {order?.shippedAt
+                      ? new Date(order.shippedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                      : order?.parentOrderId?.shippedAt
+                      ? new Date(order.parentOrderId.shippedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                      : ["Shipped", "Out for Delivery", "Delivered"].includes(order?.status)
+                      ? "Shipped to customer"
+                      : "Pending dispatch"}
                   </p>
                 </div>
               </div>

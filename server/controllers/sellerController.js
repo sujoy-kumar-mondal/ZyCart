@@ -665,7 +665,7 @@ export const getSellerOrders = async (req, res) => {
 
     const orders = await Order.find({
       "childOrders.seller": sellerId,
-    }).select("parentOrderNumber childOrders");
+    }).select("parentOrderNumber childOrders createdAt placedAt confirmedAt packedAt shippedAt deliveredAt");
 
     // Filter only this seller's child orders
     const filtered = [];
@@ -679,6 +679,11 @@ export const getSellerOrders = async (req, res) => {
             items: child.items,
             amount: child.amount,
             status: child.status,
+            createdAt: child.createdAt || order.createdAt,
+            placedAt: child.placedAt || order.placedAt || order.createdAt,
+            packedAt: child.packedAt || order.packedAt,
+            shippedAt: child.shippedAt || order.shippedAt,
+            deliveredAt: child.deliveredAt || order.deliveredAt,
           });
         }
       });
@@ -810,6 +815,13 @@ export const getSellerOrderDetails = async (req, res) => {
           parentOrderNumber: order.parentOrderNumber,
           address: order.address,
           createdAt: order.createdAt,
+          placedAt: order.placedAt,
+          confirmedAt: order.confirmedAt,
+          packedAt: order.packedAt,
+          shippedAt: order.shippedAt,
+          outForDeliveryAt: order.outForDeliveryAt,
+          deliveredAt: order.deliveredAt,
+          cancelledAt: order.cancelledAt,
           totalAmount: order.totalAmount,
           paymentStatus: order.paymentStatus,
           paymentMethod: order.paymentMethod,
@@ -817,6 +829,13 @@ export const getSellerOrderDetails = async (req, res) => {
         items: childOrder.items,
         amount: childOrder.amount,
         status: childOrder.status,
+        placedAt: childOrder.placedAt || order.placedAt || order.createdAt,
+        confirmedAt: childOrder.confirmedAt || order.confirmedAt || order.createdAt,
+        packedAt: childOrder.packedAt || order.packedAt,
+        shippedAt: childOrder.shippedAt || order.shippedAt,
+        deliveredAt: childOrder.deliveredAt || order.deliveredAt,
+        cancelledAt: childOrder.cancelledAt || order.cancelledAt,
+        createdAt: childOrder.createdAt || order.createdAt,
         seller: seller,
         userId: userData,
       },
