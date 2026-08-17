@@ -380,7 +380,7 @@ export const getAdminSellerDetails = async (req, res) => {
     }
 
     // Get seller products
-    const products = await Product.find({ seller: sellerId }).select("title price stock discount discountedPrice discountPeriod");
+    const products = await Product.find({ seller: sellerId }).select("title price stock discount discountedPrice discountPeriod images description mainCategory subCategory subSubCategory attributes maxQuantityPerPurchase");
 
     res.status(200).json({
       success: true,

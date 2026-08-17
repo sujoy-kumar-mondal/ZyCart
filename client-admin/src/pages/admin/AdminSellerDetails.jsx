@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "../../utils/axiosInstance";
 import Loader from "../../components/Loader";
-import { ArrowLeft, Mail, Phone, MapPin, Calendar, ShoppingBag, TrendingUp, AlertCircle, CheckCircle, Store, ShieldCheck, Ban } from "lucide-react";
+import { ArrowLeft, Mail, Phone, MapPin, Calendar, ShoppingBag, TrendingUp, AlertCircle, CheckCircle, Store, ShieldCheck, Ban, X, Eye, Package, Tag, Layers, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
 
 const AdminSellerDetails = () => {
@@ -12,6 +12,9 @@ const AdminSellerDetails = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [showInspectModal, setShowInspectModal] = useState(false);
 
   useEffect(() => {
     fetchSellerDetails();
@@ -201,8 +204,33 @@ const AdminSellerDetails = () => {
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {products.slice(0, 10).map((product) => (
-                        <tr key={product._id} className="hover:bg-slate-50/60 transition">
-                          <td className="px-4 py-3 font-extrabold text-slate-900 max-w-xs truncate">{product.title}</td>
+                        <tr key={product._id} className="hover:bg-slate-50/60 transition group">
+                          <td className="px-4 py-3">
+                            <button
+                              onClick={() => {
+                                setSelectedProduct(product);
+                                setSelectedImage(0);
+                                setShowInspectModal(true);
+                              }}
+                              className="flex items-center gap-3 text-left w-full hover:opacity-90 transition group/btn"
+                            >
+                              <img
+                                src={product.images?.[0] || "https://placehold.co/400x400/e2e8f0/1e293b?text=Product"}
+                                alt={product.title}
+                                className="w-10 h-10 rounded-xl object-cover border border-slate-200 shrink-0 group-hover/btn:scale-105 transition"
+                              />
+                              <div className="min-w-0">
+                                <p className="font-extrabold text-slate-900 group-hover/btn:text-[#3F51F4] transition line-clamp-1 max-w-xs">
+                                  {product.title}
+                                </p>
+                                {product.mainCategory && (
+                                  <p className="text-[10px] text-slate-400 font-medium truncate">
+                                    {product.mainCategory} {product.subCategory ? `> ${product.subCategory}` : ''}
+                                  </p>
+                                )}
+                              </div>
+                            </button>
+                          </td>
                           <td className="px-4 py-3 font-black">₹{product.price?.toLocaleString()}</td>
                           <td className="px-4 py-3 whitespace-nowrap">
                             {(() => {
@@ -284,6 +312,186 @@ const AdminSellerDetails = () => {
         </div>
 
       </div>
+
+      {/* Admin Product Inspector Modal */}
+      {showInspectModal && selectedProduct && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 p-6 sm:p-8 space-y-6 animate-in fade-in zoom-in duration-200">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center text-[#3F51F4]">
+                  <Package size={20} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-slate-900">Product Inspector (Admin View)</h3>
+                  <p className="text-xs text-slate-400 font-semibold">Catalog ID: {selectedProduct._id}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setShowInspectModal(false);
+                  setSelectedProduct(null);
+                }}
+                className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Content Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+              
+              {/* Image Showcase */}
+              <div className="md:col-span-5 space-y-3">
+                <div className="aspect-square rounded-2xl overflow-hidden bg-slate-50 border border-slate-200 flex items-center justify-center">
+                  <img
+                    src={selectedProduct.images?.[selectedImage] || "https://placehold.co/400x400/e2e8f0/1e293b?text=Product"}
+                    alt={selectedProduct.title}
+                    className="w-full h-full object-contain p-2"
+                  />
+                </div>
+                {selectedProduct.images && selectedProduct.images.length > 1 && (
+                  <div className="flex gap-2 overflow-x-auto pb-1">
+                    {selectedProduct.images.map((img, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setSelectedImage(idx)}
+                        className={`w-14 h-14 rounded-xl overflow-hidden border-2 shrink-0 transition ${
+                          selectedImage === idx ? "border-[#3F51F4] ring-2 ring-[#3F51F4]/20" : "border-slate-200 opacity-70"
+                        }`}
+                      >
+                        <img src={img} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Product Metadata */}
+              <div className="md:col-span-7 space-y-4">
+                
+                {/* Title & Categories */}
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full inline-block mb-2">
+                    {selectedProduct.mainCategory} {selectedProduct.subCategory ? `> ${selectedProduct.subCategory}` : ''} {selectedProduct.subSubCategory ? `> ${selectedProduct.subSubCategory}` : ''}
+                  </span>
+                  <h4 className="text-xl font-black text-slate-900 leading-snug">
+                    {selectedProduct.title}
+                  </h4>
+                </div>
+
+                {/* Price Breakdown Card */}
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Original MRP</p>
+                    <p className="text-lg font-black text-slate-900">₹{selectedProduct.price?.toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-extrabold text-emerald-600 uppercase tracking-wider">Selling Price</p>
+                    <p className="text-lg font-black text-emerald-600 flex items-center gap-1.5">
+                      ₹{(() => {
+                        const isExpired = selectedProduct.discountPeriod && new Date(selectedProduct.discountPeriod) <= new Date();
+                        const sellingPrice = (selectedProduct.discountedPrice && selectedProduct.discountedPrice > 0 && selectedProduct.discountedPrice < selectedProduct.price)
+                          ? selectedProduct.discountedPrice
+                          : (selectedProduct.discount > 0 ? Math.round(selectedProduct.price * (1 - selectedProduct.discount / 100)) : selectedProduct.price);
+                        const discountPct = selectedProduct.discount > 0
+                          ? selectedProduct.discount
+                          : (selectedProduct.discountedPrice && selectedProduct.discountedPrice < selectedProduct.price
+                            ? Math.round(((selectedProduct.price - selectedProduct.discountedPrice) / selectedProduct.price) * 100)
+                            : 0);
+                        const isDiscountActive = !isExpired && discountPct > 0 && sellingPrice < selectedProduct.price;
+
+                        return isDiscountActive ? sellingPrice.toLocaleString() : selectedProduct.price?.toLocaleString();
+                      })()}
+                      {(() => {
+                        const isExpired = selectedProduct.discountPeriod && new Date(selectedProduct.discountPeriod) <= new Date();
+                        const sellingPrice = (selectedProduct.discountedPrice && selectedProduct.discountedPrice > 0 && selectedProduct.discountedPrice < selectedProduct.price)
+                          ? selectedProduct.discountedPrice
+                          : (selectedProduct.discount > 0 ? Math.round(selectedProduct.price * (1 - selectedProduct.discount / 100)) : selectedProduct.price);
+                        const discountPct = selectedProduct.discount > 0
+                          ? selectedProduct.discount
+                          : (selectedProduct.discountedPrice && selectedProduct.discountedPrice < selectedProduct.price
+                            ? Math.round(((selectedProduct.price - selectedProduct.discountedPrice) / selectedProduct.price) * 100)
+                            : 0);
+                        const isDiscountActive = !isExpired && discountPct > 0 && sellingPrice < selectedProduct.price;
+
+                        return isDiscountActive ? (
+                          <span className="text-[10px] font-black bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                            {discountPct}% OFF
+                          </span>
+                        ) : null;
+                      })()}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Stock & Max Qty */}
+                <div className="flex flex-wrap gap-3 text-xs font-bold">
+                  <span className={`px-3 py-1.5 rounded-xl border ${selectedProduct.stock > 0 ? 'bg-slate-50 border-slate-200 text-slate-800' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                    📦 Stock: <span className="font-extrabold">{selectedProduct.stock} units</span>
+                  </span>
+                  {selectedProduct.maxQuantityPerPurchase && (
+                    <span className="px-3 py-1.5 rounded-xl border bg-blue-50 border-blue-200 text-blue-800">
+                      🛒 Max per purchase: <span className="font-extrabold">{selectedProduct.maxQuantityPerPurchase} units</span>
+                    </span>
+                  )}
+                </div>
+
+                {/* Description Box */}
+                {selectedProduct.description && (
+                  <div className="space-y-1">
+                    <p className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Product Description</p>
+                    <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200/80 text-xs text-slate-600 leading-relaxed max-h-36 overflow-y-auto">
+                      {selectedProduct.description}
+                    </div>
+                  </div>
+                )}
+
+                {/* Specifications / Attributes */}
+                {selectedProduct.attributes && Object.keys(selectedProduct.attributes).length > 0 && (
+                  <div className="space-y-1">
+                    <p className="text-xs font-extrabold text-slate-700 uppercase tracking-wider">Specifications</p>
+                    <div className="p-3 bg-slate-50 rounded-2xl border border-slate-200/80 grid grid-cols-2 gap-2 text-xs">
+                      {Object.entries(selectedProduct.attributes).map(([key, val]) => (
+                        <div key={key} className="bg-white p-2 rounded-xl border border-slate-100">
+                          <span className="text-[10px] font-extrabold text-slate-400 uppercase block">{key}</span>
+                          <span className="font-bold text-slate-800">{Array.isArray(val) ? val.join(", ") : String(val)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="border-t border-slate-100 pt-4 flex items-center justify-between">
+              <a
+                href={`http://localhost:5173/products/${selectedProduct._id}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[#3F51F4] hover:underline"
+              >
+                Open in User Storefront <ExternalLink size={14} />
+              </a>
+              <button
+                onClick={() => {
+                  setShowInspectModal(false);
+                  setSelectedProduct(null);
+                }}
+                className="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs shadow-md transition"
+              >
+                Close Inspector
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
