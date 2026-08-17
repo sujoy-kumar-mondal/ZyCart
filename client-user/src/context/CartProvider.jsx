@@ -13,6 +13,16 @@ export const CartProvider = ({ children }) => {
     return data ? JSON.parse(data) : [];
   });
 
+  const getEffectivePrice = (product) => {
+    if (!product) return 0;
+    const hasDiscount =
+      product.discount > 0 &&
+      (!product.discountPeriod || new Date(product.discountPeriod) > new Date());
+    return hasDiscount
+      ? Math.floor(product.price * (1 - product.discount / 100))
+      : Number(product.price);
+  };
+
   // =====================================================
   // 1) SYNC CART FROM DATABASE AFTER LOGIN
   // =====================================================
@@ -26,7 +36,9 @@ export const CartProvider = ({ children }) => {
         const formatted = res.data.cart.map((item) => ({
           productId: item.product._id,
           title: item.product.title,
-          price: Number(item.product.price),
+          price: getEffectivePrice(item.product),
+          originalPrice: Number(item.product.price),
+          discount: item.product.discount || 0,
           stock: Number(item.product.stock),
           maxQuantityPerPurchase: item.product.maxQuantityPerPurchase || item.product.stock,
           qty: Number(item.qty),
@@ -59,6 +71,7 @@ export const CartProvider = ({ children }) => {
       : product.stock;
 
     let canProceed = true;
+    const effectivePrice = getEffectivePrice(product);
 
     setCartItems((prev) => {
       const existing = prev.find((i) => i.productId === product._id);
@@ -72,7 +85,7 @@ export const CartProvider = ({ children }) => {
         }
 
         return prev.map((i) =>
-          i.productId === product._id ? { ...i, qty: newQty, maxQuantityPerPurchase: maxAllowed } : i
+          i.productId === product._id ? { ...i, qty: newQty, price: effectivePrice, maxQuantityPerPurchase: maxAllowed } : i
         );
       }
 
@@ -87,7 +100,9 @@ export const CartProvider = ({ children }) => {
         {
           productId: product._id,
           title: product.title,
-          price: product.price,
+          price: effectivePrice,
+          originalPrice: Number(product.price),
+          discount: product.discount || 0,
           stock: product.stock,
           maxQuantityPerPurchase: maxAllowed,
           qty,

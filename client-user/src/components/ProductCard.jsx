@@ -46,6 +46,15 @@ const ProductCard = ({ product }) => {
     }
   };
 
+  // Compute active discount
+  const hasActiveDiscount =
+    product.discount > 0 &&
+    (!product.discountPeriod || new Date(product.discountPeriod) > new Date());
+
+  const discountedPrice = hasActiveDiscount
+    ? Math.floor(product.price * (1 - product.discount / 100))
+    : product.price;
+
   return (
     <div
       className="
@@ -87,15 +96,35 @@ const ProductCard = ({ product }) => {
           {product.title}
         </h3>
 
-        <p
-          className="
-            font-extrabold text-xl
-            bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
-            text-transparent bg-clip-text
-          "
-        >
-          ₹{product.price}
-        </p>
+        {hasActiveDiscount ? (
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <span
+              className="
+                font-extrabold text-xl
+                bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
+                text-transparent bg-clip-text
+              "
+            >
+              ₹{discountedPrice.toLocaleString()}
+            </span>
+            <span className="text-sm text-gray-400 line-through">
+              ₹{product.price.toLocaleString()}
+            </span>
+            <span className="text-xs font-bold text-green-600 bg-green-100 px-1.5 py-0.5 rounded">
+              {product.discount}% OFF
+            </span>
+          </div>
+        ) : (
+          <p
+            className="
+              font-extrabold text-xl
+              bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
+              text-transparent bg-clip-text
+            "
+          >
+            ₹{product.price.toLocaleString()}
+          </p>
+        )}
 
         <p className="text-sm text-gray-600">
           Stock: {product.stock}
