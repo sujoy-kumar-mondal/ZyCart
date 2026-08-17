@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../utils/axiosInstance';
 import { useParams } from 'react-router-dom';
-import { Heart, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Heart, ShoppingCart, ChevronLeft, ChevronRight, Check, ShieldCheck, Truck, RefreshCw, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ReviewSection from '../components/ReviewSection';
 import Breadcrumb from '../components/Breadcrumb';
@@ -14,7 +14,8 @@ const ProductDetailsPage = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const { addToCart } = useCart();
-  const { wishlist, addToWishlist, removeFromWishlist, isInWishlist: checkIsInWishlist, fetchWishlist } = useWishlist();
+  const { wishlist, addToWishlist, removeFromWishlist, isInWishlist: checkIsInWishlist } = useWishlist();
+  
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -36,6 +37,7 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
+        setLoading(true);
         const response = await axiosInstance.get(`/products/${id}`);
         if (response.data.success) {
           const productData = response.data.product;
@@ -44,20 +46,20 @@ const ProductDetailsPage = () => {
           // Fetch seller info
           if (productData.seller) {
             try {
-              // Handle both ID string and populated object
               const sellerId = typeof productData.seller === 'string' ? productData.seller : productData.seller._id;
               const sellerRes = await axiosInstance.get(`/seller/${sellerId}`);
               if (sellerRes.data.success) {
                 setSeller(sellerRes.data.seller);
               }
             } catch (err) {
+              console.error("Seller fetch error:", err);
             }
           }
           
           // Track view
           await axiosInstance.post('/products/update-trend-view', { productId: id });
         } else {
-          setError(response.data.message);
+          setError(response.data.message || 'Product not found');
         }
       } catch (err) {
         setError('Failed to load product');
@@ -75,6 +77,7 @@ const ProductDetailsPage = () => {
             setUserOrders(response.data.orders || []);
           }
         } catch (err) {
+          console.error("User orders error:", err);
         }
       }
     };
@@ -165,10 +168,8 @@ const ProductDetailsPage = () => {
   const handleAddToCart = async () => {
     if (!product) return;
     try {
-      // Use CartProvider's addToCart which syncs with DB
       await addToCart(product, quantity);
       toast.success('Added to cart!');
-      // Track purchase trend
       try {
         await axiosInstance.post('/products/update-trend-purchase', { 
           productId: id,
@@ -190,10 +191,8 @@ const ProductDetailsPage = () => {
     if (!product) return;
 
     try {
-      // Add to cart first using CartProvider
       await addToCart(product, quantity);
       toast.success('Added to cart! Redirecting to checkout...');
-      // Track purchase trend
       try {
         await axiosInstance.post('/products/update-trend-purchase', { 
           productId: id,
@@ -201,7 +200,6 @@ const ProductDetailsPage = () => {
         });
       } catch (err) {
       }
-      // Redirect to checkout
       window.location.href = '/checkout';
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to process order');
@@ -222,7 +220,6 @@ const ProductDetailsPage = () => {
     setWishlistLoading(true);
     try {
       if (isInWishlist) {
-        // Remove from wishlist
         const result = await removeFromWishlist(id);
         if (result.success) {
           toast.success('Removed from wishlist');
@@ -230,7 +227,6 @@ const ProductDetailsPage = () => {
           toast.error(result.message);
         }
       } else {
-        // Add to wishlist - pass the product object with _id
         const result = await addToWishlist({ _id: product._id });
         if (result.success) {
           toast.success('Added to wishlist!');
@@ -247,320 +243,328 @@ const ProductDetailsPage = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center items-center min-h-[70vh]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading product...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#3F51F4] border-t-transparent mx-auto mb-4"></div>
+          <p className="text-slate-600 font-semibold">Loading product details...</p>
         </div>
       </div>
     );
   }
 
-  if (error) {
+  if (error || !product) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg">
-          {error}
+      <div className="max-w-4xl mx-auto px-4 py-16 text-center">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-8 py-6 rounded-2xl shadow-sm">
+          <h2 className="text-xl font-bold mb-2">Product Error</h2>
+          <p>{error || 'Product not found'}</p>
         </div>
       </div>
     );
   }
 
-  if (!product) {
-    return (
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="bg-gray-50 border border-gray-200 text-gray-700 px-6 py-4 rounded-lg">
-          Product not found
-        </div>
-      </div>
-    );
-  }
+  const hasActiveDiscount =
+    product.discount > 0 &&
+    (!product.discountPeriod || new Date(product.discountPeriod) > new Date());
+
+  const discountedPrice = hasActiveDiscount
+    ? (product.discountedPrice && product.discountedPrice > 0
+        ? product.discountedPrice
+        : Math.round(product.price * (1 - product.discount / 100)))
+    : product.price;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Breadcrumb Navigation */}
-        {product && (
+    <div className="min-h-screen bg-[#F8FAFC] py-6 sm:py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        
+        {/* Breadcrumbs Navigation Header */}
+        <div className="bg-white/80 backdrop-blur-md px-5 py-3 rounded-2xl border border-slate-200/80 shadow-xs">
           <Breadcrumb 
             mainCategory={product.mainCategory}
             subCategory={product.subCategory}
             subSubCategory={product.subSubCategory}
             productTitle={product.title}
           />
-        )}
+        </div>
 
-        {/* Main Layout - Sticky Left Images + Scrollable Right Info */}
-        <div className="flex gap-8 lg:h-screen">
+        {/* Primary Product Section: 2 Columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
           
-          {/* LEFT SIDE - STICKY Images */}
-          <div className="lg:w-1/3 shrink-0 sticky top-0 h-screen overflow-y-auto lg:overflow-y-hidden">
-            {/* Thumbnails - Vertical Stack on Far Left */}
-            {product.images.length > 1 && (
-              <div className="flex gap-3 mb-4">
-                <div className="flex flex-col gap-2 max-h-96 overflow-y-auto">
+          {/* LEFT COLUMN: Gallery Showcase */}
+          <div className="lg:col-span-6 space-y-4 lg:sticky lg:top-24">
+            <div className="relative bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-slate-200/80 group">
+              
+              {/* Main Image View */}
+              <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 flex items-center justify-center">
+                <img
+                  src={product.images?.[selectedImage] || 'https://placehold.co/600x600?text=No+Image'}
+                  alt={product.title}
+                  className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
+                />
+
+                {/* Floating Wishlist Heart */}
+                <button
+                  onClick={handleWishlist}
+                  disabled={wishlistLoading}
+                  className="absolute top-4 right-4 bg-white/90 backdrop-blur-md p-3 rounded-full shadow-md hover:shadow-lg transition transform active:scale-90 border border-slate-200/60 z-10 disabled:opacity-50"
+                  title={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
+                >
+                  <Heart
+                    className={`w-6 h-6 transition-colors ${
+                      isInWishlist ? "fill-red-500 text-red-500" : "text-slate-600 hover:text-red-500"
+                    }`}
+                  />
+                </button>
+
+                {/* Left/Right Carousel Controls */}
+                {product.images && product.images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setSelectedImage((prev) => (prev > 0 ? prev - 1 : product.images.length - 1))}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-md p-2.5 rounded-full shadow-md hover:bg-white transition text-slate-700 hover:scale-110 active:scale-95"
+                    >
+                      <ChevronLeft size={22} />
+                    </button>
+                    <button
+                      onClick={() => setSelectedImage((prev) => (prev < product.images.length - 1 ? prev + 1 : 0))}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-md p-2.5 rounded-full shadow-md hover:bg-white transition text-slate-700 hover:scale-110 active:scale-95"
+                    >
+                      <ChevronRight size={22} />
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* Thumbnail Selector Gallery */}
+              {product.images && product.images.length > 1 && (
+                <div className="flex gap-3 mt-4 overflow-x-auto pb-2 scrollbar-none">
                   {product.images.map((img, idx) => (
                     <button
                       key={idx}
                       onClick={() => setSelectedImage(idx)}
-                      className={`w-16 h-16 rounded-lg overflow-hidden border-3 transition-all shrink-0 ${
+                      className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition shrink-0 ${
                         selectedImage === idx
-                          ? 'border-blue-600 shadow-lg'
-                          : 'border-gray-200 hover:border-gray-300'
+                          ? "border-[#3F51F4] ring-2 ring-[#3F51F4]/20 shadow-md scale-105"
+                          : "border-slate-200 opacity-70 hover:opacity-100"
                       }`}
                     >
-                      <img src={img} alt={`Thumbnail ${idx}`} className="w-full h-full object-contain p-1" />
+                      <img src={img} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
                     </button>
                   ))}
                 </div>
-
-                {/* Main Image */}
-                <div className="flex-1 relative">
-                  <div className="relative w-full bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 h-96 flex items-center justify-center">
-                    <img
-                      src={product.images[selectedImage]}
-                      alt={product.title}
-                      className="w-full h-full object-contain p-4"
-                    />
-
-                    {/* Wishlist Button - Top Right Corner */}
-                    <button 
-                      onClick={handleWishlist}
-                      disabled={wishlistLoading}
-                      className={`absolute top-3 right-3 p-3 rounded-full shadow-lg transition-all z-20 ${
-                        isInWishlist
-                          ? 'bg-red-500 hover:bg-red-600'
-                          : 'bg-white hover:bg-gray-100 border-2 border-red-500'
-                      } disabled:opacity-50 disabled:cursor-not-allowed`}
-                      title={isInWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
-                    >
-                      <Heart 
-                        className={`w-6 h-6 ${isInWishlist ? 'fill-white text-white' : 'text-red-500'}`}
-                      />
-                    </button>
-                    
-                    {/* Image Navigation */}
-                    {product.images.length > 1 && (
-                      <>
-                        <button
-                          onClick={() => setSelectedImage((prev) => (prev - 1 + product.images.length) % product.images.length)}
-                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg z-10"
-                        >
-                          <ChevronLeft className="w-5 h-5" />
-                        </button>
-                        <button
-                          onClick={() => setSelectedImage((prev) => (prev + 1) % product.images.length)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-lg z-10"
-                        >
-                          <ChevronRight className="w-5 h-5" />
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* If only one or no images */}
-            {(!product.images || product.images.length <= 1) && (
-              <div className="relative w-full bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 h-96 flex items-center justify-center mb-4">
-                <img
-                  src={product.images?.[selectedImage] || "https://placehold.co/600x600/e2e8f0/1e293b?text=Product+Image"}
-                  alt={product.title}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "https://placehold.co/600x600/e2e8f0/1e293b?text=Product+Image";
-                  }}
-                  className="w-full h-full object-contain p-4"
-                />
-              </div>
-            )}
-
-            {/* Action Buttons Below Images */}
-            {product.stock > 0 && (
-              <div className="flex gap-3 mt-4">
-                <button
-                  onClick={handleAddToCart}
-                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors text-sm"
-                >
-                  <ShoppingCart className="w-4 h-4" />
-                  ADD TO CART
-                </button>
-                <button
-                  onClick={handleBuyNow}
-                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition-colors text-sm"
-                >
-                  ⚡ BUY NOW
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
-          {/* RIGHT SIDE - Scrollable Product Information */}
-          <div className="lg:w-2/3 space-y-6 overflow-y-auto lg:h-screen pr-4">
-            {/* Title & Rating */}
-            <div>
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">{product.title}</h1>
-                  <div className="flex items-center gap-3 mb-4">
-                    {product.rating && (
-                      <>
-                        <span className="bg-green-600 text-white px-2 py-1 rounded text-sm font-bold">
-                          ⭐ {product.rating}
-                        </span>
-                        <span className="text-gray-600 text-sm">28 ratings • 5 reviews</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <button
-                  onClick={handleWishlist}
-                  disabled={wishlistLoading}
-                  className="p-3 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors disabled:opacity-50 lg:mt-0 mt-2"
-                  title={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
-                >
-                  <Heart
-                    className={`w-6 h-6 transition-all ${
-                      isInWishlist ? "fill-red-500 text-red-500" : "text-gray-600"
-                    }`}
-                  />
-                </button>
-              </div>
-              <p className="text-gray-600 leading-relaxed">{product.description}</p>
+          {/* RIGHT COLUMN: Product Details & Purchase Actions */}
+          <div className="lg:col-span-6 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
+            
+            {/* Category & Seller Badges */}
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <span className="px-3.5 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-full uppercase tracking-wider">
+                {product.mainCategory} • {product.subCategory}
+              </span>
+
+              {seller && (
+                <span className="text-xs font-semibold text-slate-600 bg-blue-50 border border-blue-100 px-3 py-1 rounded-full flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                  Sold by <span className="font-extrabold text-blue-900">{seller.storeName || seller.fullName}</span>
+                </span>
+              )}
             </div>
 
-            {/* Price Section */}
-            <div className="border-y border-gray-200 py-6 space-y-3">
-              <div className="flex items-baseline gap-3">
-                {product.discount > 0 && discountCountdown !== 'Expired' ? (
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1B2A41] leading-tight">
+              {product.title}
+            </h1>
+
+            {/* Pricing Section */}
+            <div className="p-5 bg-gradient-to-r from-slate-50 to-blue-50/30 rounded-2xl border border-slate-200/60 space-y-2">
+              <div className="flex items-baseline gap-3 flex-wrap">
+                {hasActiveDiscount ? (
                   <>
-                    <span className="text-4xl font-bold text-gray-900">
-                      ₹{(product.discountedPrice && product.discountedPrice > 0
-                        ? product.discountedPrice
-                        : Math.round(product.price * (1 - (product.discount || 0) / 100))
-                      ).toLocaleString()}
+                    <span className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
+                      ₹{discountedPrice.toLocaleString()}
                     </span>
-                    <span className="text-lg text-gray-500 line-through">₹{product.price.toLocaleString()}</span>
-                    <span className="text-green-600 font-bold text-lg">{product.discount}% off</span>
+                    <span className="text-lg text-slate-400 line-through font-semibold">
+                      ₹{product.price.toLocaleString()}
+                    </span>
+                    <span className="px-2.5 py-1 text-xs font-extrabold text-green-700 bg-green-100 border border-green-200 rounded-lg">
+                      {product.discount}% OFF
+                    </span>
                   </>
                 ) : (
-                  <span className="text-4xl font-bold text-gray-900">₹{product.price.toLocaleString()}</span>
+                  <span className="text-3xl sm:text-4xl font-black text-[#1B2A41]">
+                    ₹{product.price.toLocaleString()}
+                  </span>
                 )}
               </div>
-              
-              {/* Discount Expiry Date (Only show if under 24 hours) */}
+
+              <p className="text-xs text-slate-500 font-medium">Inclusive of all taxes</p>
+
+              {/* 24h Expiry Urgency Countdown Banner */}
               {product.discount > 0 && product.discountPeriod && showCountdownBanner && discountCountdown !== 'Expired' && (
-                <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-                  <p className="text-sm text-gray-600">Discount expires in</p>
-                  <p className="text-lg font-bold text-green-700">
-                    {discountCountdown}
-                  </p>
-                </div>
-              )}
-              
-              {/* Discount Expired */}
-              {product.discount > 0 && discountCountdown === 'Expired' && (
-                <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-600 font-semibold">Discount has expired</p>
+                <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-2.5">
+                  <Zap className="w-5 h-5 text-amber-600 fill-amber-500 animate-bounce" />
+                  <div>
+                    <p className="text-xs font-semibold text-amber-800">Special Offer Ending Soon!</p>
+                    <p className="text-sm font-extrabold text-amber-950">
+                      Discount expires in <span className="text-red-600">{discountCountdown}</span>
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Stock Info Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {product.stock < 10 && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                  <p className="text-sm text-amber-700 mb-1">Availability</p>
-                  <p className="text-xl font-bold text-amber-800">
-                    {product.stock < 5 ? `Only ${product.stock} left` : "Only few left"}
-                  </p>
+            {/* Stock Scarcity Status */}
+            <div className="flex items-center gap-3">
+              {product.isAvailable && product.stock > 0 ? (
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                  </span>
+                  <span className="text-sm font-bold">
+                    {product.stock < 5 ? (
+                      <span className="text-red-600 font-extrabold">Only {product.stock} left in stock!</span>
+                    ) : product.stock < 10 ? (
+                      <span className="text-amber-600 font-extrabold">Only few left</span>
+                    ) : (
+                      <span className="text-emerald-700">In Stock &amp; Ready to Ship</span>
+                    )}
+                  </span>
                 </div>
+              ) : (
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">
+                  ✕ Out of Stock / Unavailable
+                </span>
               )}
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <p className="text-sm text-gray-600 mb-1">Status</p>
-                <p className="text-lg font-bold text-green-600">
-                  {product.stock > 0 ? "✓ In Stock" : "✕ Out of Stock"}
-                </p>
-              </div>
             </div>
 
-            {/* Seller Info */}
-            {seller && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-gray-600 mb-1">Sold by</p>
-                <p className="font-semibold text-gray-900">{seller.shopName || 'Seller'}</p>
-                <p className="text-xs text-gray-500 mt-1">Trusted Seller</p>
-              </div>
-            )}
-
-            {/* Quantity Selector */}
-            {product.stock > 0 && (
-              <div className="bg-white rounded-lg p-6 border border-gray-200">
-                <div className="flex items-center gap-3">
-                  <label className="text-gray-700 font-medium min-w-fit">Quantity:</label>
-                  <div className="flex items-center border border-gray-300 rounded-lg">
+            {/* Quantity Selector & Purchase Actions */}
+            {product.isAvailable && product.stock > 0 && (
+              <div className="space-y-5 pt-2 border-t border-slate-100">
+                <div className="flex items-center gap-4">
+                  <label className="text-sm font-bold text-slate-700">Quantity:</label>
+                  <div className="flex items-center border border-slate-300 rounded-xl bg-slate-50 overflow-hidden shadow-xs">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="px-4 py-2 text-gray-600 hover:bg-gray-100 font-bold text-lg"
+                      disabled={quantity <= 1}
+                      className="px-3.5 py-2 text-slate-600 hover:bg-slate-200 font-bold transition disabled:opacity-30"
                     >
-                      −
+                      -
                     </button>
-                    <input
-                      type="number"
-                      min="1"
-                      max={product.maxQuantityPerPurchase || product.stock}
-                      value={quantity}
-                      onChange={(e) => {
-                        const maxQty = product.maxQuantityPerPurchase || product.stock;
-                        setQuantity(Math.min(maxQty, Math.max(1, parseInt(e.target.value) || 1)));
-                      }}
-                      className="w-20 text-center border-none outline-none text-lg font-bold"
-                    />
+                    <span className="px-4 py-2 text-base font-extrabold text-slate-900 min-w-[2.5rem] text-center select-none">
+                      {quantity}
+                    </span>
                     <button
                       onClick={() => {
                         const maxQty = product.maxQuantityPerPurchase || product.stock;
-                        setQuantity(Math.min(maxQty, quantity + 1));
+                        if (quantity < maxQty) {
+                          setQuantity(quantity + 1);
+                        } else {
+                          toast.error(`Maximum ${maxQty} unit(s) allowed per purchase.`);
+                        }
                       }}
-                      className="px-4 py-2 text-gray-600 hover:bg-gray-100 font-bold text-lg"
+                      className="px-3.5 py-2 text-slate-600 hover:bg-slate-200 font-bold transition"
                     >
                       +
                     </button>
                   </div>
+
+                  {product.maxQuantityPerPurchase && (
+                    <span className="text-xs text-slate-500 font-medium">
+                      (Max {product.maxQuantityPerPurchase} per order)
+                    </span>
+                  )}
+                </div>
+
+                {/* Primary CTA Buttons */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <button
+                    onClick={handleAddToCart}
+                    className="w-full py-4 px-6 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-lg shadow-blue-500/20 transition transform active:scale-95 flex items-center justify-center gap-2"
+                  >
+                    <ShoppingCart className="w-5 h-5" /> Add to Cart
+                  </button>
+
+                  <button
+                    onClick={handleBuyNow}
+                    className="w-full py-4 px-6 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-orange-500 to-red-600 hover:opacity-95 shadow-lg shadow-orange-500/20 transition transform active:scale-95 flex items-center justify-center gap-2"
+                  >
+                    ⚡ Buy Now
+                  </button>
                 </div>
               </div>
             )}
 
-            {/* Product Specifications */}
-            {product.attributes && Object.keys(product.attributes).length > 0 && (
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Specifications</h2>
-                
-                <div className="space-y-4">
-                  {Object.entries(product.attributes).map(([key, value]) => (
-                    <div key={key} className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-gray-200 last:border-b-0">
-                      <dt className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                        {key}
-                      </dt>
-                      <dd className="text-base text-gray-900 font-medium">
-                        {Array.isArray(value) ? value.join(', ') : String(value)}
-                      </dd>
-                    </div>
-                  ))}
-                </div>
+            {/* Trust Badges Bar */}
+            <div className="grid grid-cols-3 gap-3 pt-4 border-t border-slate-100 text-center">
+              <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                <Truck className="w-5 h-5 text-blue-600 mx-auto mb-1" />
+                <p className="text-xs font-bold text-slate-800">Fast Delivery</p>
+                <p className="text-[10px] text-slate-500">Doorstep shipping</p>
               </div>
-            )}
+              <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                <ShieldCheck className="w-5 h-5 text-emerald-600 mx-auto mb-1" />
+                <p className="text-xs font-bold text-slate-800">100% Genuine</p>
+                <p className="text-[10px] text-slate-500">Verified seller</p>
+              </div>
+              <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
+                <RefreshCw className="w-5 h-5 text-purple-600 mx-auto mb-1" />
+                <p className="text-xs font-bold text-slate-800">Easy Returns</p>
+                <p className="text-[10px] text-slate-500">Hassle-free policy</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Related Products Section ("You might also like") */}
-        <div className="mt-16">
-          <h2 className="text-2xl font-bold text-[#1B2A41] mb-6">You might also like</h2>
+        {/* MIDDLE SECTION: Specifications & Description */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          
+          {/* Specifications Card */}
+          {product.attributes && Object.keys(product.attributes).length > 0 && (
+            <div className="lg:col-span-7 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
+              <h2 className="text-xl font-extrabold text-[#1B2A41] flex items-center gap-2 border-b border-slate-100 pb-4">
+                <span>📋</span> Product Specifications
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {Object.entries(product.attributes).map(([key, value]) => (
+                  <div key={key} className="p-4 rounded-2xl bg-slate-50 border border-slate-100/80">
+                    <dt className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                      {key}
+                    </dt>
+                    <dd className="text-sm font-extrabold text-slate-900">
+                      {Array.isArray(value) ? value.join(', ') : String(value)}
+                    </dd>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Description Card */}
+          <div className={`${product.attributes && Object.keys(product.attributes).length > 0 ? "lg:col-span-5" : "lg:col-span-12"} bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4`}>
+            <h2 className="text-xl font-extrabold text-[#1B2A41] flex items-center gap-2 border-b border-slate-100 pb-4">
+              <span>📝</span> Product Description
+            </h2>
+            <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-line">
+              {product.description || "No description provided."}
+            </p>
+          </div>
+        </div>
+
+        {/* "You Might Also Like" Recommendation Section */}
+        <div className="pt-4 space-y-6">
+          <h2 className="text-2xl font-extrabold text-[#1B2A41]">You might also like</h2>
+
           {relatedLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-gray-200 h-80 rounded-2xl animate-pulse"></div>
-              <div className="bg-gray-200 h-80 rounded-2xl animate-pulse"></div>
-              <div className="bg-gray-200 h-80 rounded-2xl animate-pulse"></div>
-              <div className="bg-gray-200 h-80 rounded-2xl animate-pulse"></div>
+              <div className="bg-slate-200 h-80 rounded-2xl animate-pulse"></div>
+              <div className="bg-slate-200 h-80 rounded-2xl animate-pulse"></div>
+              <div className="bg-slate-200 h-80 rounded-2xl animate-pulse"></div>
+              <div className="bg-slate-200 h-80 rounded-2xl animate-pulse"></div>
             </div>
           ) : relatedProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -569,14 +573,15 @@ const ProductDetailsPage = () => {
               ))}
             </div>
           ) : (
-            <p className="text-gray-500 text-sm italic">No related products found.</p>
+            <p className="text-slate-500 text-sm italic">No related products found.</p>
           )}
         </div>
 
         {/* Reviews Section */}
-        <div className="mt-16">
+        <div className="pt-4">
           <ReviewSection productId={id} userOrders={userOrders} />
         </div>
+
       </div>
     </div>
   );
