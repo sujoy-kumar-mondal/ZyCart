@@ -10,257 +10,252 @@ import {
   Star,
   ArrowRight,
   CheckCircle,
+  Sparkles,
+  Award,
+  TrendingUp
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Home = () => {
   useEffect(() => {
-    document.title = "ZyCart: Easy Shop, Easy Life";
+    document.title = "ZyCart — Easy Shop, Easy Life";
   }, []);
 
   const features = [
     {
       id: 1,
-      title: "Wide Selection",
-      description: "Browse thousands of products from verified sellers",
+      title: "Curated Selection",
+      description: "Discover thousands of handpicked products from verified brand sellers.",
       icon: ShoppingCart,
-      color: "from-blue-500 to-cyan-500",
+      color: "from-blue-500 to-indigo-600",
     },
     {
       id: 2,
-      title: "Fast Delivery",
-      description: "Quick and reliable shipping to your doorstep",
+      title: "Express Delivery",
+      description: "Quick, reliable doorstep shipping with real-time tracking.",
       icon: Truck,
-      color: "from-green-500 to-emerald-500",
+      color: "from-emerald-500 to-teal-600",
     },
     {
       id: 3,
-      title: "Secure Payment",
-      description: "Multiple payment options with buyer protection",
+      title: "Buyer Protection",
+      description: "Encrypted transactions and guaranteed money-back protection.",
       icon: Shield,
-      color: "from-purple-500 to-pink-500",
+      color: "from-purple-500 to-pink-600",
     },
     {
       id: 4,
-      title: "Best Prices",
-      description: "Competitive pricing with regular discounts and deals",
+      title: "Unbeatable Deals",
+      description: "Daily discount prices, flash sales, and exclusive store coupons.",
       icon: Zap,
-      color: "from-orange-500 to-red-500",
+      color: "from-amber-500 to-orange-600",
     },
     {
       id: 5,
-      title: "Wishlist & Reviews",
-      description: "Save favorite items and read genuine customer reviews",
+      title: "Wishlist & Save",
+      description: "Save items for later and get notified on price drops instantly.",
       icon: Heart,
-      color: "from-red-500 to-rose-500",
+      color: "from-red-500 to-rose-600",
     },
     {
       id: 6,
-      title: "Money Back Guarantee",
-      description: "Easy returns and refunds if you're not satisfied",
+      title: "Verified Reviews",
+      description: "Read genuine feedback and ratings from verified buyers.",
       icon: CheckCircle,
-      color: "from-indigo-500 to-blue-500",
+      color: "from-blue-600 to-[#3F51F4]",
     },
   ];
 
   const stats = [
-    { label: "Products", value: "100,000+", icon: ShoppingCart },
-    { label: "Sellers", value: "5,000+", icon: Star },
-    { label: "Daily Orders", value: "50,000+", icon: Truck },
-    { label: "Happy Customers", value: "1M+", icon: Heart },
+    { label: "Active Products", value: "100,000+", icon: ShoppingCart },
+    { label: "Verified Sellers", value: "5,000+", icon: Star },
+    { label: "Orders Shipped", value: "50,000+", icon: Truck },
+    { label: "Happy Shoppers", value: "1,000,000+", icon: Heart },
   ];
 
   return (
-    <>
-      <div className="min-h-screen bg-linear-to-br from-[#F0F4F8] via-[#E8F1F8] to-[#E0F0F8]">
-        {/* 🎯 HERO SECTION */}
-        <motion.section
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="py-20 max-w-screen-2xl container mx-auto px-4 md:px-14"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <div className="min-h-screen bg-[#F8FAFC] overflow-hidden">
+      
+      {/* HERO SECTION */}
+      <section className="relative py-16 sm:py-24 bg-gradient-to-b from-blue-50/60 via-slate-50 to-[#F8FAFC]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Left Content Column */}
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              className="lg:col-span-7 space-y-6"
             >
-              <h1 className="text-5xl md:text-6xl font-extrabold text-[#1B2A41] leading-tight mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/80 border border-blue-200/80 text-blue-900 text-xs font-bold uppercase tracking-wider">
+                <Sparkles className="w-4 h-4 text-blue-600 animate-spin" /> Next-Gen Multi-Vendor Shopping
+              </div>
+
+              <h1 className="text-4xl sm:text-6xl font-black text-[#1B2A41] leading-tight">
                 Easy Shop,{" "}
-                <span className="text-indigo-600">Easy Life</span>
+                <span className="bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
+                  Easy Life
+                </span>
               </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Discover a seamless shopping experience with thousands of products 
-                from verified sellers. Enjoy secure payments, fast delivery, and 
-                unbeatable prices all in one place.
+
+              <p className="text-lg sm:text-xl text-slate-600 font-normal leading-relaxed max-w-2xl">
+                Experience a smooth e-commerce catalog with thousands of verified products, transparent price drops, express shipping, and buyer protection.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
                 <Link
                   to="/products"
-                  className="bg-linear-to-r from-indigo-600 to-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+                  className="px-8 py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-xl shadow-blue-500/25 transition transform active:scale-95 flex items-center justify-center gap-2"
                 >
-                  Start Shopping <ArrowRight className="w-5 h-5" />
+                  Explore Catalog <ArrowRight className="w-5 h-5" />
                 </Link>
+
                 <button
-                  onClick={() => document.getElementById('trending').scrollIntoView({ behavior: 'smooth' })}
-                  className="border-2 border-indigo-600 text-indigo-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-indigo-50 transition-all duration-300"
+                  onClick={() => document.getElementById("trending")?.scrollIntoView({ behavior: "smooth" })}
+                  className="px-8 py-4 rounded-2xl font-extrabold text-[#3F51F4] bg-white border-2 border-blue-200/80 hover:bg-blue-50 hover:border-blue-300 transition shadow-xs flex items-center justify-center gap-2"
                 >
-                  See Trending
+                  <TrendingUp className="w-5 h-5" /> Hot Trends
                 </button>
               </div>
 
-              <p className="text-sm text-gray-500">
-                ✓ Secure checkout • ✓ Fast delivery • ✓ Money-back guarantee
-              </p>
+              <div className="pt-4 flex items-center gap-6 text-xs font-bold text-slate-500 border-t border-slate-200/60">
+                <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-emerald-500" /> Verified Sellers</span>
+                <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-emerald-500" /> Instant Checkout</span>
+                <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-emerald-500" /> Easy Returns</span>
+              </div>
             </motion.div>
 
+            {/* Right Graphic Showcase */}
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="relative hidden lg:block"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="lg:col-span-5 relative"
             >
-              <div className="bg-linear-to-br from-indigo-500 to-blue-500 rounded-2xl p-1 shadow-2xl">
-                <div className="bg-white rounded-xl p-8">
-                  <div className="space-y-4">
-                    <div className="h-4 bg-linear-to-r from-indigo-200 to-blue-200 rounded-full"></div>
-                    <div className="h-4 bg-gray-200 rounded-full w-3/4"></div>
-                    <div className="grid grid-cols-2 gap-4 mt-6">
-                      <div className="bg-indigo-100 rounded-lg p-4 text-center">
-                        <p className="text-2xl font-bold text-indigo-600">100K+</p>
-                        <p className="text-xs text-gray-600 mt-1">Products</p>
-                      </div>
-                      <div className="bg-blue-100 rounded-lg p-4 text-center">
-                        <p className="text-2xl font-bold text-blue-600">5K+</p>
-                        <p className="text-xs text-gray-600 mt-1">Sellers</p>
-                      </div>
+              <div className="relative bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/80 space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600">
+                      <Award className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-extrabold text-sm text-[#1B2A41]">Featured Store Highlights</h3>
+                      <p className="text-xs text-slate-500">Live inventory analytics</p>
                     </div>
                   </div>
+                  <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-extrabold rounded-full uppercase">
+                    Live
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 text-center">
+                    <p className="text-3xl font-black text-[#3F51F4]">100K+</p>
+                    <p className="text-xs font-semibold text-slate-600 mt-1">Products Listed</p>
+                  </div>
+                  <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 text-center">
+                    <p className="text-3xl font-black text-emerald-600">5K+</p>
+                    <p className="text-xs font-semibold text-slate-600 mt-1">Brand Merchants</p>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xs">
+                      ★
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-[#1B2A41]">Buyer Satisfaction Score</p>
+                      <p className="text-[10px] text-slate-500">Based on 1M+ reviews</p>
+                    </div>
+                  </div>
+                  <span className="text-sm font-black text-slate-900">4.9 / 5.0</span>
                 </div>
               </div>
             </motion.div>
+
           </div>
-        </motion.section>
+        </div>
+      </section>
 
-        {/* � TRENDING PRODUCTS SECTION */}
-        <section id="trending" className="py-20 bg-linear-to-b from-white to-gray-50">
-          <div className="max-w-screen-2xl container mx-auto px-4 md:px-14">
-            {/* Trending by Purchase */}
-            <TrendsSlider type="purchase" title="🏆 Trending by Purchases" />
+      {/* TRENDING PRODUCTS CAROUSELS */}
+      <section id="trending" className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <TrendsSlider type="purchase" title="🏆 Top Trending Purchases" />
+        <TrendsSlider type="views" title="🔥 Most Viewed Products" />
+      </section>
 
-            {/* Trending by Views */}
-            <TrendsSlider type="views" title="🔥 Trending by Views" />
-          </div>
-        </section>
-
-        {/* �📊 STATS SECTION */}
-        <motion.section
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="py-16 bg-white border-y border-gray-200"
-        >
-          <div className="max-w-screen-2xl container mx-auto px-4 md:px-14">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {stats.map((stat, index) => {
-                const IconComponent = stat.icon;
-                return (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="text-center"
-                  >
-                    <div className="flex justify-center mb-3">
-                      <IconComponent className="w-8 h-8 text-indigo-600" />
-                    </div>
-                    <p className="text-3xl md:text-4xl font-bold text-[#1B2A41]">
-                      {stat.value}
-                    </p>
-                    <p className="text-gray-600 text-sm mt-2">{stat.label}</p>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
-        </motion.section>
-
-        {/* ✨ WHY SHOP WITH US */}
-        <section className="py-20 max-w-screen-2xl container mx-auto px-4 md:px-14">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#1B2A41] mb-4">
-              Why Shop With ZyCart?
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              The best online shopping destination for quality, variety, and value
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => {
-              const IconComponent = feature.icon;
+      {/* STATS STRIP */}
+      <section className="py-12 bg-white border-y border-slate-200/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, idx) => {
+              const IconComp = stat.icon;
               return (
-                <motion.div
-                  key={feature.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100"
-                >
-                  <div
-                    className={`bg-linear-to-br ${feature.color} w-14 h-14 rounded-lg flex items-center justify-center mb-4`}
-                  >
-                    <IconComponent className="w-7 h-7 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-[#1B2A41] mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </motion.div>
+                <div key={idx} className="text-center space-y-1">
+                  <IconComp className="w-7 h-7 text-[#3F51F4] mx-auto mb-2" />
+                  <p className="text-2xl sm:text-3xl font-black text-[#1B2A41]">{stat.value}</p>
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</p>
+                </div>
               );
             })}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/*  CTA SECTION */}
-        <motion.section
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="py-20 max-w-screen-2xl container mx-auto px-4 md:px-14"
-        >
-          <div className="bg-linear-to-r from-indigo-600 to-blue-600 rounded-2xl p-12 md:p-16 text-center shadow-2xl">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to Find Your Perfect Product?
-            </h2>
-            <p className="text-xl text-indigo-100 max-w-2xl mx-auto mb-8">
-              Join millions of satisfied customers shopping on ZyCart today
-            </p>
+      {/* WHY SHOP WITH US */}
+      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div className="text-center space-y-3 max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1B2A41]">Why Shop With ZyCart?</h2>
+          <p className="text-slate-600 text-sm sm:text-base">
+            Designed for buyers who value transparent pricing, verified merchants, and quick delivery.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {features.map((feature) => {
+            const IconComponent = feature.icon;
+            return (
+              <div
+                key={feature.id}
+                className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200/80 hover:shadow-xl transition duration-300 space-y-4 group"
+              >
+                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${feature.color} text-white flex items-center justify-center shadow-md`}>
+                  <IconComponent className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-extrabold text-[#1B2A41] group-hover:text-[#3F51F4] transition">
+                  {feature.title}
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* CALL TO ACTION BANNER */}
+      <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] rounded-3xl p-10 sm:p-16 text-center text-white shadow-2xl space-y-6 relative overflow-hidden">
+          <h2 className="text-3xl sm:text-5xl font-black leading-tight">
+            Ready to Find Your Next Favorite Product?
+          </h2>
+          <p className="text-blue-100 text-base sm:text-lg max-w-2xl mx-auto">
+            Explore thousands of products across electronics, fashion, home decor, and smart gadgets.
+          </p>
+          <div className="pt-2">
             <Link
               to="/products"
-              className="inline-block bg-white text-indigo-600 px-10 py-4 rounded-lg font-bold text-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#3F51F4] rounded-2xl font-extrabold text-base hover:bg-blue-50 shadow-lg transition transform active:scale-95"
             >
-              Explore Now
+              Start Shopping Now <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
-        </motion.section>
-      </div>
-    </>
+        </div>
+      </section>
+
+    </div>
   );
 };
 

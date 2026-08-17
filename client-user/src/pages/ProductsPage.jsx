@@ -1,4 +1,3 @@
-// pages/ProductsPage.jsx
 import React, { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import axios from "../utils/axiosInstance.js";
@@ -7,8 +6,8 @@ import ProductFilter from "../components/ProductFilter";
 import Loader from "../components/Loader";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { Filter, SlidersHorizontal, ArrowUpDown, X, Grid, List } from "lucide-react";
 
-// Debounce Hook
 function useDebounce(value, delay = 350) {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
@@ -19,10 +18,10 @@ function useDebounce(value, delay = 350) {
 }
 
 const SORT_OPTIONS = [
-  { value: "", label: "Default" },
+  { value: "", label: "Default Relevance" },
   { value: "price-asc", label: "Price: Low → High" },
   { value: "price-desc", label: "Price: High → Low" },
-  { value: "newest", label: "Newest First" },
+  { value: "newest", label: "Newest Arrivals" },
   { value: "oldest", label: "Oldest First" },
   { value: "title-asc", label: "Title: A → Z" },
   { value: "title-desc", label: "Title: Z → A" },
@@ -32,8 +31,8 @@ const ProductsPage = () => {
   const [searchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
-  // UI State
   const urlSearch = searchParams.get("search") || "";
   const [search, setSearch] = useState(urlSearch);
   const debouncedSearch = useDebounce(search);
@@ -45,20 +44,19 @@ const ProductsPage = () => {
   const [priceRange, setPriceRange] = useState([0, 50000]);
   const [maxPriceLimit, setMaxPriceLimit] = useState(50000);
 
-  // FILTER STATE from ProductFilter
   const [mainCategory, setMainCategory] = useState("");
   const [subCategory, setSubCategory] = useState("");
   const [subSubCategory, setSubSubCategory] = useState("");
   const [attributeFilters, setAttributeFilters] = useState({});
 
   useEffect(() => {
-    document.title = "Products | ZyCart";
+    document.title = "Catalog & Products | ZyCart";
   }, []);
 
-  // Update search state when URL search parameter changes
   useEffect(() => {
     setSearch(urlSearch);
   }, [urlSearch]);
+
   useEffect(() => {
     const load = async () => {
       try {
@@ -86,28 +84,21 @@ const ProductsPage = () => {
     load();
   }, []);
 
-  // -------------------------
-  // Filter + Sort
-  // -------------------------
   const filtered = useMemo(() => {
     let list = [...products];
 
-    // FILTER BY MAIN CATEGORY
     if (mainCategory) {
       list = list.filter((p) => p.mainCategory === mainCategory);
     }
 
-    // FILTER BY SUB CATEGORY
     if (subCategory) {
       list = list.filter((p) => p.subCategory === subCategory);
     }
 
-    // FILTER BY SUB-SUB CATEGORY
     if (subSubCategory) {
       list = list.filter((p) => p.subSubCategory === subSubCategory);
     }
 
-    // FILTER BY ATTRIBUTES
     if (Object.keys(attributeFilters).length > 0) {
       list = list.filter((p) => {
         return Object.entries(attributeFilters).every(([key, selectedOptions]) => {
@@ -120,17 +111,12 @@ const ProductsPage = () => {
       });
     }
 
-    // ADVANCED SEARCH - Search across title, description, specs, etc.
     if (debouncedSearch.trim() !== "") {
       const q = debouncedSearch.toLowerCase();
       list = list.filter((p) => {
-        // Search in title
         const titleMatch = p.title?.toLowerCase().includes(q);
-        
-        // Search in description
         const descMatch = p.description?.toLowerCase().includes(q);
         
-        // Search in attributes (specifications)
         let attrMatch = false;
         if (p.attributes && typeof p.attributes === 'object') {
           attrMatch = Object.entries(p.attributes).some(([key, value]) => {
@@ -142,11 +128,9 @@ const ProductsPage = () => {
           });
         }
         
-        // Search in main category
         const categoryMatch = p.mainCategory?.toLowerCase().includes(q);
         const subCategoryMatch = p.subCategory?.toLowerCase().includes(q);
         
-        // Search by price if query is a number
         const priceQuery = parseFloat(q);
         const priceMatch = !isNaN(priceQuery) && Number(p.price) === priceQuery;
         
@@ -154,13 +138,11 @@ const ProductsPage = () => {
       });
     }
 
-    // PRICE RANGE
     list = list.filter((p) => {
       const price = Number(p.price);
       return price >= priceRange[0] && price <= priceRange[1];
     });
 
-    // SORTING
     switch (sort) {
       case "price-asc":
         list.sort((a, b) => Number(a.price) - Number(b.price));
@@ -195,9 +177,6 @@ const ProductsPage = () => {
     return list;
   }, [products, debouncedSearch, priceRange, sort, mainCategory, subCategory, subSubCategory, attributeFilters]);
 
-  // -------------------------
-  // Pagination
-  // -------------------------
   const total = filtered.length;
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
@@ -213,21 +192,9 @@ const ProductsPage = () => {
   const handlePageClick = (p) => {
     if (p < 1 || p > totalPages) return;
     setPage(p);
-    window.scrollTo({ top: 200, behavior: "smooth" });
+    window.scrollTo({ top: 150, behavior: "smooth" });
   };
 
-  const resetFilters = () => {
-    setSearch("");
-    setSort("");
-    setPriceRange([0, maxPriceLimit]);
-    setMainCategory("");
-    setSubCategory("");
-    setSubSubCategory("");
-    setAttributeFilters({});
-    setPage(1);
-  };
-
-  // HANDLE FILTER CHANGES FROM ProductFilter
   const handleFiltersChange = (newFilters) => {
     setMainCategory(newFilters.mainCategory || "");
     setSubCategory(newFilters.subCategory || "");
@@ -237,60 +204,56 @@ const ProductsPage = () => {
     setPage(1);
   };
 
-  // -------------------------
-  // UI
-  // -------------------------
   return (
-    <div className="min-h-screen max-w-screen-2xl mx-auto px-4 md:px-14 bg-linear-to-br from-gray-50 to-gray-100">
-      <div className="container-main py-10">
+    <div className="min-h-screen bg-[#F8FAFC] py-6 sm:py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
 
-        {/* HEADER */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-10"
-        >
-          <h1 className="text-4xl md:text-5xl font-extrabold text-[#1B2A41]">
-            Browse Products
-          </h1>
-          <p className="text-gray-600 mt-2 text-lg">
-            Use search, filters, and sorting to find exactly what you need.
-          </p>
-        </motion.div>
+        {/* Page Header */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+              Explore Product Catalog
+            </h1>
+            <p className="text-slate-500 text-xs sm:text-sm">
+              Discover verified products with smart filters, price ranges, and sorting.
+            </p>
+          </div>
 
-        {/* MAIN LAYOUT - Filter (Left Sticky) + Products (Right) */}
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* LEFT SIDE - STICKY FILTER */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="w-full lg:w-80 shrink-0"
+          <button
+            onClick={() => setMobileFilterOpen(true)}
+            className="lg:hidden flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-[#3F51F4] text-white font-extrabold text-sm shadow-md"
           >
+            <Filter className="w-4 h-4" /> Filters &amp; Categories ({total})
+          </button>
+        </div>
+
+        {/* Main 2-Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Desktop Filter Sidebar */}
+          <div className="hidden lg:block lg:col-span-4 sticky top-24">
             <ProductFilter 
               onFilterChange={handleFiltersChange}
               onPriceChange={setPriceRange}
               productCount={total}
             />
-          </motion.div>
+          </div>
 
-          {/* RIGHT SIDE - PRODUCTS */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex-1"
-          >
-            {/* SORT BAR */}
-            <div className="mb-6 flex items-center justify-between bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-              <span className="text-gray-700 font-medium">
-                Showing <span className="font-bold">{total}</span> products
+          {/* Main Products Grid Column */}
+          <div className="lg:col-span-8 space-y-6">
+            
+            {/* Sorting & Result Count Bar */}
+            <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 flex flex-wrap items-center justify-between gap-4">
+              <span className="text-sm font-bold text-slate-700">
+                Showing <span className="text-[#3F51F4] font-black">{total}</span> matching products
               </span>
-              
+
               <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-700 font-medium">Sort by:</label>
+                <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Sort by:</label>
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value)}
-                  className="px-4 py-2 rounded-lg border shadow-sm bg-white focus:ring-2 focus:ring-indigo-400"
+                  className="px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs font-extrabold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none cursor-pointer"
                 >
                   {SORT_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -301,57 +264,47 @@ const ProductsPage = () => {
               </div>
             </div>
 
-            {/* PRODUCT LIST */}
+            {/* Product List */}
             {loading ? (
-              <div className="flex justify-center py-20">
+              <div className="flex justify-center items-center py-20 bg-white rounded-3xl border border-slate-200/80">
                 <Loader />
               </div>
             ) : visibleProducts.length > 0 ? (
-              <>
-                <ProductList products={visibleProducts} />
-              </>
+              <ProductList products={visibleProducts} />
             ) : (
-              <div className="text-center py-20 bg-white rounded-lg">
-                <p className="text-gray-600 text-lg font-medium">No products found</p>
-                <p className="text-gray-500">Try adjusting your search or filters</p>
+              <div className="text-center py-20 bg-white rounded-3xl border border-slate-200/80 p-8 space-y-3">
+                <p className="text-4xl">🔍</p>
+                <p className="text-lg font-bold text-[#1B2A41]">No products found</p>
+                <p className="text-sm text-slate-500 max-w-md mx-auto">
+                  Try adjusting your search query, price ranges, or clearing specific category filters.
+                </p>
               </div>
             )}
 
-            {/* PAGINATION */}
-            {visibleProducts.length > 0 && (
-              <div className="flex items-center justify-between mt-12 mb-6">
-                <p className="text-gray-600 text-sm">
-                  Showing{" "}
-                  <span className="font-semibold">
-                    {(page - 1) * pageSize + 1}
-                  </span>{" "}
-                  to{" "}
-                  <span className="font-semibold">
-                    {Math.min(page * pageSize, total)}
-                  </span>{" "}
-                  of <span className="font-semibold">{total}</span>
+            {/* Pagination Controls */}
+            {visibleProducts.length > 0 && totalPages > 1 && (
+              <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p className="text-xs font-bold text-slate-500">
+                  Page {page} of {totalPages} ({total} items)
                 </p>
 
-                <div className="flex items-center gap-2">
-                  {/* FIRST */}
+                <div className="flex items-center gap-1.5 flex-wrap">
                   <button
                     onClick={() => handlePageClick(1)}
                     disabled={page === 1}
-                    className="pagination-btn"
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-40"
                   >
-                    {"<<"}
+                    «
                   </button>
 
-                  {/* PREV */}
                   <button
                     onClick={() => handlePageClick(page - 1)}
                     disabled={page === 1}
-                    className="pagination-btn"
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-40"
                   >
                     Prev
                   </button>
 
-                  {/* NUMBER BUTTONS */}
                   {Array.from({ length: totalPages }).map((_, idx) => {
                     const p = idx + 1;
                     if (
@@ -363,48 +316,72 @@ const ProductsPage = () => {
                         <button
                           key={p}
                           onClick={() => handlePageClick(p)}
-                          className={`pagination-number ${p === page
-                            ? "pagination-number-active"
-                            : "pagination-number-idle"
-                            }`}
+                          className={`w-8 h-8 rounded-xl text-xs font-black transition ${
+                            p === page
+                              ? "bg-[#3F51F4] text-white shadow-md"
+                              : "border border-slate-200 text-slate-700 hover:bg-slate-100"
+                          }`}
                         >
                           {p}
                         </button>
                       );
                     }
-                    if (p === page - 3 || p === page + 3)
-                      return (
-                        <span key={p} className="px-2 text-gray-500">
-                          ...
-                        </span>
-                      );
-
+                    if (p === page - 3 || p === page + 3) {
+                      return <span key={p} className="text-xs text-slate-400">...</span>;
+                    }
                     return null;
                   })}
 
-                  {/* NEXT */}
                   <button
                     onClick={() => handlePageClick(page + 1)}
                     disabled={page === totalPages}
-                    className="pagination-btn"
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-40"
                   >
                     Next
                   </button>
 
-                  {/* LAST */}
                   <button
                     onClick={() => handlePageClick(totalPages)}
                     disabled={page === totalPages}
-                    className="pagination-btn"
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-40"
                   >
-                    {">>"}
+                    »
                   </button>
                 </div>
               </div>
             )}
-          </motion.div>
+
+          </div>
         </div>
+
       </div>
+
+      {/* Mobile Filter Drawer */}
+      {mobileFilterOpen && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex justify-end lg:hidden">
+          <div className="w-full max-w-md bg-white h-full overflow-y-auto p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+              <h3 className="font-extrabold text-lg text-[#1B2A41]">Filters &amp; Categories</h3>
+              <button
+                onClick={() => setMobileFilterOpen(false)}
+                className="p-2 rounded-full hover:bg-slate-100 text-slate-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <ProductFilter 
+              onFilterChange={(newFilters) => {
+                handleFiltersChange(newFilters);
+                setMobileFilterOpen(false);
+              }}
+              onPriceChange={setPriceRange}
+              productCount={total}
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

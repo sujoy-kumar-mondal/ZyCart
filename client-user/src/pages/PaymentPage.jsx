@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "../utils/axiosInstance.js";
 import { useCart } from "../context/CartProvider";
 import Loader from "../components/Loader";
+import { toast } from "react-hot-toast";
+import { CreditCard, ShieldCheck, CheckCircle2, Truck, Wallet, Smartphone, Banknote } from "lucide-react";
 
 const PaymentPage = () => {
   const location = useLocation();
@@ -14,9 +16,7 @@ const PaymentPage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    document.title = "Payment | ZyCart";
-    
-    // Redirect to checkout if no order data
+    document.title = "Payment Method — Checkout | ZyCart";
     if (!orderId) {
       navigate("/checkout");
     }
@@ -24,202 +24,181 @@ const PaymentPage = () => {
 
   const handlePayment = async () => {
     if (!selectedMethod) {
-      alert("Please select a payment method");
+      toast.error("Please select a payment method.");
       return;
     }
 
     setLoading(true);
 
     try {
-      // Update order with payment method
       await axios.patch(`/orders/${orderId}`, {
         paymentMethod: selectedMethod,
         paymentStatus: selectedMethod === "cod" ? "pending" : "completed",
       });
 
-      // Clear cart only after payment confirmation
       clearCart();
 
-      alert("Payment completed successfully!");
+      toast.success("Order & Payment confirmed successfully!");
       navigate("/my-orders");
     } catch (error) {
-      alert(error.response?.data?.message || "Payment failed!");
+      toast.error(error.response?.data?.message || "Payment processing failed!");
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <Loader />;
+  if (loading) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 py-16 grid md:grid-cols-3 gap-10">
-      
-      {/* LEFT: PAYMENT METHODS */}
-      <div className="md:col-span-2">
-        <div className="bg-white shadow-xl rounded-2xl p-8 border border-[#8FD6F6]/40">
-          <h2 className="text-2xl font-bold text-[#1B2A41] mb-6">
-            Complete Payment
-          </h2>
+    <div className="min-h-screen bg-[#F8FAFC] py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        
+        {/* Checkout Stepper Bar */}
+        <div className="max-w-3xl mx-auto bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-slate-200/80">
+          <div className="flex items-center justify-between text-xs sm:text-sm font-extrabold">
+            <div className="flex items-center gap-2 text-emerald-600">
+              <CheckCircle2 className="w-5 h-5 text-emerald-500 fill-emerald-100" />
+              <span>Shipping Address</span>
+            </div>
+            <div className="h-0.5 w-12 sm:w-24 bg-emerald-400"></div>
+            <div className="flex items-center gap-2 text-[#3F51F4]">
+              <span className="w-8 h-8 rounded-full bg-[#3F51F4] text-white flex items-center justify-center font-black">2</span>
+              <span>Payment Method</span>
+            </div>
+            <div className="h-0.5 w-12 sm:w-24 bg-slate-200"></div>
+            <div className="flex items-center gap-2 text-slate-400">
+              <span className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center font-bold">3</span>
+              <span>Confirmation</span>
+            </div>
+          </div>
+        </div>
 
-          <div className="space-y-4">
-            {/* Cash on Delivery */}
-            <div className="border border-gray-300 rounded-xl p-5 cursor-pointer hover:bg-gray-50 transition">
-              <label className="flex items-center cursor-pointer">
+        {/* 2-Column Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* LEFT: Payment Methods Selection */}
+          <div className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
+            <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+              <CreditCard className="w-6 h-6 text-[#3F51F4]" />
+              <h2 className="text-xl font-extrabold text-[#1B2A41]">
+                Select Payment Method
+              </h2>
+            </div>
+
+            <div className="space-y-4">
+              
+              {/* Cash on Delivery (Active Option) */}
+              <div
+                onClick={() => setSelectedMethod("cod")}
+                className={`p-5 rounded-2xl border-2 transition cursor-pointer flex items-center justify-between ${
+                  selectedMethod === "cod"
+                    ? "border-[#3F51F4] bg-blue-50/50 shadow-md"
+                    : "border-slate-200/80 bg-white hover:border-slate-300"
+                }`}
+              >
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-xl bg-emerald-100 text-emerald-700">
+                    <Banknote className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-[#1B2A41] text-base">Cash on Delivery (COD)</h3>
+                    <p className="text-xs text-slate-500 font-medium">Pay via Cash / UPI at the time of delivery.</p>
+                  </div>
+                </div>
+
                 <input
                   type="radio"
                   name="paymentMethod"
                   value="cod"
                   checked={selectedMethod === "cod"}
-                  onChange={(e) => setSelectedMethod(e.target.value)}
-                  className="w-4 h-4 cursor-pointer"
+                  onChange={() => setSelectedMethod("cod")}
+                  className="w-5 h-5 text-[#3F51F4] accent-[#3F51F4] cursor-pointer"
                 />
-                <div className="ml-4">
-                  <p className="font-semibold text-[#1B2A41] text-lg">
-                    Cash on Delivery
-                  </p>
-                  <p className="text-gray-600 text-sm mt-1">
-                    Pay safely using Cash on Delivery
-                  </p>
-                </div>
-              </label>
-            </div>
+              </div>
 
-            {/* UPI (Coming Soon) */}
-            <div className="border border-gray-300 rounded-xl p-5 opacity-50 cursor-not-allowed">
-              <label className="flex items-center cursor-not-allowed opacity-50">
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="upi"
-                  disabled
-                  className="w-4 h-4 cursor-not-allowed"
-                />
-                <div className="ml-4">
-                  <p className="font-semibold text-[#1B2A41] text-lg">
-                    UPI
-                  </p>
-                  <p className="text-gray-600 text-sm mt-1">
-                    Coming Soon
-                  </p>
+              {/* UPI (Coming Soon) */}
+              <div className="p-5 rounded-2xl border border-slate-200 bg-slate-50 opacity-60 flex items-center justify-between cursor-not-allowed">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-xl bg-slate-200 text-slate-600">
+                    <Smartphone className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-800 text-base">UPI / QR Payment</h3>
+                    <p className="text-xs text-slate-500">GPay, PhonePe, Paytm (Integration in progress)</p>
+                  </div>
                 </div>
-              </label>
-            </div>
+                <span className="text-[10px] font-extrabold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full uppercase">
+                  Coming Soon
+                </span>
+              </div>
 
-            {/* Credit/Debit Card (Coming Soon) */}
-            <div className="border border-gray-300 rounded-xl p-5 opacity-50 cursor-not-allowed">
-              <label className="flex items-center cursor-not-allowed opacity-50">
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="card"
-                  disabled
-                  className="w-4 h-4 cursor-not-allowed"
-                />
-                <div className="ml-4">
-                  <p className="font-semibold text-[#1B2A41] text-lg">
-                    Credit / Debit / ATM Card
-                  </p>
-                  <p className="text-gray-600 text-sm mt-1">
-                    Coming Soon
-                  </p>
+              {/* Cards (Coming Soon) */}
+              <div className="p-5 rounded-2xl border border-slate-200 bg-slate-50 opacity-60 flex items-center justify-between cursor-not-allowed">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 rounded-xl bg-slate-200 text-slate-600">
+                    <CreditCard className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-800 text-base">Credit / Debit / ATM Card</h3>
+                    <p className="text-xs text-slate-500">Visa, Mastercard, RuPay (Integration in progress)</p>
+                  </div>
                 </div>
-              </label>
-            </div>
+                <span className="text-[10px] font-extrabold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full uppercase">
+                  Coming Soon
+                </span>
+              </div>
 
-            {/* Wallet (Coming Soon) */}
-            <div className="border border-gray-300 rounded-xl p-5 opacity-50 cursor-not-allowed">
-              <label className="flex items-center cursor-not-allowed opacity-50">
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="wallet"
-                  disabled
-                  className="w-4 h-4 cursor-not-allowed"
-                />
-                <div className="ml-4">
-                  <p className="font-semibold text-[#1B2A41] text-lg">
-                    Wallet / Gift Card
-                  </p>
-                  <p className="text-gray-600 text-sm mt-1">
-                    Coming Soon
-                  </p>
-                </div>
-              </label>
-            </div>
-
-            {/* EMI (Coming Soon) */}
-            <div className="border border-gray-300 rounded-xl p-5 opacity-50 cursor-not-allowed">
-              <label className="flex items-center cursor-not-allowed opacity-50">
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="emi"
-                  disabled
-                  className="w-4 h-4 cursor-not-allowed"
-                />
-                <div className="ml-4">
-                  <p className="font-semibold text-[#1B2A41] text-lg">
-                    EMI
-                  </p>
-                  <p className="text-gray-600 text-sm mt-1">
-                    Coming Soon
-                  </p>
-                </div>
-              </label>
             </div>
           </div>
+
+          {/* RIGHT: Order Summary Card */}
+          <div className="lg:col-span-4 sticky top-24 space-y-4">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-6">
+              <h2 className="text-xl font-extrabold text-[#1B2A41] border-b border-slate-100 pb-4">
+                Final Amount
+              </h2>
+
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between text-slate-600 font-semibold">
+                  <span>Order Reference</span>
+                  <span className="text-slate-900 font-mono font-bold">#{orderId?.slice(-6)}</span>
+                </div>
+
+                <div className="flex justify-between text-slate-600 font-semibold">
+                  <span>Shipping Fee</span>
+                  <span className="text-emerald-600 font-bold">FREE</span>
+                </div>
+
+                <div className="pt-4 border-t border-slate-100 flex justify-between items-baseline">
+                  <span className="text-base font-extrabold text-[#1B2A41]">Payable Amount</span>
+                  <span className="text-3xl font-black bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
+                    ₹{totalAmount?.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+
+              <button
+                onClick={handlePayment}
+                className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 shadow-lg shadow-emerald-500/20 transition transform active:scale-95 flex items-center justify-center gap-2"
+              >
+                Confirm Order &amp; Pay
+              </button>
+
+              <div className="pt-2 flex items-center justify-center gap-2 text-xs font-bold text-slate-400">
+                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                <span>256-Bit Encrypted Payment</span>
+              </div>
+            </div>
+          </div>
+
         </div>
-      </div>
 
-      {/* RIGHT: ORDER SUMMARY */}
-      <div className="md:col-span-1">
-        <div className="bg-white shadow-xl rounded-2xl p-8 h-fit border border-[#8FD6F6]/40 sticky top-20">
-          <h2 className="text-xl font-bold text-[#1B2A41] mb-6">
-            Order Summary
-          </h2>
-
-          {/* Price Breakdown */}
-          <div className="space-y-4 text-gray-700 border-b border-gray-200 pb-4">
-            <div className="flex justify-between">
-              <span className="text-sm">Price ({cartItems?.length} item{cartItems?.length > 1 ? 's' : ''})</span>
-              <span className="text-sm font-medium text-[#1B2A41]">₹{totalAmount}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-sm">Delivery Charges</span>
-              <span className="text-sm font-medium text-green-600">FREE</span>
-            </div>
-
-            {/* Discount (if any) */}
-            <div className="flex justify-between">
-              <span className="text-sm">Discount</span>
-              <span className="text-sm font-medium text-green-600">₹0</span>
-            </div>
-          </div>
-
-          {/* Total Amount */}
-          <div className="flex justify-between mt-4 mb-6">
-            <span className="text-lg font-bold text-[#1B2A41]">Total Amount</span>
-            <span className="text-2xl font-bold text-[#1B2A41]">₹{totalAmount}</span>
-          </div>
-
-          {/* Payment Badge */}
-          <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-6 text-center">
-            <p className="text-green-700 text-sm font-medium">✓ 100% Secure</p>
-          </div>
-
-          {/* Pay Button */}
-          <button
-            onClick={handlePayment}
-            className="
-              w-full py-3 rounded-xl text-white font-semibold text-lg
-              bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
-              hover:opacity-90 transition shadow-md
-            "
-          >
-            Complete Payment
-          </button>
-        </div>
       </div>
     </div>
   );
