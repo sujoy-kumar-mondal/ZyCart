@@ -210,8 +210,16 @@ const SellerProducts = () => {
       return;
     }
 
-    if (!form.maxQuantityPerPurchase || parseInt(form.maxQuantityPerPurchase) < 1) {
-      toast.error("Max Quantity Per Purchase is required (at least 1)!");
+    const parsedStock = parseInt(form.stock);
+    const parsedMaxQty = parseInt(form.maxQuantityPerPurchase);
+
+    if (!form.maxQuantityPerPurchase || isNaN(parsedMaxQty) || parsedMaxQty < 1 || parsedMaxQty > 25) {
+      toast.error("Max Quantity Per Purchase must be between 1 and 25!");
+      return;
+    }
+
+    if (parsedMaxQty >= parsedStock) {
+      toast.error("Max Quantity Per Purchase must be less than Stock Quantity!");
       return;
     }
 
@@ -331,8 +339,16 @@ const SellerProducts = () => {
       return;
     }
 
-    if (!form.maxQuantityPerPurchase || parseInt(form.maxQuantityPerPurchase) < 1) {
-      toast.error("Max Quantity Per Purchase is required (at least 1)!");
+    const parsedStock = parseInt(form.stock);
+    const parsedMaxQty = parseInt(form.maxQuantityPerPurchase);
+
+    if (!form.maxQuantityPerPurchase || isNaN(parsedMaxQty) || parsedMaxQty < 1 || parsedMaxQty > 25) {
+      toast.error("Max Quantity Per Purchase must be between 1 and 25!");
+      return;
+    }
+
+    if (parsedMaxQty >= parsedStock) {
+      toast.error("Max Quantity Per Purchase must be less than Stock Quantity!");
       return;
     }
 
@@ -595,10 +611,14 @@ const SellerProducts = () => {
                       name="maxQuantityPerPurchase"
                       value={form.maxQuantityPerPurchase || ''}
                       onChange={handleChange}
-                      placeholder="Max Quantity Per Purchase"
+                      placeholder="Max Quantity Per Purchase (1 - 25)"
                       min="1"
+                      max="25"
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
                     />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Must be between 1 and 25, and less than Stock Quantity.
+                    </p>
                   </div>
 
                   <div>

@@ -167,11 +167,18 @@ export const addProduct = async (req, res) => {
     }
 
     // 1. Max Quantity Per Purchase validation
+    const parsedStock = parseInt(stock);
     const parsedMaxQty = maxQuantityPerPurchase ? parseInt(maxQuantityPerPurchase) : null;
-    if (!parsedMaxQty || isNaN(parsedMaxQty) || parsedMaxQty < 1) {
+    if (!parsedMaxQty || isNaN(parsedMaxQty) || parsedMaxQty < 1 || parsedMaxQty > 25) {
       return res.status(400).json({
         success: false,
-        message: "Max Quantity Per Purchase is required and must be at least 1.",
+        message: "Max Quantity Per Purchase must be between 1 and 25.",
+      });
+    }
+    if (parsedMaxQty >= parsedStock) {
+      return res.status(400).json({
+        success: false,
+        message: "Max Quantity Per Purchase must be less than Stock Quantity.",
       });
     }
 
@@ -382,16 +389,24 @@ export const updateProduct = async (req, res) => {
     }
 
     // Validate Max Quantity Per Purchase
-    if (maxQuantityPerPurchase !== undefined && maxQuantityPerPurchase !== "") {
-      const parsedMaxQty = parseInt(maxQuantityPerPurchase);
-      if (isNaN(parsedMaxQty) || parsedMaxQty < 1) {
-        return res.status(400).json({
-          success: false,
-          message: "Max Quantity Per Purchase must be at least 1.",
-        });
-      }
-      product.maxQuantityPerPurchase = parsedMaxQty;
+    const finalStock = stock !== undefined && stock !== "" ? parseInt(stock) : product.stock;
+    const finalMaxQty = maxQuantityPerPurchase !== undefined && maxQuantityPerPurchase !== "" ? parseInt(maxQuantityPerPurchase) : product.maxQuantityPerPurchase;
+
+    if (isNaN(finalMaxQty) || finalMaxQty < 1 || finalMaxQty > 25) {
+      return res.status(400).json({
+        success: false,
+        message: "Max Quantity Per Purchase must be between 1 and 25.",
+      });
     }
+
+    if (finalMaxQty >= finalStock) {
+      return res.status(400).json({
+        success: false,
+        message: "Max Quantity Per Purchase must be less than Stock Quantity.",
+      });
+    }
+
+    product.maxQuantityPerPurchase = finalMaxQty;
 
     // Validate Discount & Discount Expiry Date
     const finalDiscount = discount !== undefined && discount !== "" ? parseInt(discount) : product.discount;
