@@ -136,18 +136,21 @@ const WishlistPage = () => {
                             ₹{product.price}
                           </p>
                         </div>
-                        <div className="text-right">
-                          <p className="text-sm text-gray-600">Stock</p>
-                          <p
-                            className={`font-semibold ${
-                              product.stock > 0
-                                ? "text-green-600"
-                                : "text-red-600"
-                            }`}
-                          >
-                            {product.stock > 0 ? `${product.stock} left` : "Out"}
-                          </p>
-                        </div>
+                        {product.stock < 10 && (
+                          <div className="text-right">
+                            <p
+                              className={`text-xs font-semibold ${
+                                product.stock > 0 ? "text-amber-600" : "text-red-600"
+                              }`}
+                            >
+                              {product.stock === 0
+                                ? "Out of stock"
+                                : product.stock < 5
+                                ? `Only ${product.stock} left`
+                                : "Only few left"}
+                            </p>
+                          </div>
+                        )}
                       </div>
 
                       {/* Actions */}

@@ -126,9 +126,11 @@ const ProductCard = ({ product }) => {
           </p>
         )}
 
-        <p className="text-sm text-gray-600">
-          Stock: {product.stock}
-        </p>
+        {product.stock < 10 && (
+          <p className="text-xs font-semibold text-amber-600 mt-0.5">
+            {product.stock < 5 ? `Only ${product.stock} left` : "Only few left"}
+          </p>
+        )}
       </div>
       <button
         onClick={() => {

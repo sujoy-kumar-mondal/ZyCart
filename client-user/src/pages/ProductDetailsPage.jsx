@@ -420,14 +420,20 @@ const ProductDetailsPage = () => {
             </div>
 
             {/* Stock Info Cards */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <p className="text-sm text-gray-600 mb-1">Available Stock</p>
-                <p className="text-2xl font-bold text-green-600">{product.stock} units</p>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {product.stock < 10 && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                  <p className="text-sm text-amber-700 mb-1">Availability</p>
+                  <p className="text-xl font-bold text-amber-800">
+                    {product.stock < 5 ? `Only ${product.stock} left` : "Only few left"}
+                  </p>
+                </div>
+              )}
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                 <p className="text-sm text-gray-600 mb-1">Status</p>
-                <p className="text-lg font-bold text-green-600">✓ Available</p>
+                <p className="text-lg font-bold text-green-600">
+                  {product.stock > 0 ? "✓ In Stock" : "✕ Out of Stock"}
+                </p>
               </div>
             </div>
 

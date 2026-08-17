@@ -49,7 +49,11 @@ const CartItem = ({ item }) => {
 
         <p className="text-[#3F51F4] font-bold text-lg">₹{item.price}</p>
 
-        <p className="text-gray-600 text-sm">Stock: {item.stock}</p>
+        {item.stock < 10 && (
+          <p className="text-xs font-semibold text-amber-600 mt-0.5">
+            {item.stock < 5 ? `Only ${item.stock} left` : "Only few left"}
+          </p>
+        )}
         {item.maxQuantityPerPurchase && item.maxQuantityPerPurchase < item.stock && (
           <p className="text-xs text-orange-600 font-semibold mt-0.5">
             ⚠️ Max {item.maxQuantityPerPurchase} unit(s) allowed per purchase
