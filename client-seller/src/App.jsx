@@ -8,6 +8,7 @@ import Footer from "./components/Footer.jsx";
 // Seller Pages
 import SellerDashboard from "./pages/seller/SellerDashboard.jsx";
 import SellerProducts from "./pages/seller/SellerProducts.jsx";
+import SellerProductDetails from "./pages/seller/SellerProductDetails.jsx";
 import SellerOrders from "./pages/seller/SellerOrders.jsx";
 import SellerOrderDetails from "./pages/seller/SellerOrderDetails.jsx";
 import SellerApply from "./pages/seller/SellerApply.jsx";
@@ -65,6 +66,15 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <SellerProducts />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/seller/products/:id"
+            element={
+              <ProtectedRoute>
+                <SellerProductDetails />
               </ProtectedRoute>
             }
           />

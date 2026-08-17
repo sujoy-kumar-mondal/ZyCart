@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import axios from "../../utils/axiosInstance.js";
 import Loader from "../../components/Loader";
 import toast from "react-hot-toast";
@@ -123,6 +124,17 @@ const SellerProducts = () => {
     setFilteredProducts(filtered);
     setCurrentPage(1);
   }, [products, searchTerm, sortBy, filterStatus, filterStockStatus]);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (products.length > 0 && location.state?.editProductId) {
+      const prodToEdit = products.find((p) => p._id === location.state.editProductId);
+      if (prodToEdit) {
+        handleEdit(prodToEdit);
+      }
+    }
+  }, [products, location.state]);
 
   // HANDLE MAIN CATEGORY CHANGE
   const handleMainCategoryChange = async (mainCat) => {
@@ -1061,10 +1073,10 @@ const SellerProducts = () => {
                     {paginatedProducts.map((product) => (
                       <tr key={product._id} className="hover:bg-blue-50/50 transition">
                         <td className="px-6 py-4">
-                          <div
-                            onClick={() => handleEdit(product)}
+                          <Link
+                            to={`/seller/products/${product._id}`}
                             className="flex items-center gap-4 group cursor-pointer"
-                            title="Click to edit product"
+                            title="Click to view product details"
                           >
                             <img
                               src={product.images?.[0] || "https://via.placeholder.com/50"}
@@ -1079,7 +1091,7 @@ const SellerProducts = () => {
                                 {product.mainCategory} • {product.subCategory}
                               </p>
                             </div>
-                          </div>
+                          </Link>
                         </td>
 
                         <td className="px-6 py-4">
