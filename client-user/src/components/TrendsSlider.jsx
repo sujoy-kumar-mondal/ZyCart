@@ -232,25 +232,7 @@ const TrendsSlider = ({ type, title }) => {
           <Slider ref={sliderRef} {...sliderSettings}>
             {products.map((trend, index) => (
               <div key={trend._id || index} className="px-2 md:px-3 py-4 w-full">
-                <div className="bg-linear-to-br from-white to-gray-50 rounded-xl p-4 md:p-5 shadow-sm hover:shadow-xl transition-all duration-300 ease-in-out h-full border border-gray-100">
-                  <ProductCard product={trend.product} />
-                  <div className="mt-3 md:mt-4 text-center space-y-2">
-                    <p className="text-xs md:text-sm font-semibold text-gray-800 line-clamp-2 h-8">
-                      {trend.product?.name || "Product"}
-                    </p>
-                    <div className="text-xs md:text-sm text-gray-600 font-medium">
-                      {type === "purchase" ? (
-                        <span className="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full">
-                          📊 {trend.noOfPurchase} purchases
-                        </span>
-                      ) : (
-                        <span className="inline-block bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full">
-                          👁️ {trend.noOfViews} views
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                {trend.product && <ProductCard product={trend.product} />}
               </div>
             ))}
           </Slider>
