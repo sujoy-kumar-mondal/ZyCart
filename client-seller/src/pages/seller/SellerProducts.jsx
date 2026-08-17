@@ -1050,6 +1050,7 @@ const SellerProducts = () => {
                     <tr className="bg-linear-to-r from-gray-50 to-gray-100 border-b border-gray-300">
                       <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Product</th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Price</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Discounted Price</th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Stock</th>
                       <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
                       <th className="px-6 py-4 text-right text-sm font-semibold text-gray-900">Actions</th>
@@ -1060,25 +1061,49 @@ const SellerProducts = () => {
                     {paginatedProducts.map((product) => (
                       <tr key={product._id} className="hover:bg-blue-50/50 transition">
                         <td className="px-6 py-4">
-                          <div className="flex items-center gap-4">
+                          <a
+                            href={`${import.meta.env.VITE_USER_URL || "http://localhost:5173"}/product/${product._id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-4 group cursor-pointer"
+                            title="Click to view product on storefront"
+                          >
                             <img
                               src={product.images?.[0] || "https://via.placeholder.com/50"}
                               alt={product.title}
-                              className="w-12 h-12 rounded-lg object-cover shadow-sm border border-gray-200"
+                              className="w-12 h-12 rounded-lg object-cover shadow-sm border border-gray-200 group-hover:scale-105 transition"
                             />
                             <div>
-                              <p className="text-sm font-semibold text-gray-900 line-clamp-1 max-w-xs">
+                              <p className="text-sm font-semibold text-gray-900 line-clamp-1 max-w-xs group-hover:text-blue-600 group-hover:underline transition">
                                 {product.title}
                               </p>
                               <p className="text-xs text-gray-500">
                                 {product.mainCategory} • {product.subCategory}
                               </p>
                             </div>
-                          </div>
+                          </a>
                         </td>
 
                         <td className="px-6 py-4">
                           <span className="text-sm font-bold text-blue-600">₹{product.price.toLocaleString()}</span>
+                        </td>
+
+                        <td className="px-6 py-4">
+                          {product.discount > 0 ? (
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="text-sm font-bold text-green-600">
+                                ₹{(product.discountedPrice && product.discountedPrice > 0
+                                  ? product.discountedPrice
+                                  : Math.round(product.price * (1 - product.discount / 100))
+                                ).toLocaleString()}
+                              </span>
+                              <span className="text-xs font-bold text-green-700 bg-green-100 px-1.5 py-0.5 rounded">
+                                {product.discount}% OFF
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-gray-400 font-medium">—</span>
+                          )}
                         </td>
 
                         <td className="px-6 py-4">

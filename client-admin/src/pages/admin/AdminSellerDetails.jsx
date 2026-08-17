@@ -208,6 +208,7 @@ const AdminSellerDetails = () => {
                     <tr className="text-gray-600">
                       <th className="py-2">Product</th>
                       <th>Price</th>
+                      <th>Discounted Price</th>
                       <th>Stock</th>
                     </tr>
                   </thead>
@@ -215,9 +216,29 @@ const AdminSellerDetails = () => {
                     {products.slice(0, 10).map((product) => (
                       <tr key={product._id} className="border-b hover:bg-gray-50">
                         <td className="py-3">
-                          <p className="font-semibold text-[#1B2A41]">{product.title}</p>
+                          <a
+                            href={`${import.meta.env.VITE_USER_URL || "http://localhost:5173"}/product/${product._id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold text-[#1B2A41] hover:text-[#3F51F4] hover:underline transition"
+                            title="Click to view product on storefront"
+                          >
+                            {product.title}
+                          </a>
                         </td>
                         <td className="font-semibold">₹{product.price?.toLocaleString()}</td>
+                        <td>
+                          {product.discount > 0 ? (
+                            <span className="font-semibold text-green-600">
+                              ₹{(product.discountedPrice && product.discountedPrice > 0
+                                ? product.discountedPrice
+                                : Math.round(product.price * (1 - product.discount / 100))
+                              ).toLocaleString()} ({product.discount}% OFF)
+                            </span>
+                          ) : (
+                            <span className="text-gray-400">—</span>
+                          )}
+                        </td>
                         <td className={`font-semibold ${product.stock > 0 ? "text-green-600" : "text-red-600"}`}>
                           {product.stock}
                         </td>
