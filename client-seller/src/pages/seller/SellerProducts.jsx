@@ -1133,7 +1133,7 @@ const SellerProducts = () => {
 
             <p className="text-gray-600 text-sm">
               Are you sure you want to delete <span className="font-semibold text-gray-900">"{productToDelete.title}"</span>?
-              This action cannot be undone and will permanently remove the product and its images from Cloudinary.
+              This action cannot be undone and will permanently remove the product and its images.
             </p>
 
             <div className="flex justify-end gap-3 pt-2">
