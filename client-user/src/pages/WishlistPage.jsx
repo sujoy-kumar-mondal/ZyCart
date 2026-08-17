@@ -74,6 +74,17 @@ const WishlistPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {wishlist.map((item, idx) => {
                 const product = item.product;
+
+                const hasActiveDiscount =
+                  product.discount > 0 &&
+                  (!product.discountPeriod || new Date(product.discountPeriod) > new Date());
+
+                const effectiveDiscountedPrice = hasActiveDiscount
+                  ? (product.discountedPrice && product.discountedPrice > 0
+                      ? product.discountedPrice
+                      : Math.round(product.price * (1 - product.discount / 100)))
+                  : product.price;
+
                 return (
                   <motion.div
                     key={product._id}
@@ -132,9 +143,23 @@ const WishlistPage = () => {
                       {/* Price & Stock */}
                       <div className="flex justify-between items-center py-2 border-t border-gray-200">
                         <div>
-                          <p className="text-2xl font-bold text-[#3F51F4]">
-                            ₹{product.price}
-                          </p>
+                          {hasActiveDiscount ? (
+                            <div className="flex items-baseline gap-2 flex-wrap">
+                              <span className="text-2xl font-black bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] bg-clip-text text-transparent">
+                                ₹{effectiveDiscountedPrice.toLocaleString()}
+                              </span>
+                              <span className="text-sm text-gray-400 line-through">
+                                ₹{product.price.toLocaleString()}
+                              </span>
+                              <span className="text-xs font-bold text-green-600 bg-green-100 px-1.5 py-0.5 rounded">
+                                {product.discount}% OFF
+                              </span>
+                            </div>
+                          ) : (
+                            <p className="text-2xl font-bold text-[#3F51F4]">
+                              ₹{product.price.toLocaleString()}
+                            </p>
+                          )}
                         </div>
                         {product.stock < 10 && (
                           <div className="text-right">
