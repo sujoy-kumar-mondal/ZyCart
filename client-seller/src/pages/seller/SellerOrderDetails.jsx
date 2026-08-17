@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../../utils/axiosInstance";
 import Loader from "../../components/Loader";
-import { ArrowLeft, Calendar, MapPin, CheckCircle } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, CheckCircle2, User, Phone, Mail, DollarSign } from "lucide-react";
 import toast from "react-hot-toast";
 
 const SellerOrderDetails = () => {
@@ -14,7 +14,6 @@ const SellerOrderDetails = () => {
 
   useEffect(() => {
     fetchOrderDetails();
-    document.title = "Order Details | ZyCart Seller";
   }, [orderId]);
 
   const fetchOrderDetails = async () => {
@@ -22,6 +21,7 @@ const SellerOrderDetails = () => {
       setLoading(true);
       const res = await axios.get(`/seller/orders/${orderId}`);
       setOrder(res.data.order);
+      document.title = `Order Details #${res.data.order?.parentOrderId?.parentOrderNumber || ""} | ZyCart`;
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to load order");
       navigate("/seller/orders");
@@ -34,7 +34,7 @@ const SellerOrderDetails = () => {
     try {
       setUpdating(true);
       await axios.patch(`/seller/orders/status/${orderId}`, { status: newStatus });
-      toast.success("Order status updated successfully!");
+      toast.success(`Order status updated to ${newStatus}`);
       fetchOrderDetails();
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to update order");
@@ -43,219 +43,168 @@ const SellerOrderDetails = () => {
     }
   };
 
-  if (loading) return <Loader />;
-
-  if (!order) {
+  if (loading) {
     return (
-      <div className="text-center mt-20 max-w-screen-2xl container mx-auto">
-        <h2 className="text-xl font-semibold text-red-500">Order not found</h2>
-        <button
-          className="mt-4 px-6 py-2 rounded-lg text-white font-semibold bg-[#3F51F4]"
-          onClick={() => navigate("/seller/orders")}
-        >
-          Back to Orders
-        </button>
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <Loader />
       </div>
     );
   }
 
-  const getStatusColor = (status) => {
-    const colors = {
-      Confirmed: "bg-blue-100 text-blue-800",
-      Packed: "bg-purple-100 text-purple-800",
-      Shipped: "bg-green-100 text-green-800",
-      "Out for Delivery": "bg-orange-100 text-orange-800",
-      Delivered: "bg-green-200 text-green-900",
-    };
-    return colors[status] || "bg-gray-100 text-gray-800";
-  };
+  if (!order) return null;
 
   return (
-    <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 py-16">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <button
-          onClick={() => navigate("/seller/orders")}
-          className="p-2 hover:bg-gray-100 rounded-lg transition"
-        >
-          <ArrowLeft className="w-6 h-6 text-gray-600" />
-        </button>
-        <div>
-          <h1 className="text-3xl font-bold text-[#1B2A41]">Order Details</h1>
-          <p className="text-gray-600">Parent Order #{order?.parentOrderId?.parentOrderNumber}</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Status Section */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40">
-            <h2 className="text-2xl font-bold text-[#1B2A41] mb-6">Order Status</h2>
-
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-1">Order Status</p>
-                <span className={`inline-block px-4 py-2 rounded-lg font-semibold text-sm ${getStatusColor(order?.status)}`}>
-                  {order?.status}
-                </span>
-              </div>
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-1">Your Earning</p>
-                <p className="text-[#1B2A41] font-bold text-lg">
-                  ₹{(order?.amount * 0.8)?.toLocaleString()}
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-1 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" /> Order Date
-                </p>
-                <p className="text-[#1B2A41] font-semibold">
-                  {order?.parentOrderId?.createdAt ? new Date(order.parentOrderId.createdAt).toLocaleDateString() : "N/A"}
-                </p>
-              </div>
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-1">Order Total</p>
-                <p className="text-[#1B2A41] font-semibold">
-                  ₹{order?.amount?.toLocaleString()}
-                </p>
-              </div>
-            </div>
+    <div className="min-h-screen bg-[#F8FAFC] py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        
+        {/* Header */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <button
+              onClick={() => navigate("/seller/orders")}
+              className="inline-flex items-center gap-2 text-xs font-bold text-[#3F51F4] hover:underline mb-1"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back to Customer Orders
+            </button>
+            <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+              Order Fulfillment Breakdown
+            </h1>
+            <p className="text-xs text-slate-500 font-mono font-bold">
+              Parent Order #{order?.parentOrderId?.parentOrderNumber}
+            </p>
           </div>
 
-          {/* Products Section */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40">
-            <h2 className="text-2xl font-bold text-[#1B2A41] mb-6">Items</h2>
-
-            <div className="space-y-4">
-              {order?.items?.map((item, idx) => (
-                <div key={idx} className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-[#1B2A41] text-lg">{item.title}</h3>
-                    <p className="text-gray-600 text-sm mt-1">Quantity: {item.qty}</p>
-                    <p className="text-gray-600 text-sm">Price: ₹{item.price?.toLocaleString()}</p>
-                    <p className="text-[#1B2A41] font-bold mt-2">
-                      Subtotal: ₹{item.subtotal?.toLocaleString()}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Customer Address */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40">
-            <h2 className="text-2xl font-bold text-[#1B2A41] mb-6 flex items-center gap-2">
-              <MapPin className="w-6 h-6" /> Delivery Address
-            </h2>
-
-            <div className="bg-gray-50 rounded-xl p-6">
-              <p className="text-[#1B2A41] font-semibold text-lg">
-                {order?.parentOrderId?.address?.line1}
-              </p>
-              <p className="text-gray-600 mt-2">
-                {order?.parentOrderId?.address?.city}, {order?.parentOrderId?.address?.state}{" "}
-                {order?.parentOrderId?.address?.postalCode}
-              </p>
-              <p className="text-gray-600 mt-2">
-                Phone: {order?.userId?.mobile || "N/A"}
-              </p>
-            </div>
+          <div className="flex items-center gap-3">
+            <span className="px-4 py-2 rounded-full text-xs font-black uppercase bg-blue-100 text-blue-800 border border-blue-200">
+              Status: {order?.status}
+            </span>
           </div>
         </div>
 
-        {/* Sidebar */}
-        <div className="lg:col-span-1">
-          {/* Order Actions */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40 sticky top-20">
-            <h3 className="text-xl font-bold text-[#1B2A41] mb-6">Actions</h3>
-
-            <div className="space-y-3 mb-6">
-              {order?.status !== "Shipped" && (
-                <>
-                  {order?.status === "Confirmed" && (
-                    <button
-                      onClick={() => updateOrderStatus("Packed")}
-                      disabled={updating}
-                      className="w-full px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition font-semibold disabled:opacity-50"
-                    >
-                      {updating ? "Updating..." : "Mark as Packed"}
-                    </button>
-                  )}
-
-                  <button
-                    onClick={() => updateOrderStatus("Shipped")}
-                    disabled={updating}
-                    className="w-full px-4 py-3 bg-[#3F51F4] text-white rounded-lg hover:bg-[#2F3FA8] transition font-semibold disabled:opacity-50"
-                  >
-                    {updating ? "Updating..." : "Mark as Shipped"}
-                  </button>
-                </>
-              )}
-
-              {order?.status === "Shipped" && (
-                <div className="p-4 bg-green-50 rounded-xl border border-green-200">
-                  <CheckCircle className="w-6 h-6 text-green-600 mb-2" />
-                  <p className="text-green-800 font-semibold">Order Shipped</p>
-                  <p className="text-green-700 text-sm mt-1">
-                    Package is on its way to customer
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Order Summary */}
-            <div className="border-t pt-6">
-              <h4 className="font-bold text-[#1B2A41] mb-4">Summary</h4>
+        {/* 2-Column Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* LEFT: Items & Shipping Address */}
+          <div className="lg:col-span-8 space-y-6">
+            
+            {/* Items Card */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
+              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                Package Purchased Items
+              </h2>
 
               <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Amount:</span>
-                  <span className="font-semibold text-[#1B2A41]">
-                    ₹{order?.amount?.toLocaleString()}
-                  </span>
+                {order?.items?.map((item, idx) => (
+                  <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex justify-between items-center text-sm">
+                    <div>
+                      <h3 className="font-extrabold text-slate-900">{item.title}</h3>
+                      <p className="text-xs text-slate-500 font-semibold mt-0.5">
+                        Quantity: <span className="font-bold text-slate-800">{item.qty} unit(s)</span>
+                      </p>
+                    </div>
+                    <span className="font-black text-slate-900 text-base">
+                      ₹{item.subtotal?.toLocaleString()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Delivery Address Card */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
+              <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                <MapPin className="w-5 h-5 text-[#3F51F4]" />
+                <h2 className="text-lg font-extrabold text-[#1B2A41]">
+                  Customer Shipping Address
+                </h2>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-xs sm:text-sm font-semibold text-slate-800 space-y-1">
+                <p className="font-bold text-slate-900">{order?.parentOrderId?.address?.line1}</p>
+                <p>
+                  {order?.parentOrderId?.address?.city}, {order?.parentOrderId?.address?.state}{" "}
+                  {order?.parentOrderId?.address?.postalCode}
+                </p>
+                <p className="text-slate-500 pt-1">
+                  Recipient Contact Phone: <span className="font-bold text-slate-800">{order?.userId?.mobile || "N/A"}</span>
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* RIGHT: Actions & Earnings Summary */}
+          <div className="lg:col-span-4 space-y-6">
+            
+            {/* Actions Card */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
+              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                Fulfillment Actions
+              </h2>
+
+              <div className="space-y-3">
+                {order?.status !== "Shipped" && order?.status !== "Delivered" ? (
+                  <>
+                    {order?.status === "Confirmed" && (
+                      <button
+                        onClick={() => updateOrderStatus("Packed")}
+                        disabled={updating}
+                        className="w-full py-3.5 rounded-2xl font-extrabold text-white text-xs bg-purple-600 hover:bg-purple-700 transition disabled:opacity-50"
+                      >
+                        {updating ? "Updating..." : "Mark as Packed"}
+                      </button>
+                    )}
+
+                    <button
+                      onClick={() => updateOrderStatus("Shipped")}
+                      disabled={updating}
+                      className="w-full py-3.5 rounded-2xl font-extrabold text-white text-xs bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] shadow-md shadow-blue-500/20 hover:opacity-95 transition disabled:opacity-50"
+                    >
+                      {updating ? "Updating..." : "Mark as Shipped"}
+                    </button>
+                  </>
+                ) : (
+                  <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0" />
+                    <div>
+                      <p className="font-black text-emerald-900 text-xs">Fulfillment Complete</p>
+                      <p className="text-[10px] text-emerald-700 font-semibold">Package dispatched to carrier.</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Financial Cut Summary */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
+              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                Earnings Breakdown
+              </h2>
+
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between text-slate-600 font-semibold">
+                  <span>Gross Order Value</span>
+                  <span className="font-bold text-slate-900">₹{order?.amount?.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600">Your Cut (80%):</span>
-                  <span className="font-semibold text-[#1B2A41]">
-                    ₹{(order?.amount * 0.8)?.toLocaleString()}
-                  </span>
+
+                <div className="flex justify-between text-slate-600 font-semibold">
+                  <span>Platform Fee (20%)</span>
+                  <span className="text-slate-400 font-bold">- ₹{(order?.amount * 0.2)?.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-600">Platform Fee (20%):</span>
-                  <span className="font-semibold text-gray-500">
-                    ₹{(order?.amount * 0.2)?.toLocaleString()}
-                  </span>
-                </div>
-                <div className="border-t pt-3 flex justify-between items-center">
-                  <span className="font-bold text-[#1B2A41]">Your Earning:</span>
-                  <span className="text-2xl font-bold text-green-600">
+
+                <div className="pt-3 border-t border-slate-100 flex justify-between items-baseline">
+                  <span className="font-extrabold text-slate-900 text-sm">Net Seller Payout (80%)</span>
+                  <span className="text-2xl font-black text-emerald-600">
                     ₹{(order?.amount * 0.8)?.toLocaleString()}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Customer Info */}
-            <div className="border-t mt-6 pt-6">
-              <h4 className="font-bold text-[#1B2A41] mb-4">Customer</h4>
-              <div className="space-y-2">
-                <p className="text-[#1B2A41] font-semibold">
-                  {order?.userId?.name || 'N/A'}
-                </p>
-                <p className="text-gray-600 text-sm">
-                  {order?.userId?.email || 'N/A'}
-                </p>
-                <p className="text-gray-600 text-sm">
-                  {order?.userId?.mobile || 'N/A'}
-                </p>
-              </div>
-            </div>
           </div>
+
         </div>
+
       </div>
     </div>
   );

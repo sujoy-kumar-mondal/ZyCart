@@ -4,17 +4,18 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider.jsx";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { Store, ShieldCheck, ArrowRight, Upload, Building, CreditCard, FileText, CheckCircle2 } from "lucide-react";
 
 const SellerApply = () => {
   const navigate = useNavigate();
-  const { user, login } = useAuth();
+  const { user } = useAuth();
 
-  const [step, setStep] = useState(1); // Step 1: Register (if needed), Step 2: Seller Details
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-  const [sellerId, setSellerId] = useState(null); // Store sellerId from registration
+  const [sellerId, setSellerId] = useState(null);
 
   const [registrationForm, setRegistrationForm] = useState({
     name: "",
@@ -33,17 +34,12 @@ const SellerApply = () => {
   });
   
   useEffect(() => {
-    document.title = "Become a Seller | ZyCart";
-    // If user is already authenticated, skip to seller details step
+    document.title = "Apply as Merchant | ZyCart Central";
     if (user) {
       setStep(2);
     }
-    
   }, [user]);
 
-  // ================== REGISTRATION HANDLERS ==================
-
-  // SEND OTP
   const handleSendOtp = async (e) => {
     e.preventDefault();
 
@@ -79,25 +75,11 @@ const SellerApply = () => {
     }
   };
 
-  // REGISTER USER
   const handleRegister = async (e) => {
     e.preventDefault();
 
     if (!email || !otp || !registrationForm.name || !registrationForm.mobile || !registrationForm.password) {
       return toast.error("Please fill all required fields!");
-    }
-
-    if (!/^[0-9]{10}$/.test(registrationForm.mobile.trim())) {
-      return toast.error("Mobile number must be a valid 10-digit number!");
-    }
-
-    const pwd = registrationForm.password;
-    const hasUpper = /[A-Z]/.test(pwd);
-    const hasLower = /[a-z]/.test(pwd);
-    const hasNumber = /[0-9]/.test(pwd);
-    const hasSymbol = /[^A-Za-z0-9]/.test(pwd);
-    if (!pwd || pwd.length < 8 || !hasUpper || !hasLower || !hasNumber || !hasSymbol) {
-      return toast.error("Password must be at least 8 characters long and include an uppercase letter, lowercase letter, number, and special symbol!");
     }
 
     setLoading(true);
@@ -113,12 +95,10 @@ const SellerApply = () => {
 
       if (res.data.success) {
         setSellerId(res.data.sellerId);
-        
         if (res.data.sellerId) {
           localStorage.setItem("sellerId", res.data.sellerId);
         }
-        
-        toast.success("Registration successful! Proceed to seller details.");
+        toast.success("Registration successful! Complete shop details.");
         setStep(2);
         setOtpSent(false);
       }
@@ -129,9 +109,6 @@ const SellerApply = () => {
     }
   };
 
-  // ================== SELLER APPLICATION HANDLERS ==================
-
-  // HANDLE INPUT CHANGE FOR SELLER FORM
   const handleChange = (e) => {
     if (e.target.name === "license") {
       setForm({ ...form, license: e.target.files[0] });
@@ -140,7 +117,6 @@ const SellerApply = () => {
     }
   };
 
-  // SUBMIT SELLER APPLICATION
   const handleSubmitApplication = async (e) => {
     e.preventDefault();
 
@@ -155,14 +131,13 @@ const SellerApply = () => {
       return toast.error("Please fill all required fields!");
     }
 
-    // Format validations
     const cleanPan = form.pan.trim().toUpperCase();
     const cleanAadhar = form.aadhar.replace(/\s+/g, "");
     const cleanBank = form.bankAccount.trim();
     const cleanGst = form.gst.trim().toUpperCase();
 
     if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(cleanPan)) {
-      return toast.error("Invalid PAN format! (Must be 10 characters e.g. ABCDE1234F)");
+      return toast.error("Invalid PAN format! (e.g. ABCDE1234F)");
     }
 
     if (!/^\d{12}$/.test(cleanAadhar)) {
@@ -170,11 +145,11 @@ const SellerApply = () => {
     }
 
     if (!/^\d{9,18}$/.test(cleanBank)) {
-      return toast.error("Invalid Bank Account number! (Must be 9 to 18 digits)");
+      return toast.error("Invalid Bank Account number! (9 to 18 digits)");
     }
 
     if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(cleanGst)) {
-      return toast.error("Invalid GST number format! (15 characters e.g. 22AAAAA0000A1Z5)");
+      return toast.error("Invalid GSTIN number format! (15 characters)");
     }
 
     const sellerIdToUse = sellerId || localStorage.getItem("sellerId") || user?.id;
@@ -202,190 +177,181 @@ const SellerApply = () => {
       const res = await axios.post("/auth/seller/submit-details", data);
 
       if (res.data.success) {
-        toast.success("Application submitted! Wait for admin approval.");
+        toast.success("Application submitted! Admin review in progress.");
         localStorage.removeItem("sellerId");
         navigate("/");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Application failed!");
+      toast.error(error.response?.data?.message || "Application submission failed!");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen py-12 max-w-screen-2xl container mx-auto px-4 md:px-14 bg-linear-to-br from-[#F0F4F8] via-[#E8F1F8] to-[#E0F0F8]">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50/60 via-[#F8FAFC] to-indigo-50/60 py-12 px-4 flex items-center justify-center relative overflow-hidden">
+      
+      {/* Floating Orbs */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-blue-400/20 blur-3xl pointer-events-none"></div>
+      <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-indigo-400/20 blur-3xl pointer-events-none"></div>
 
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-2xl mx-auto p-10 rounded-2xl shadow-xl bg-white border border-gray-200"
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="w-full max-w-2xl bg-white rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-200/80 space-y-8 relative z-10"
       >
-        <h1 className="text-4xl font-extrabold text-center mb-2 text-[#1B2A41]">
-          Become a Seller
-        </h1>
-        <p className="text-center text-gray-600 mb-8">
-          {step === 1 ? "Create your account" : "Tell us about your shop"}
-        </p>
+        <div className="text-center space-y-2">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] text-white flex items-center justify-center mx-auto shadow-lg shadow-blue-500/20">
+            <Store className="w-7 h-7" />
+          </div>
+          <h1 className="text-3xl font-black text-[#1B2A41]">
+            Apply as ZyCart Merchant
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 font-semibold">
+            {step === 1 ? "Step 1: Create your merchant account credentials" : "Step 2: Submit shop credentials & GST details"}
+          </p>
+        </div>
 
-        {/* STEP 1: REGISTRATION (if user not authenticated) */}
+        {/* Step 1: User Account Registration */}
         {step === 1 ? (
-          <form className="space-y-6">
+          <form className="space-y-4">
             {!otpSent ? (
               <>
-                {/* Email */}
                 <div>
-                  <label className="font-medium text-gray-700">
-                    Email Address <span className="text-red-600">*</span>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                    Email Address *
                   </label>
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
                     placeholder="you@example.com"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
                   />
                 </div>
 
-                {/* Name */}
                 <div>
-                  <label className="font-medium text-gray-700">
-                    Full Name <span className="text-red-600">*</span>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                    Full Name *
                   </label>
                   <input
                     type="text"
                     required
                     value={registrationForm.name}
                     onChange={(e) => setRegistrationForm({ ...registrationForm, name: e.target.value })}
-                    className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
-                    placeholder="John Doe"
+                    placeholder="Owner Full Name"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
                   />
                 </div>
 
-                {/* Mobile */}
-                <div>
-                  <label className="font-medium text-gray-700">
-                    Mobile Number <span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    maxLength={10}
-                    value={registrationForm.mobile}
-                    onChange={(e) => setRegistrationForm({ ...registrationForm, mobile: e.target.value.replace(/\D/g, "") })}
-                    className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
-                    placeholder="9876543210"
-                  />
-                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                      Mobile Number *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      maxLength={10}
+                      value={registrationForm.mobile}
+                      onChange={(e) => setRegistrationForm({ ...registrationForm, mobile: e.target.value.replace(/\D/g, "") })}
+                      placeholder="9876543210"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    />
+                  </div>
 
-                {/* Password */}
-                <div>
-                  <label className="font-medium text-gray-700">
-                    Password <span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    required
-                    value={registrationForm.password}
-                    onChange={(e) => setRegistrationForm({ ...registrationForm, password: e.target.value })}
-                    className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
-                    placeholder="••••••••"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Min 8 characters including uppercase, lowercase, number & special symbol</p>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                      Password *
+                    </label>
+                    <input
+                      type="password"
+                      required
+                      value={registrationForm.password}
+                      onChange={(e) => setRegistrationForm({ ...registrationForm, password: e.target.value })}
+                      placeholder="••••••••"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    />
+                  </div>
                 </div>
 
                 <button
                   onClick={handleSendOtp}
                   disabled={loading}
-                  className="w-full py-3 text-lg font-semibold text-white rounded-xl bg-linear-to-r from-indigo-600 to-blue-600 hover:opacity-90 transition disabled:opacity-50"
+                  className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-lg shadow-blue-500/20 transition transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  {loading ? "Sending OTP..." : "Send OTP"}
+                  {loading ? "Sending OTP..." : "Send Verification OTP"} <ArrowRight className="w-5 h-5" />
                 </button>
               </>
             ) : (
-              <>
-                <p className="text-sm text-gray-600 text-center mb-4">
-                  Enter the OTP sent to <strong>{email}</strong>
-                </p>
-
-                {/* OTP */}
+              <div className="space-y-4">
                 <div>
-                  <label className="font-medium text-gray-700">
-                    Enter OTP <span className="text-red-600">*</span>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                    Enter OTP sent to {email}
                   </label>
                   <input
                     type="text"
                     required
+                    maxLength={6}
                     value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    maxLength="6"
-                    className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition text-center text-2xl tracking-widest"
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
                     placeholder="000000"
+                    className="w-full py-3.5 px-4 bg-slate-50 border border-slate-200 rounded-2xl text-2xl font-black text-center tracking-widest text-[#1B2A41] focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
                   />
                 </div>
 
                 <div className="flex gap-3">
                   <button
+                    type="button"
                     onClick={() => setOtpSent(false)}
-                    className="flex-1 py-3 text-lg font-semibold rounded-xl border border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition"
+                    className="w-1/3 py-3.5 rounded-2xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50 transition text-sm"
                   >
                     Back
                   </button>
                   <button
+                    type="button"
                     onClick={handleRegister}
                     disabled={loading}
-                    className="flex-1 py-3 text-lg font-semibold text-white rounded-xl bg-linear-to-r from-indigo-600 to-blue-600 hover:opacity-90 transition disabled:opacity-50"
+                    className="w-2/3 py-3.5 rounded-2xl font-extrabold text-white bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] shadow-md hover:opacity-95 transition text-sm"
                   >
-                    {loading ? "Creating Account..." : "Create Account"}
+                    {loading ? "Registering..." : "Verify OTP & Continue"}
                   </button>
                 </div>
-              </>
-            )}
-
-            {!otpSent && (
-              <p className="text-center text-sm text-gray-600">
-                Already have an account?{" "}
-                <Link to="/login" className="text-indigo-600 font-semibold hover:text-indigo-800">
-                  Login here
-                </Link>
-              </p>
+              </div>
             )}
           </form>
         ) : (
-          // STEP 2: SELLER APPLICATION DETAILS
-          <form onSubmit={handleSubmitApplication} className="space-y-6">
-
-            {/* Shop Name */}
+          /* Step 2: Merchant Shop Application Details */
+          <form onSubmit={handleSubmitApplication} className="space-y-5">
             <div>
-              <label className="font-medium text-gray-700">
-                Shop Name <span className="text-red-600">*</span>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                Shop / Brand Name *
               </label>
               <input
                 type="text"
                 required
                 name="shopName"
-                className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
                 value={form.shopName}
                 onChange={handleChange}
-                placeholder="Your Shop Name"
+                placeholder="e.g. Apex Electronics"
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
               />
             </div>
 
-            {/* Shop Type */}
             <div>
-              <label className="font-medium text-gray-700">
-                Shop Type <span className="text-red-600">*</span>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                Primary Product Category *
               </label>
               <select
                 name="shopType"
                 required
-                className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
                 value={form.shopType}
                 onChange={handleChange}
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer"
               >
-                <option value="">Select Type</option>
+                <option value="">Select Category</option>
                 <option value="Electronics & Accessories">Electronics & Accessories</option>
                 <option value="Fashion and Beauty">Fashion and Beauty</option>
                 <option value="Home and Kitchen">Home and Kitchen</option>
@@ -394,95 +360,91 @@ const SellerApply = () => {
               </select>
             </div>
 
-            {/* PAN & Aadhar */}
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="font-medium text-gray-700">
-                  PAN <span className="text-red-600">*</span>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                  PAN Number *
                 </label>
                 <input
                   type="text"
                   required
                   name="pan"
                   maxLength={10}
-                  className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition uppercase"
                   value={form.pan}
                   onChange={handleChange}
                   placeholder="ABCDE1234F"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 uppercase focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
                 />
               </div>
 
               <div>
-                <label className="font-medium text-gray-700">
-                  Aadhar Number <span className="text-red-600">*</span>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                  Aadhaar Number *
                 </label>
                 <input
                   type="text"
                   required
                   name="aadhar"
                   maxLength={14}
-                  className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
                   value={form.aadhar}
                   onChange={handleChange}
                   placeholder="1234 5678 9012"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                  Bank Account Number *
+                </label>
+                <input
+                  type="text"
+                  required
+                  name="bankAccount"
+                  maxLength={18}
+                  value={form.bankAccount}
+                  onChange={handleChange}
+                  placeholder="Enter Account Number"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                  GSTIN Number *
+                </label>
+                <input
+                  type="text"
+                  required
+                  name="gst"
+                  maxLength={15}
+                  value={form.gst}
+                  onChange={handleChange}
+                  placeholder="22AAAAA0000A1Z5"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 uppercase focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
                 />
               </div>
             </div>
 
-            {/* Bank Account */}
             <div>
-              <label className="font-medium text-gray-700">
-                Bank Account Number <span className="text-red-600">*</span>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                Business License PDF / Image (Optional)
               </label>
-              <input
-                type="text"
-                required
-                name="bankAccount"
-                maxLength={18}
-                className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
-                value={form.bankAccount}
-                onChange={handleChange}
-                placeholder="Enter your bank account"
-              />
-            </div>
-
-            {/* GST */}
-            <div>
-              <label className="font-medium text-gray-700">
-                GST Number <span className="text-red-600">*</span>
-              </label>
-              <input
-                type="text"
-                required
-                name="gst"
-                maxLength={15}
-                className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition uppercase"
-                value={form.gst}
-                onChange={handleChange}
-                placeholder="22AAAAA0000A1Z5"
-              />
-            </div>
-
-            {/* License Upload */}
-            <div>
-              <label className="font-medium text-gray-700">Upload Business License (Optional)</label>
               <input
                 type="file"
                 name="license"
                 accept="image/*,.pdf"
-                className="w-full mt-1 px-4 py-3 rounded-xl bg-gray-100 border border-gray-300 focus:border-indigo-600 outline-none transition"
                 onChange={handleChange}
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-700 outline-none transition"
               />
-              <p className="text-xs text-gray-500 mt-1">Accepted formats: PDF, JPG, PNG</p>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 text-lg font-semibold text-white rounded-xl bg-linear-to-r from-indigo-600 to-blue-600 hover:opacity-90 transition disabled:opacity-50"
+              className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-lg shadow-blue-500/20 transition transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              {loading ? "Submitting Application..." : "Submit Application"}
+              {loading ? "Submitting..." : "Submit Merchant Application"}
             </button>
           </form>
         )}

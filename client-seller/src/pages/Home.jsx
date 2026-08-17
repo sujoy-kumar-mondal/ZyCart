@@ -10,6 +10,8 @@ import {
   CheckCircle,
   ArrowRight,
   Star,
+  Sparkles,
+  Store
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
@@ -18,359 +20,197 @@ const Home = () => {
   const { user } = useAuth();
 
   useEffect(() => {
-    document.title = "ZyCart Seller - Start Your Online Business Today";
+    document.title = "ZyCart Merchant Central — Grow Your E-Commerce Business";
   }, []);
 
   const features = [
     {
       id: 1,
-      title: "Easy Store Setup",
-      description: "Launch your online store in minutes with our simple setup process",
+      title: "Fast Store Onboarding",
+      description: "Submit shop GST & credentials to start listing catalog items in under 24 hours.",
       icon: Zap,
-      color: "from-amber-500 to-orange-500",
+      color: "from-amber-500 to-orange-600",
     },
     {
       id: 2,
-      title: "Powerful Analytics",
-      description: "Track sales, customer behavior, and business growth with real-time dashboards",
+      title: "Real-time Sales Dashboard",
+      description: "Monitor daily revenues, pending shipments, and inventory scarcity warnings live.",
       icon: BarChart3,
-      color: "from-blue-500 to-cyan-500",
+      color: "from-blue-500 to-indigo-600",
     },
     {
       id: 3,
-      title: "Secure Payments",
-      description: "Get paid securely with multiple payment options and instant settlements",
+      title: "Weekly Payout Settlements",
+      description: "Direct bank account transfers every week with transparent 80% merchant payouts.",
       icon: Shield,
-      color: "from-green-500 to-emerald-500",
+      color: "from-emerald-500 to-teal-600",
     },
     {
       id: 4,
-      title: "Wide Reach",
-      description: "Access millions of customers and expand your business globally",
+      title: "Doorstep Courier Network",
+      description: "Automated logistics pick-ups straight from your warehouse to customer doorsteps.",
       icon: Globe,
-      color: "from-purple-500 to-pink-500",
+      color: "from-purple-500 to-pink-600",
     },
     {
       id: 5,
-      title: "24/7 Support",
-      description: "Get help anytime with our dedicated seller support team",
+      title: "Dedicated Account Support",
+      description: "Get 24/7 technical support and account executive guidance for catalog expansion.",
       icon: Users,
-      color: "from-red-500 to-rose-500",
+      color: "from-red-500 to-rose-600",
     },
     {
       id: 6,
-      title: "Marketing Tools",
-      description: "Boost sales with built-in promotions, discounts, and marketing features",
+      title: "Promotional Discount Engine",
+      description: "Set custom discount percentages and expiry timers to supercharge conversion rates.",
       icon: TrendingUp,
-      color: "from-indigo-500 to-blue-500",
-    },
-  ];
-
-  const testimonials = [
-    {
-      id: 1,
-      name: "Rajesh Kumar",
-      role: "Electronics Seller",
-      rating: 5,
-      text: "ZyCart has helped me increase my sales by 300%. The dashboard is intuitive and the support team is amazing!",
-      avatar: "🧑‍💼",
-    },
-    {
-      id: 2,
-      name: "Sarah Ahmed",
-      role: "Fashion Entrepreneur",
-      rating: 5,
-      text: "Best platform to sell online. The commission rates are fair and the payment system is reliable.",
-      avatar: "👩‍💼",
-    },
-    {
-      id: 3,
-      name: "Amit Patel",
-      role: "Home Goods Trader",
-      rating: 5,
-      text: "Love the simplicity and the analytics features. I can monitor my store performance in real-time!",
-      avatar: "👨‍💼",
+      color: "from-blue-600 to-[#3F51F4]",
     },
   ];
 
   const stats = [
-    { label: "Active Sellers", value: "5,000+", icon: Users },
-    { label: "Products Listed", value: "100,000+", icon: TrendingUp },
-    { label: "Daily Customers", value: "50,000+", icon: Globe },
-    { label: "Success Rate", value: "98%", icon: CheckCircle },
+    { label: "Verified Merchants", value: "5,000+", icon: Store },
+    { label: "Catalog Listings", value: "100,000+", icon: TrendingUp },
+    { label: "Active Buyers", value: "1,000,000+", icon: Users },
+    { label: "Order Delivery Rate", value: "99.4%", icon: CheckCircle },
   ];
 
   return (
-    <>
-      <div className="min-h-screen bg-linear-to-br from-[#F0F4F8] via-[#E8F1F8] to-[#E0F0F8]">
-        {/* 🎯 HERO SECTION */}
-        <motion.section
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="py-20 max-w-screen-2xl container mx-auto px-4 md:px-14"
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <div className="min-h-screen bg-[#F8FAFC] overflow-hidden">
+      
+      {/* HERO SECTION */}
+      <section className="relative py-16 sm:py-24 bg-gradient-to-b from-blue-50/60 via-slate-50 to-[#F8FAFC]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Left Column */}
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              className="lg:col-span-7 space-y-6"
             >
-              <h1 className="text-5xl md:text-6xl font-extrabold text-[#1B2A41] leading-tight mb-6">
-                Start Selling <span className="text-indigo-600">Today</span>
-              </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Join thousands of successful sellers on ZyCart. Reach millions of customers, 
-                grow your business, and maximize your earnings with our powerful seller platform.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <Link
-                  to={user ? "/seller/dashboard" : "/seller/apply"}
-                  className="bg-linear-to-r from-indigo-600 to-blue-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
-                >
-                  {user ? "Go to Dashboard" : "Get Started Free"} <ArrowRight className="w-5 h-5" />
-                </Link>
-                <Link
-                  to={user ? "/seller/dashboard" : "/login"}
-                  className="border-2 border-indigo-600 text-indigo-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-indigo-50 transition-all duration-300"
-                >
-                  {user ? "Seller Dashboard" : "Sign In"}
-                </Link>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/80 border border-blue-200/80 text-blue-900 text-xs font-bold uppercase tracking-wider">
+                <Sparkles className="w-4 h-4 text-blue-600 animate-spin" /> Scale Your Business Across India
               </div>
 
-              <p className="text-sm text-gray-500">No credit card required • Free to apply</p>
+              <h1 className="text-4xl sm:text-6xl font-black text-[#1B2A41] leading-tight">
+                Grow Your Brand on{" "}
+                <span className="bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
+                  ZyCart Merchant
+                </span>
+              </h1>
+
+              <p className="text-lg text-slate-600 font-normal leading-relaxed max-w-2xl">
+                Reach over 1,000,000 active shoppers. Enjoy 80% payouts, automated doorstep logistics pickup, zero listing fee barriers, and live multi-channel analytics.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+                <Link
+                  to={user ? "/seller/dashboard" : "/seller/apply"}
+                  className="px-8 py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-xl shadow-blue-500/25 transition transform active:scale-95 flex items-center justify-center gap-2"
+                >
+                  {user ? "Open Merchant Dashboard" : "Apply as Seller Free"} <ArrowRight className="w-5 h-5" />
+                </Link>
+
+                <Link
+                  to={user ? "/seller/dashboard" : "/login"}
+                  className="px-8 py-4 rounded-2xl font-extrabold text-[#3F51F4] bg-white border-2 border-blue-200/80 hover:bg-blue-50 transition shadow-xs flex items-center justify-center gap-2"
+                >
+                  {user ? "Manage Store" : "Sign In to Store"}
+                </Link>
+              </div>
             </motion.div>
 
+            {/* Right Showcase Card */}
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="relative hidden lg:block"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="lg:col-span-5"
             >
-              <div className="bg-linear-to-br from-indigo-500 to-blue-500 rounded-2xl p-1 shadow-2xl">
-                <div className="bg-white rounded-xl p-8">
-                  <div className="space-y-4">
-                    <div className="h-4 bg-linear-to-r from-indigo-200 to-blue-200 rounded-full"></div>
-                    <div className="h-4 bg-gray-200 rounded-full w-3/4"></div>
-                    <div className="grid grid-cols-2 gap-4 mt-6">
-                      <div className="bg-indigo-100 rounded-lg p-4 text-center">
-                        <p className="text-2xl font-bold text-indigo-600">$50K+</p>
-                        <p className="text-xs text-gray-600 mt-1">Monthly Earnings</p>
-                      </div>
-                      <div className="bg-blue-100 rounded-lg p-4 text-center">
-                        <p className="text-2xl font-bold text-blue-600">1000+</p>
-                        <p className="text-xs text-gray-600 mt-1">Orders</p>
-                      </div>
+              <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/80 space-y-6">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                      <Store className="w-5 h-5" />
                     </div>
+                    <div>
+                      <h3 className="font-extrabold text-sm text-[#1B2A41]">Merchant Growth Stats</h3>
+                      <p className="text-xs text-slate-500">Live platform network data</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100 text-center">
+                    <p className="text-3xl font-black text-[#3F51F4]">80%</p>
+                    <p className="text-xs font-semibold text-slate-600 mt-1">Net Seller Cut</p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 text-center">
+                    <p className="text-3xl font-black text-emerald-600">Weekly</p>
+                    <p className="text-xs font-semibold text-slate-600 mt-1">Bank Settlements</p>
                   </div>
                 </div>
               </div>
             </motion.div>
+
           </div>
-        </motion.section>
+        </div>
+      </section>
 
-        {/* 📊 STATS SECTION */}
-        <motion.section
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="py-16 bg-white border-y border-gray-200"
-        >
-          <div className="max-w-screen-2xl container mx-auto px-4 md:px-14">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {stats.map((stat, index) => {
-                const IconComponent = stat.icon;
-                return (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="text-center"
-                  >
-                    <div className="flex justify-center mb-3">
-                      <IconComponent className="w-8 h-8 text-indigo-600" />
-                    </div>
-                    <p className="text-3xl md:text-4xl font-bold text-[#1B2A41]">
-                      {stat.value}
-                    </p>
-                    <p className="text-gray-600 text-sm mt-2">{stat.label}</p>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
-        </motion.section>
-
-        {/* ✨ FEATURES SECTION */}
-        <section className="py-20 max-w-screen-2xl container mx-auto px-4 md:px-14">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#1B2A41] mb-4">
-              Why Choose ZyCart?
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Everything you need to run a successful online store
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => {
-              const IconComponent = feature.icon;
+      {/* STATS STRIP */}
+      <section className="py-12 bg-white border-y border-slate-200/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, idx) => {
+              const IconComp = stat.icon;
               return (
-                <motion.div
-                  key={feature.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-white rounded-xl shadow-lg p-8 hover:shadow-2xl transition-all duration-300 border border-gray-100"
-                >
-                  <div className={`bg-linear-to-br ${feature.color} w-14 h-14 rounded-lg flex items-center justify-center mb-4`}>
-                    <IconComponent className="w-7 h-7 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-[#1B2A41] mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </motion.div>
+                <div key={idx} className="text-center space-y-1">
+                  <IconComp className="w-7 h-7 text-[#3F51F4] mx-auto mb-2" />
+                  <p className="text-2xl sm:text-3xl font-black text-[#1B2A41]">{stat.value}</p>
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</p>
+                </div>
               );
             })}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ⭐ TESTIMONIALS SECTION */}
-        <section className="py-20 bg-white border-y border-gray-200">
-          <div className="max-w-screen-2xl container mx-auto px-4 md:px-14">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="text-center mb-16"
-            >
-              <h2 className="text-4xl md:text-5xl font-bold text-[#1B2A41] mb-4">
-                Success Stories
-              </h2>
-              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                Hear from our successful sellers around the world
-              </p>
-            </motion.div>
+      {/* FEATURES GRID */}
+      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div className="text-center space-y-3 max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1B2A41]">Why Sell With ZyCart?</h2>
+          <p className="text-slate-600 text-sm sm:text-base">
+            Built from the ground up for high-growth e-commerce merchants.
+          </p>
+        </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {testimonials.map((testimonial, index) => (
-                <motion.div
-                  key={testimonial.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-linear-to-br from-indigo-50 to-blue-50 rounded-xl p-8 border border-indigo-200"
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="text-4xl">{testimonial.avatar}</div>
-                    <div>
-                      <h4 className="font-bold text-[#1B2A41]">{testimonial.name}</h4>
-                      <p className="text-sm text-gray-600">{testimonial.role}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-1 mb-3">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                      />
-                    ))}
-                  </div>
-
-                  <p className="text-gray-700 leading-relaxed italic">
-                    "{testimonial.text}"
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* 🚀 CTA SECTION */}
-        <motion.section
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="py-20 max-w-screen-2xl container mx-auto px-4 md:px-14"
-        >
-          <div className="bg-linear-to-r from-indigo-600 to-blue-600 rounded-2xl p-12 md:p-16 text-center shadow-2xl">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to Start Your Journey?
-            </h2>
-            <p className="text-xl text-indigo-100 max-w-2xl mx-auto mb-8">
-              Join thousands of sellers who are growing their business on ZyCart today
-            </p>
-            <Link
-              to="/seller/apply"
-              className="inline-block bg-white text-indigo-600 px-10 py-4 rounded-lg font-bold text-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-            >
-              Apply as a Seller Now
-            </Link>
-          </div>
-        </motion.section>
-
-        {/* 📝 INFO SECTION */}
-        <section className="py-16 bg-white border-t border-gray-200">
-          <div className="max-w-screen-2xl container mx-auto px-4 md:px-14">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0 }}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {features.map((feature) => {
+            const IconComponent = feature.icon;
+            return (
+              <div
+                key={feature.id}
+                className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200/80 hover:shadow-xl transition duration-300 space-y-4 group"
               >
-                <h3 className="text-xl font-bold text-[#1B2A41] mb-3">Zero Commissions</h3>
-                <p className="text-gray-600">
-                  Start selling with zero commission for the first 3 months. Only then do you pay our industry-leading rates.
+                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${feature.color} text-white flex items-center justify-center shadow-md`}>
+                  <IconComponent className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-extrabold text-[#1B2A41] group-hover:text-[#3F51F4] transition">
+                  {feature.title}
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  {feature.description}
                 </p>
-              </motion.div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-              >
-                <h3 className="text-xl font-bold text-[#1B2A41] mb-3">Fast Payouts</h3>
-                <p className="text-gray-600">
-                  Get paid every week directly to your bank account. No waiting, no complications.
-                </p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-              >
-                <h3 className="text-xl font-bold text-[#1B2A41] mb-3">Full Support</h3>
-                <p className="text-gray-600">
-                  Our dedicated seller support team is here to help you succeed every step of the way.
-                </p>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-      </div>
-    </>
+    </div>
   );
 };
 
