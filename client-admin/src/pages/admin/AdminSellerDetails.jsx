@@ -206,32 +206,37 @@ const AdminSellerDetails = () => {
                           <td className="px-4 py-3 font-extrabold text-slate-900 max-w-xs truncate">{product.title}</td>
                           <td className="px-4 py-3 font-black">₹{product.price?.toLocaleString()}</td>
                           <td className="px-4 py-3 whitespace-nowrap">
-                            {product.discount > 0 && (!product.discountPeriod || new Date(product.discountPeriod) > new Date()) ? (
-                              <div className="flex items-center gap-1.5 whitespace-nowrap">
-                                <span className="font-black text-emerald-600">
-                                  ₹{(product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price
-                                    ? product.discountedPrice
-                                    : Math.round(product.price * (1 - product.discount / 100))
-                                  ).toLocaleString()}
+                            {(() => {
+                              const sellingPrice = (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price)
+                                ? product.discountedPrice
+                                : (product.discount > 0 ? Math.round(product.price * (1 - product.discount / 100)) : product.price);
+
+                              const discountPct = product.discount > 0
+                                ? product.discount
+                                : (product.discountedPrice && product.discountedPrice < product.price
+                                  ? Math.round(((product.price - product.discountedPrice) / product.price) * 100)
+                                  : 0);
+
+                              const isDiscounted = discountPct > 0 && sellingPrice < product.price;
+
+                              if (isDiscounted) {
+                                return (
+                                  <div className="flex items-center gap-1.5 whitespace-nowrap">
+                                    <span className="font-black text-emerald-600">
+                                      ₹{sellingPrice.toLocaleString()}
+                                    </span>
+                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800">
+                                      {discountPct}% OFF
+                                    </span>
+                                  </div>
+                                );
+                              }
+                              return (
+                                <span className="font-black text-slate-900">
+                                  ₹{product.price?.toLocaleString()}
                                 </span>
-                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800">
-                                  {product.discount}% OFF
-                                </span>
-                              </div>
-                            ) : product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price ? (
-                              <div className="flex items-center gap-1.5 whitespace-nowrap">
-                                <span className="font-black text-emerald-600">
-                                  ₹{product.discountedPrice.toLocaleString()}
-                                </span>
-                                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800">
-                                  {Math.round(((product.price - product.discountedPrice) / product.price) * 100)}% OFF
-                                </span>
-                              </div>
-                            ) : (
-                              <span className="font-black text-slate-900">
-                                ₹{product.price?.toLocaleString()}
-                              </span>
-                            )}
+                              );
+                            })()}
                           </td>
                           <td className="px-4 py-3 font-black">{product.stock} units</td>
                         </tr>

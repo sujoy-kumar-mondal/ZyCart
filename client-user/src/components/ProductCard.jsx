@@ -46,14 +46,17 @@ const ProductCard = ({ product }) => {
   };
 
   const hasActiveDiscount =
-    product.discount > 0 &&
-    (!product.discountPeriod || new Date(product.discountPeriod) > new Date());
+    (product.discount > 0 || (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price));
 
   const discountedPrice = hasActiveDiscount
-    ? (product.discountedPrice && product.discountedPrice > 0
+    ? (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price
         ? product.discountedPrice
-        : Math.round(product.price * (1 - product.discount / 100)))
+        : Math.round(product.price * (1 - (product.discount || 0) / 100)))
     : product.price;
+
+  const discountPct = product.discount > 0
+    ? product.discount
+    : (product.discountedPrice && product.discountedPrice < product.price ? Math.round(((product.price - product.discountedPrice) / product.price) * 100) : 0);
 
   return (
     <div
@@ -111,7 +114,7 @@ const ProductCard = ({ product }) => {
                 ₹{product.price.toLocaleString()}
               </span>
               <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-md">
-                {product.discount}% OFF
+                {discountPct}% OFF
               </span>
             </div>
           ) : (
