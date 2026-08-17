@@ -249,6 +249,7 @@ export const updateParentOrderStatus = async (req, res) => {
       if (status === "Confirmed" && !child.confirmedAt) child.confirmedAt = now;
       if (status === "Packed" && !child.packedAt) child.packedAt = now;
       if (status === "Shipped" && !child.shippedAt) child.shippedAt = now;
+      if (status === "Out for Delivery" && !child.outForDeliveryAt) child.outForDeliveryAt = now;
       if (status === "Delivered" && !child.deliveredAt) child.deliveredAt = now;
       if (status === "Cancelled" && !child.cancelledAt) child.cancelledAt = now;
     });

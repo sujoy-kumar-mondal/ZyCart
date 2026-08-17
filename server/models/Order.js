@@ -29,10 +29,18 @@ const childOrderSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Status: Pending → Confirmed → Packed → Shipped → Delivered → Cancelled
+    // Status: Pending → Confirmed → Packed → Shipped → Out for Delivery → Delivered → Cancelled
     status: {
       type: String,
-      enum: ["Pending", "Confirmed", "Packed", "Shipped", "Delivered", "Cancelled"],
+      enum: [
+        "Pending",
+        "Confirmed",
+        "Packed",
+        "Shipped",
+        "Out for Delivery",
+        "Delivered",
+        "Cancelled",
+      ],
       default: "Pending",
     },
 
@@ -40,6 +48,7 @@ const childOrderSchema = new mongoose.Schema(
     confirmedAt: { type: Date, default: Date.now },
     packedAt: { type: Date, default: null },
     shippedAt: { type: Date, default: null },
+    outForDeliveryAt: { type: Date, default: null },
     deliveredAt: { type: Date, default: null },
     cancelledAt: { type: Date, default: null },
   },
