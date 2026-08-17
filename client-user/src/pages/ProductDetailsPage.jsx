@@ -86,6 +86,16 @@ const ProductDetailsPage = () => {
     fetchUserOrders();
   }, [id, user]);
 
+  // Clamp quantity if it exceeds available stock or max purchase limit
+  useEffect(() => {
+    if (product && product.stock > 0) {
+      const maxAllowed = Math.min(product.stock, product.maxQuantityPerPurchase || product.stock);
+      if (quantity > maxAllowed) {
+        setQuantity(Math.max(1, maxAllowed));
+      }
+    }
+  }, [product]);
+
   // Countdown timer for discount (only show if remaining time < 24h)
   useEffect(() => {
     if (!product || !product.discountPeriod || product.discount <= 0) {
@@ -459,12 +469,13 @@ const ProductDetailsPage = () => {
                     </span>
                     <button
                       onClick={() => {
-                        const maxQty = product.maxQuantityPerPurchase || product.stock;
-                        if (quantity < maxQty) {
+                        const maxAllowed = Math.min(product.stock, product.maxQuantityPerPurchase || product.stock);
+                        if (quantity < maxAllowed) {
                           setQuantity(quantity + 1);
                         }
                       }}
-                      className="px-3.5 py-2 text-slate-600 hover:bg-slate-200 font-bold transition"
+                      disabled={quantity >= Math.min(product.stock, product.maxQuantityPerPurchase || product.stock)}
+                      className="px-3.5 py-2 text-slate-600 hover:bg-slate-200 font-bold transition disabled:opacity-30 disabled:cursor-not-allowed"
                     >
                       +
                     </button>
