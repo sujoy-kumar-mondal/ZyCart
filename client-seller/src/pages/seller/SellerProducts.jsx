@@ -28,6 +28,7 @@ const SellerProducts = () => {
     subSubCategory: "",
     attributes: {},
     images: [],
+    discountedPrice: "",
     discount: "",
     discountPeriod: "",
     maxQuantityPerPurchase: ""
@@ -182,7 +183,7 @@ const SellerProducts = () => {
 
     if (name === "images") {
       const selectedFiles = Array.from(files).slice(0, 5);
-      setForm({ ...form, images: selectedFiles });
+      setForm((prev) => ({ ...prev, images: selectedFiles }));
 
       const previews = selectedFiles.map((file) => {
         const reader = new FileReader();
@@ -193,8 +194,41 @@ const SellerProducts = () => {
       });
 
       Promise.all(previews).then(setImagePreviews);
+    } else if (name === "discountedPrice" || name === "price" || name === "discount") {
+      setForm((prev) => {
+        const newForm = { ...prev, [name]: value };
+        const priceNum = parseFloat(name === "price" ? value : prev.price);
+        const discPriceNum = parseFloat(name === "discountedPrice" ? value : (name === "price" ? prev.discountedPrice : newForm.discountedPrice));
+        const discNum = parseFloat(name === "discount" ? value : (name === "price" ? prev.discount : newForm.discount));
+
+        if (name === "discountedPrice") {
+          if (priceNum > 0 && discPriceNum > 0 && discPriceNum < priceNum) {
+            const calcDiscount = Math.round(((priceNum - discPriceNum) / priceNum) * 100);
+            newForm.discount = calcDiscount > 0 ? calcDiscount : "";
+          } else if (!value) {
+            newForm.discount = "";
+          }
+        } else if (name === "discount") {
+          if (priceNum > 0 && discNum > 0 && discNum <= 100) {
+            const calcDiscPrice = Math.floor(priceNum * (1 - discNum / 100));
+            newForm.discountedPrice = calcDiscPrice > 0 ? calcDiscPrice : "";
+          } else if (!value) {
+            newForm.discountedPrice = "";
+          }
+        } else if (name === "price") {
+          if (priceNum > 0 && discPriceNum > 0 && discPriceNum < priceNum) {
+            const calcDiscount = Math.round(((priceNum - discPriceNum) / priceNum) * 100);
+            newForm.discount = calcDiscount > 0 ? calcDiscount : "";
+          } else if (priceNum > 0 && discNum > 0 && discNum <= 100) {
+            const calcDiscPrice = Math.floor(priceNum * (1 - discNum / 100));
+            newForm.discountedPrice = calcDiscPrice > 0 ? calcDiscPrice : "";
+          }
+        }
+
+        return newForm;
+      });
     } else {
-      setForm({ ...form, [name]: value });
+      setForm((prev) => ({ ...prev, [name]: value }));
     }
   };
 
@@ -261,6 +295,7 @@ const SellerProducts = () => {
     data.append("subCategory", form.subCategory);
     data.append("subSubCategory", form.subSubCategory);
     data.append("attributes", JSON.stringify(form.attributes));
+    data.append("discountedPrice", form.discountedPrice || "");
     data.append("discount", form.discount || 0);
     data.append("discountPeriod", form.discountPeriod ? new Date(form.discountPeriod).toISOString() : "");
     data.append("maxQuantityPerPurchase", form.maxQuantityPerPurchase || "1");
@@ -297,6 +332,10 @@ const SellerProducts = () => {
       discountPeriodValue = date.toISOString().slice(0, 16);
     }
 
+    const initialDiscountedPrice = (product.discount > 0 && product.price > 0)
+      ? Math.floor(product.price * (1 - product.discount / 100))
+      : "";
+
     setForm({
       title: product.title,
       price: product.price,
@@ -307,6 +346,7 @@ const SellerProducts = () => {
       subSubCategory: product.subSubCategory,
       attributes: product.attributes || {},
       images: [],
+      discountedPrice: initialDiscountedPrice,
       discount: product.discount || "",
       discountPeriod: discountPeriodValue,
       maxQuantityPerPurchase: product.maxQuantityPerPurchase || "1",
@@ -352,8 +392,8 @@ const SellerProducts = () => {
       return;
     }
 
-    if (parseInt(form.discount) > 0 && !form.discountPeriod) {
-      toast.error("If Discount (%) is entered, Discount Expiry Date must be entered!");
+    if ((parseInt(form.discount) > 0 || parseFloat(form.discountedPrice) > 0) && !form.discountPeriod) {
+      toast.error("If Discounted Price or Discount (%) is entered, Discount Expiry Date must be entered!");
       return;
     }
 
@@ -373,6 +413,7 @@ const SellerProducts = () => {
     data.append("subCategory", form.subCategory);
     data.append("subSubCategory", form.subSubCategory);
     data.append("attributes", JSON.stringify(form.attributes));
+    data.append("discountedPrice", form.discountedPrice || "");
     data.append("discount", form.discount || 0);
     data.append("discountPeriod", form.discountPeriod ? new Date(form.discountPeriod).toISOString() : "");
     data.append("maxQuantityPerPurchase", form.maxQuantityPerPurchase || "1");
@@ -576,6 +617,24 @@ const SellerProducts = () => {
                   </div>
 
                   <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Discounted Price (₹)</label>
+                    <input
+                      type="number"
+                      name="discountedPrice"
+                      value={form.discountedPrice || ''}
+                      onChange={handleChange}
+                      placeholder="Discounted Price (₹)"
+                      min="0"
+                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
+                    />
+                    {parseInt(form.discount) > 0 && (
+                      <p className="text-xs font-semibold text-green-600 mt-1">
+                        Auto Calculated Discount: {form.discount}% OFF
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Discount (%)</label>
                     <input
                       type="number"
@@ -591,7 +650,7 @@ const SellerProducts = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Discount Expiry Date {parseInt(form.discount) > 0 && <span className="text-red-600">*</span>}
+                      Discount Expiry Date {(parseInt(form.discount) > 0 || parseFloat(form.discountedPrice) > 0) && <span className="text-red-600">*</span>}
                     </label>
                     <input
                       type="datetime-local"

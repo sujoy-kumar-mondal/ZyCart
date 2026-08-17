@@ -143,7 +143,7 @@ export const addProduct = async (req, res) => {
   try {
     const sellerId = req.user.userId; // Now comes from Seller collection directly
 
-    let { title, price, stock, description, mainCategory, subCategory, subSubCategory, attributes, discount, discountPeriod, maxQuantityPerPurchase } = req.body;
+    let { title, price, stock, description, mainCategory, subCategory, subSubCategory, attributes, discount, discountedPrice, discountPeriod, maxQuantityPerPurchase } = req.body;
     const imageUrls = req.fileUrls || [];
 
     // Parse attributes if it's a JSON string (from FormData)
@@ -168,6 +168,7 @@ export const addProduct = async (req, res) => {
 
     // 1. Max Quantity Per Purchase validation
     const parsedStock = parseInt(stock);
+    const parsedPrice = parseFloat(price);
     const parsedMaxQty = maxQuantityPerPurchase ? parseInt(maxQuantityPerPurchase) : null;
     if (!parsedMaxQty || isNaN(parsedMaxQty) || parsedMaxQty < 1 || parsedMaxQty > 25) {
       return res.status(400).json({
@@ -182,12 +183,29 @@ export const addProduct = async (req, res) => {
       });
     }
 
-    // 2. Discount & Discount Expiry Date validation
-    const parsedDiscount = discount ? parseInt(discount) : 0;
+    // 2. Discounted Price & Discount Expiry Date validation
+    let parsedDiscount = discount ? parseInt(discount) : 0;
+    if (discountedPrice !== undefined && discountedPrice !== null && discountedPrice !== "") {
+      const parsedDiscountedPrice = parseFloat(discountedPrice);
+      if (isNaN(parsedDiscountedPrice) || parsedDiscountedPrice <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Discounted Price must be a positive number.",
+        });
+      }
+      if (parsedDiscountedPrice >= parsedPrice) {
+        return res.status(400).json({
+          success: false,
+          message: "Discounted Price must be less than original Price.",
+        });
+      }
+      parsedDiscount = Math.round(((parsedPrice - parsedDiscountedPrice) / parsedPrice) * 100);
+    }
+
     if (parsedDiscount > 0 && !discountPeriod) {
       return res.status(400).json({
         success: false,
-        message: "If Discount (%) is entered, Discount Expiry Date is required.",
+        message: "If Discounted Price or Discount (%) is entered, Discount Expiry Date is required.",
       });
     }
 
@@ -343,7 +361,7 @@ export const updateProduct = async (req, res) => {
     const sellerId = req.user.userId; // Now comes from Seller collection directly
     const { id } = req.params;
 
-    let { title, price, stock, description, mainCategory, subCategory, subSubCategory, attributes, discount, discountPeriod, maxQuantityPerPurchase } = req.body;
+    let { title, price, stock, description, mainCategory, subCategory, subSubCategory, attributes, discount, discountedPrice, discountPeriod, maxQuantityPerPurchase } = req.body;
     const newImages = req.fileUrls || [];
 
     // Parse attributes if it's a JSON string (from FormData)
@@ -390,6 +408,7 @@ export const updateProduct = async (req, res) => {
 
     // Validate Max Quantity Per Purchase
     const finalStock = stock !== undefined && stock !== "" ? parseInt(stock) : product.stock;
+    const finalPrice = price !== undefined && price !== "" ? parseFloat(price) : product.price;
     const finalMaxQty = maxQuantityPerPurchase !== undefined && maxQuantityPerPurchase !== "" ? parseInt(maxQuantityPerPurchase) : product.maxQuantityPerPurchase;
 
     if (isNaN(finalMaxQty) || finalMaxQty < 1 || finalMaxQty > 25) {
@@ -408,13 +427,30 @@ export const updateProduct = async (req, res) => {
 
     product.maxQuantityPerPurchase = finalMaxQty;
 
-    // Validate Discount & Discount Expiry Date
-    const finalDiscount = discount !== undefined && discount !== "" ? parseInt(discount) : product.discount;
+    // Validate Discounted Price / Discount & Expiry Date
+    let finalDiscount = discount !== undefined && discount !== "" ? parseInt(discount) : product.discount;
+    if (discountedPrice !== undefined && discountedPrice !== null && discountedPrice !== "") {
+      const parsedDiscountedPrice = parseFloat(discountedPrice);
+      if (isNaN(parsedDiscountedPrice) || parsedDiscountedPrice <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Discounted Price must be a positive number.",
+        });
+      }
+      if (parsedDiscountedPrice >= finalPrice) {
+        return res.status(400).json({
+          success: false,
+          message: "Discounted Price must be less than original Price.",
+        });
+      }
+      finalDiscount = Math.round(((finalPrice - parsedDiscountedPrice) / finalPrice) * 100);
+    }
+
     const finalDiscountPeriod = discountPeriod !== undefined && discountPeriod !== "" ? new Date(discountPeriod) : product.discountPeriod;
     if (finalDiscount > 0 && !finalDiscountPeriod) {
       return res.status(400).json({
         success: false,
-        message: "If Discount (%) is entered, Discount Expiry Date is required.",
+        message: "If Discounted Price or Discount (%) is entered, Discount Expiry Date is required.",
       });
     }
 
