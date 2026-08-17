@@ -465,19 +465,39 @@ export const updateProduct = async (req, res) => {
     product.discountPeriod = finalDiscount > 0 ? finalDiscountPeriod : null;
 
     let existingImages = req.body.existingImages;
-    if (existingImages !== undefined && existingImages !== null) {
+    if (existingImages) {
       if (typeof existingImages === "string") {
         existingImages = [existingImages];
       }
     } else {
-      existingImages = null;
+      existingImages = [];
     }
 
     const uploadedNewImages = req.fileUrls || [];
 
-    if (existingImages !== null || uploadedNewImages.length > 0) {
-      const finalImages = [...(existingImages || []), ...uploadedNewImages];
+    let finalImages = [];
+    if (req.body.imageOrder) {
+      try {
+        const imageOrder = typeof req.body.imageOrder === "string" ? JSON.parse(req.body.imageOrder) : req.body.imageOrder;
+        let newIdx = 0;
 
+        finalImages = imageOrder.map((item) => {
+          if (item === "NEW_FILE") {
+            const url = uploadedNewImages[newIdx];
+            newIdx++;
+            return url;
+          } else {
+            return item;
+          }
+        }).filter(Boolean);
+      } catch (err) {
+        finalImages = [...existingImages, ...uploadedNewImages];
+      }
+    } else if (existingImages.length > 0 || uploadedNewImages.length > 0) {
+      finalImages = [...existingImages, ...uploadedNewImages];
+    }
+
+    if (finalImages.length > 0) {
       if (finalImages.length < 2 || finalImages.length > 5) {
         return res.status(400).json({
           success: false,

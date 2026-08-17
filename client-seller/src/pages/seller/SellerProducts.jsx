@@ -437,10 +437,9 @@ const SellerProducts = () => {
       return;
     }
 
-    // Check image count (existing imagePreviews or newly selected form.images)
-    const newFilesCount = form.images.filter(i => typeof i !== "string").length;
-    if (newFilesCount > 0 && newFilesCount < 2) {
-      toast.error("At least 2 product images must be uploaded!");
+    // Check total image count
+    if (form.images.length < 2 || form.images.length > 5) {
+      toast.error("Product must have between 2 and 5 images!");
       return;
     }
 
@@ -458,10 +457,17 @@ const SellerProducts = () => {
     data.append("discountPeriod", form.discountPeriod ? new Date(form.discountPeriod).toISOString() : "");
     data.append("maxQuantityPerPurchase", form.maxQuantityPerPurchase || "1");
 
+    const imageOrder = [];
     form.images.forEach((image) => {
-      if (typeof image === "string") return; // Skip existing images
-      data.append("images", image);
+      if (typeof image === "string") {
+        data.append("existingImages", image);
+        imageOrder.push(image);
+      } else {
+        data.append("images", image);
+        imageOrder.push("NEW_FILE");
+      }
     });
+    data.append("imageOrder", JSON.stringify(imageOrder));
 
     try {
       setIsSubmitting(true);
