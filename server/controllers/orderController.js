@@ -79,6 +79,8 @@ export const placeOrder = async (req, res) => {
 
     let totalAmount = 0;
 
+    const now = new Date();
+
     for (const [sellerId, groupItems] of Object.entries(sellerGroups)) {
       const childTotal = groupItems.reduce((a, b) => a + b.subtotal, 0);
       totalAmount += childTotal;
@@ -88,6 +90,8 @@ export const placeOrder = async (req, res) => {
         items: groupItems,
         amount: childTotal,
         status: "Pending",
+        placedAt: now,
+        confirmedAt: now,
       });
     }
 
@@ -107,6 +111,8 @@ export const placeOrder = async (req, res) => {
       totalAmount,
       childOrders,
       status: "Pending",
+      placedAt: now,
+      confirmedAt: now,
     });
 
     // --------------------------------------------

@@ -44,8 +44,8 @@ const childOrderSchema = new mongoose.Schema(
       default: "Pending",
     },
 
-    placedAt: { type: Date, default: Date.now },
-    confirmedAt: { type: Date, default: Date.now },
+    placedAt: { type: Date, default: null },
+    confirmedAt: { type: Date, default: null },
     packedAt: { type: Date, default: null },
     shippedAt: { type: Date, default: null },
     outForDeliveryAt: { type: Date, default: null },
@@ -101,8 +101,8 @@ const parentOrderSchema = new mongoose.Schema(
       default: "Confirmed",
     },
 
-    placedAt: { type: Date, default: Date.now },
-    confirmedAt: { type: Date, default: Date.now },
+    placedAt: { type: Date, default: null },
+    confirmedAt: { type: Date, default: null },
     packedAt: { type: Date, default: null },
     shippedAt: { type: Date, default: null },
     outForDeliveryAt: { type: Date, default: null },
