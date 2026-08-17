@@ -903,12 +903,12 @@ const SellerProducts = () => {
               <table className="w-full text-left">
                 <thead>
                   <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-                    <th className="px-6 py-4">Product</th>
-                    <th className="px-6 py-4">MRP Price</th>
-                    <th className="px-6 py-4">Selling Price</th>
-                    <th className="px-6 py-4">Stock</th>
-                    <th className="px-6 py-4">Status</th>
-                    <th className="px-6 py-4 text-right">Actions</th>
+                    <th className="px-6 py-4 whitespace-nowrap">Product</th>
+                    <th className="px-6 py-4 whitespace-nowrap">MRP Price</th>
+                    <th className="px-6 py-4 whitespace-nowrap">Selling Price</th>
+                    <th className="px-6 py-4 whitespace-nowrap">Stock</th>
+                    <th className="px-6 py-4 whitespace-nowrap">Status</th>
+                    <th className="px-6 py-4 text-right whitespace-nowrap">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 text-xs font-semibold text-slate-800">
@@ -921,31 +921,31 @@ const SellerProducts = () => {
                             alt={product.title}
                             className="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0"
                           />
-                          <div>
+                          <div className="min-w-0">
                             <p className="font-extrabold text-slate-900 hover:text-[#3F51F4] transition line-clamp-1">
                               {product.title}
                             </p>
-                            <p className="text-[10px] text-slate-400 font-bold">
+                            <p className="text-[10px] text-slate-400 font-bold truncate">
                               {product.mainCategory} &gt; {product.subCategory}
                             </p>
                           </div>
                         </Link>
                       </td>
 
-                      <td className="px-6 py-4 font-black">
+                      <td className="px-6 py-4 font-black whitespace-nowrap">
                         ₹{product.price?.toLocaleString()}
                       </td>
 
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 whitespace-nowrap">
                         {product.discount > 0 ? (
-                          <div className="space-y-0.5">
-                            <span className="font-black text-emerald-600">
+                          <div className="flex items-center gap-2 whitespace-nowrap">
+                            <span className="font-black text-emerald-600 text-sm">
                               ₹{(product.discountedPrice && product.discountedPrice > 0
                                 ? product.discountedPrice
                                 : Math.round(product.price * (1 - product.discount / 100))
                               ).toLocaleString()}
                             </span>
-                            <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded-full ml-1.5">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 whitespace-nowrap shrink-0">
                               {product.discount}% OFF
                             </span>
                           </div>
@@ -954,16 +954,16 @@ const SellerProducts = () => {
                         )}
                       </td>
 
-                      <td className="px-6 py-4">
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black ${
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black whitespace-nowrap ${
                           product.stock > 0 ? "bg-slate-100 text-slate-800" : "bg-red-100 text-red-800"
                         }`}>
                           {product.stock} units
                         </span>
                       </td>
 
-                      <td className="px-6 py-4">
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black ${
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black whitespace-nowrap ${
                           product.isAvailable ? "bg-emerald-100 text-emerald-800" : "bg-slate-200 text-slate-600"
                         }`}>
                           {product.isAvailable ? "✓ Visible" : "✕ Hidden"}
