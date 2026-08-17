@@ -149,8 +149,8 @@ const AdminOrders = () => {
                         <div className="space-y-1">
                           {child.items?.map((item) => (
                             <div key={item.productId} className="flex justify-between text-slate-600">
-                              <span className="truncate max-w-[200px]">{item.title} × {item.qty}</span>
-                              <span className="font-bold text-slate-900">₹{item.subtotal}</span>
+                              <span className="truncate max-w-[220px]">{item.title} (₹{item.price?.toLocaleString()} × {item.qty})</span>
+                              <span className="font-bold text-slate-900">₹{item.subtotal?.toLocaleString()}</span>
                             </div>
                           ))}
                         </div>

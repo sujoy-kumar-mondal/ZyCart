@@ -115,9 +115,16 @@ const AdminOrderDetails = () => {
 
                     <div className="space-y-2 text-xs font-semibold text-slate-700">
                       {child.items?.map((item, idx) => (
-                        <div key={idx} className="flex justify-between items-center">
-                          <span>{item.title} × {item.qty}</span>
-                          <span className="font-black text-slate-900">₹{item.subtotal?.toLocaleString()}</span>
+                        <div key={idx} className="flex justify-between items-center py-1.5 border-b border-slate-100 last:border-0">
+                          <div>
+                            <p className="font-bold text-slate-900">{item.title}</p>
+                            <p className="text-[11px] text-slate-500 font-semibold mt-0.5">
+                              Per Item Price: <span className="font-bold text-slate-800">₹{item.price?.toLocaleString()}</span> × {item.qty} unit(s)
+                            </p>
+                          </div>
+                          <span className="font-black text-slate-900 text-sm shrink-0 ml-4">
+                            ₹{item.subtotal?.toLocaleString()}
+                          </span>
                         </div>
                       ))}
                     </div>

@@ -136,11 +136,12 @@ const UserOrders = () => {
 
                     <div className="space-y-1.5 pt-1">
                       {child.items.map((item, idx) => (
-                        <div key={idx} className="flex justify-between text-sm">
-                          <span className="font-medium text-slate-800">
-                            {item.title} <span className="text-xs text-slate-400 font-bold">× {item.qty}</span>
-                          </span>
-                          <span className="font-extrabold text-slate-900">
+                        <div key={idx} className="flex justify-between items-center text-sm">
+                          <div>
+                            <span className="font-medium text-slate-800 block">{item.title}</span>
+                            <span className="text-xs text-slate-500 font-medium">Per Item Price: ₹{item.price?.toLocaleString()} × {item.qty} unit(s)</span>
+                          </div>
+                          <span className="font-extrabold text-slate-900 shrink-0 ml-4">
                             ₹{item.subtotal?.toLocaleString()}
                           </span>
                         </div>

@@ -95,16 +95,21 @@ const SellerOrderDetails = () => {
 
               <div className="space-y-3">
                 {order?.items?.map((item, idx) => (
-                  <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex justify-between items-center text-sm">
-                    <div>
+                  <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex justify-between items-center text-sm gap-4">
+                    <div className="space-y-1">
                       <h3 className="font-extrabold text-slate-900">{item.title}</h3>
-                      <p className="text-xs text-slate-500 font-semibold mt-0.5">
-                        Quantity: <span className="font-bold text-slate-800">{item.qty} unit(s)</span>
-                      </p>
+                      <div className="flex items-center gap-3 text-xs text-slate-500 font-semibold">
+                        <span>Per Item Price: <span className="font-bold text-slate-800">₹{item.price?.toLocaleString()}</span></span>
+                        <span>•</span>
+                        <span>Quantity: <span className="font-bold text-slate-800">{item.qty} unit(s)</span></span>
+                      </div>
                     </div>
-                    <span className="font-black text-slate-900 text-base">
-                      ₹{item.subtotal?.toLocaleString()}
-                    </span>
+                    <div className="text-right shrink-0">
+                      <span className="text-[10px] font-extrabold uppercase text-slate-400 block">Subtotal</span>
+                      <span className="font-black text-slate-900 text-base">
+                        ₹{item.subtotal?.toLocaleString()}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>

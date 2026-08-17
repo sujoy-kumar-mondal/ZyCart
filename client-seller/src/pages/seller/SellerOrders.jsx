@@ -134,10 +134,11 @@ const SellerOrders = () => {
               <div className="space-y-2 text-sm text-slate-700">
                 {order.items.map((item, idx) => (
                   <div key={idx} className="flex justify-between items-center p-3 rounded-2xl bg-slate-50 border border-slate-100">
-                    <span className="font-semibold text-slate-900">
-                      {item.title} <span className="text-xs text-slate-400 font-bold">× {item.qty}</span>
-                    </span>
-                    <span className="font-black text-slate-900">
+                    <div>
+                      <span className="font-semibold text-slate-900 block">{item.title}</span>
+                      <span className="text-xs text-slate-500 font-medium">Per Item Price: ₹{item.price?.toLocaleString()} × {item.qty} unit(s)</span>
+                    </div>
+                    <span className="font-black text-slate-900 shrink-0 ml-4">
                       ₹{item.subtotal?.toLocaleString()}
                     </span>
                   </div>
