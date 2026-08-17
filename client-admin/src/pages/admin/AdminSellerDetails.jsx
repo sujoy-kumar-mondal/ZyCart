@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "../../utils/axiosInstance";
 import Loader from "../../components/Loader";
-import { ArrowLeft, Mail, Phone, MapPin, Calendar, ShoppingBag, TrendingUp, AlertCircle, CheckCircle } from "lucide-react";
+import { ArrowLeft, Mail, Phone, MapPin, Calendar, ShoppingBag, TrendingUp, AlertCircle, CheckCircle, Store, ShieldCheck, Ban } from "lucide-react";
 import toast from "react-hot-toast";
 
 const AdminSellerDetails = () => {
@@ -15,7 +15,7 @@ const AdminSellerDetails = () => {
 
   useEffect(() => {
     fetchSellerDetails();
-    document.title = "Seller Details | ZyCart Admin";
+    document.title = "Merchant Verification | ZyCart Admin";
   }, [sellerId]);
 
   const fetchSellerDetails = async () => {
@@ -62,271 +62,198 @@ const AdminSellerDetails = () => {
     }
   };
 
-  if (loading) return <Loader />;
-
-  if (!seller) {
+  if (loading) {
     return (
-      <div className="text-center mt-20 max-w-screen-2xl container mx-auto">
-        <h2 className="text-xl font-semibold text-red-500">Seller not found</h2>
-        <button
-          className="mt-4 px-6 py-2 rounded-lg text-white font-semibold bg-[#3F51F4]"
-          onClick={() => navigate("/admin/sellers")}
-        >
-          Back to Sellers
-        </button>
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <Loader />
       </div>
     );
   }
 
+  if (!seller) return null;
+
   return (
-    <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 py-16">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <button
-          onClick={() => navigate("/admin/sellers")}
-          className="p-2 hover:bg-gray-100 rounded-lg transition"
-        >
-          <ArrowLeft className="w-6 h-6 text-gray-600" />
-        </button>
-        <div>
-          <h1 className="text-3xl font-bold text-[#1B2A41]">Seller Details</h1>
-          <p className="text-gray-600">Manage seller account and operations</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Seller Profile */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40">
-            <h2 className="text-2xl font-bold text-[#1B2A41] mb-6">Seller Profile</h2>
-
-            <div className="grid grid-cols-2 gap-6">
-              <div className="p-4 bg-gray-50 rounded-xl col-span-2">
-                <p className="text-gray-600 text-sm mb-2">Shop Name</p>
-                <p className="text-[#1B2A41] font-bold text-lg">{seller?.shopName}</p>
-              </div>
-
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-2">Owner Name</p>
-                <p className="text-[#1B2A41] font-semibold">{seller?.name || 'N/A'}</p>
-              </div>
-
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-2">Shop Type</p>
-                <p className="text-[#1B2A41] font-semibold capitalize">{seller?.shopType}</p>
-              </div>
-
-              <div className="p-4 bg-gray-50 rounded-xl col-span-2">
-                <p className="text-gray-600 text-sm mb-2 flex items-center gap-2">
-                  <Mail className="w-4 h-4" /> Email
-                </p>
-                <p className="text-[#1B2A41] font-semibold">{seller?.email || 'N/A'}</p>
-              </div>
-
-              <div className="p-4 bg-gray-50 rounded-xl col-span-2">
-                <p className="text-gray-600 text-sm mb-2 flex items-center gap-2">
-                  <Phone className="w-4 h-4" /> Mobile
-                </p>
-                <p className="text-[#1B2A41] font-semibold">{seller?.mobile || "Not provided"}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Business Information */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40">
-            <h2 className="text-2xl font-bold text-[#1B2A41] mb-6">Business Information</h2>
-
-            <div className="grid grid-cols-2 gap-6">
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-2">PAN Number</p>
-                <p className="text-[#1B2A41] font-semibold text-lg">
-                  {seller?.pan || "Not provided"}
-                </p>
-              </div>
-
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-2">GST Number</p>
-                <p className="text-[#1B2A41] font-semibold text-lg">
-                  {seller?.gst || "Not provided"}
-                </p>
-              </div>
-
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-2">AADHAR Number</p>
-                <p className="text-[#1B2A41] font-semibold text-lg">
-                  {seller?.aadhar ? `****${seller.aadhar.slice(-4)}` : "Not provided"}
-                </p>
-              </div>
-
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-2">Account Status</p>
-                <span className={`inline-block px-3 py-1 rounded-lg text-sm font-semibold ${
-                  seller?.isBanned
-                    ? "bg-red-100 text-red-800"
-                    : seller?.isApproved
-                      ? "bg-green-100 text-green-800"
-                      : "bg-yellow-100 text-yellow-800"
+    <div className="min-h-screen bg-[#F8FAFC] py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate("/admin/sellers")}
+              className="p-2.5 rounded-2xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+                  {seller.shopName || seller.name}
+                </h1>
+                <span className={`px-3 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                  seller.isBanned ? "bg-red-100 text-red-800" : seller.isApproved ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
                 }`}>
-                  {seller?.isBanned ? "Banned" : seller?.isApproved ? "Approved" : "Pending"}
+                  {seller.isBanned ? "Banned" : seller.isApproved ? "Approved Merchant" : "Pending Approval"}
                 </span>
               </div>
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40">
-            <h2 className="text-2xl font-bold text-[#1B2A41] mb-6 flex items-center gap-2">
-              <TrendingUp className="w-6 h-6" /> Statistics
-            </h2>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
-                <p className="text-gray-600 text-sm mb-1">Total Products</p>
-                <p className="text-2xl font-bold text-[#3F51F4]">{seller?.totalProducts || 0}</p>
-              </div>
-
-              <div className="p-4 bg-orange-50 rounded-xl border border-orange-200">
-                <p className="text-gray-600 text-sm mb-1">Account Created</p>
-                <p className="text-[#1B2A41] font-semibold text-sm">
-                  {seller?.createdAt ? new Date(seller.createdAt).toLocaleDateString() : "N/A"}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Products */}
-          {products && products.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40">
-              <h2 className="text-2xl font-bold text-[#1B2A41] mb-6 flex items-center gap-2">
-                <ShoppingBag className="w-6 h-6" /> Products
-              </h2>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm">
-                  <thead className="border-b">
-                    <tr className="text-gray-600">
-                      <th className="py-2">Product</th>
-                      <th>Price</th>
-                      <th>Discounted Price</th>
-                      <th>Stock</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {products.slice(0, 10).map((product) => (
-                      <tr key={product._id} className="border-b hover:bg-gray-50">
-                        <td className="py-3">
-                          <p className="font-semibold text-[#1B2A41]">
-                            {product.title}
-                          </p>
-                        </td>
-                        <td className="font-semibold">₹{product.price?.toLocaleString()}</td>
-                        <td>
-                          {product.discount > 0 ? (
-                            <span className="font-semibold text-green-600">
-                              ₹{(product.discountedPrice && product.discountedPrice > 0
-                                ? product.discountedPrice
-                                : Math.round(product.price * (1 - product.discount / 100))
-                              ).toLocaleString()} ({product.discount}% OFF)
-                            </span>
-                          ) : (
-                            <span className="text-gray-400">—</span>
-                          )}
-                        </td>
-                        <td className={`font-semibold ${product.stock > 0 ? "text-green-600" : "text-red-600"}`}>
-                          {product.stock}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {products.length > 10 && (
-                <p className="text-center text-gray-600 text-sm mt-4">
-                  +{products.length - 10} more products
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Sidebar */}
-        <div className="lg:col-span-1">
-          {/* Actions */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40 sticky top-20 space-y-4">
-            <h3 className="text-xl font-bold text-[#1B2A41] mb-6">Actions</h3>
-
-            {!seller?.isApproved && !seller?.isBanned && (
-              <button
-                onClick={toggleApprovalStatus}
-                disabled={actionLoading}
-                className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold disabled:opacity-50"
-              >
-                {actionLoading ? "Processing..." : "Approve Seller"}
-              </button>
-            )}
-
-            <button
-              onClick={toggleBanStatus}
-              disabled={actionLoading}
-              className={`w-full px-4 py-3 rounded-lg text-white font-semibold transition disabled:opacity-50 ${
-                seller?.isBanned
-                  ? "bg-green-600 hover:bg-green-700"
-                  : "bg-red-600 hover:bg-red-700"
-              }`}
-            >
-              {actionLoading ? "Processing..." : seller?.isBanned ? "Unban Seller" : "Ban Seller"}
-            </button>
-
-            {/* Status Cards */}
-            <div className="border-t pt-6 mt-6">
-              {seller?.isApproved && (
-                <div className="p-4 bg-green-50 rounded-xl border border-green-200 mb-3">
-                  <div className="flex gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-green-800 font-semibold text-sm">Approved</p>
-                      <p className="text-green-700 text-xs mt-1">This seller can list and sell products</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {seller?.isBanned && (
-                <div className="p-4 bg-red-50 rounded-xl border border-red-200">
-                  <div className="flex gap-2">
-                    <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-red-800 font-semibold text-sm">Account Banned</p>
-                      <p className="text-red-700 text-xs mt-1">All products are unavailable to customers</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {!seller?.isApproved && !seller?.isBanned && (
-                <div className="p-4 bg-yellow-50 rounded-xl border border-yellow-200">
-                  <div className="flex gap-2">
-                    <AlertCircle className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-yellow-800 font-semibold text-sm">Pending Approval</p>
-                      <p className="text-yellow-700 text-xs mt-1">Seller is awaiting admin approval</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Info */}
-            <div className="border-t pt-6 mt-6">
-              <h4 className="font-bold text-[#1B2A41] mb-4">Account ID</h4>
-              <p className="text-gray-600 text-xs font-mono bg-gray-50 p-3 rounded break-all">
-                {seller?._id}
+              <p className="text-xs text-slate-500 font-semibold mt-0.5">
+                Merchant Store ID: <span className="font-mono text-slate-700">{seller._id}</span>
               </p>
             </div>
           </div>
         </div>
+
+        {/* 2-Column Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Main Info */}
+          <div className="lg:col-span-8 space-y-6">
+            
+            {/* Merchant Owner Profile */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
+              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                Storefront &amp; Owner Profile
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-semibold text-slate-800">
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold uppercase text-slate-400">Shop Name</span>
+                  <p className="font-black text-sm text-slate-900">{seller.shopName || "N/A"}</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold uppercase text-slate-400">Owner Name</span>
+                  <p className="font-black text-sm text-slate-900">{seller.name || "N/A"}</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold uppercase text-slate-400">Category</span>
+                  <p className="font-black text-sm text-slate-900">{seller.shopType || "General"}</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold uppercase text-slate-400">Registration Date</span>
+                  <p className="font-black text-sm text-slate-900">
+                    {seller.createdAt ? new Date(seller.createdAt).toLocaleDateString() : "N/A"}
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1 sm:col-span-2">
+                  <span className="text-[10px] font-extrabold uppercase text-slate-400">Email Address</span>
+                  <p className="font-black text-sm text-slate-900">{seller.email}</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1 sm:col-span-2">
+                  <span className="text-[10px] font-extrabold uppercase text-slate-400">Mobile Phone</span>
+                  <p className="font-black text-sm text-slate-900">{seller.mobile || "Not provided"}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Business Credentials */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
+              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                Business &amp; Tax Verification Credentials
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-semibold text-slate-800">
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold uppercase text-slate-400">GSTIN Number</span>
+                  <p className="font-mono font-black text-sm text-slate-900 uppercase">{seller.gst || "Not provided"}</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold uppercase text-slate-400">PAN Number</span>
+                  <p className="font-mono font-black text-sm text-slate-900 uppercase">{seller.pan || "Not provided"}</p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold uppercase text-slate-400">Aadhaar Number</span>
+                  <p className="font-mono font-black text-sm text-slate-900">
+                    {seller.aadhar ? `**** **** ${seller.aadhar.slice(-4)}` : "Not provided"}
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold uppercase text-slate-400">Bank Account</span>
+                  <p className="font-mono font-black text-sm text-slate-900">{seller.bankAccount || "Not provided"}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Products Table */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
+              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                Listed Catalog Items ({products.length})
+              </h2>
+
+              {products.length === 0 ? (
+                <p className="text-xs font-semibold text-slate-400 py-4 text-center">No products listed by this seller yet.</p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs font-semibold text-slate-800">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                        <th className="px-4 py-3 whitespace-nowrap">Product</th>
+                        <th className="px-4 py-3 whitespace-nowrap">MRP Price</th>
+                        <th className="px-4 py-3 whitespace-nowrap">Selling Price</th>
+                        <th className="px-4 py-3 whitespace-nowrap">Stock</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {products.slice(0, 10).map((product) => (
+                        <tr key={product._id} className="hover:bg-slate-50/60 transition">
+                          <td className="px-4 py-3 font-extrabold text-slate-900 max-w-xs truncate">{product.title}</td>
+                          <td className="px-4 py-3 font-black">₹{product.price?.toLocaleString()}</td>
+                          <td className="px-4 py-3 font-black text-emerald-600">
+                            ₹{(product.discountedPrice || product.price).toLocaleString()}
+                          </td>
+                          <td className="px-4 py-3 font-black">{product.stock} units</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+          </div>
+
+          {/* Sidebar Actions */}
+          <div className="lg:col-span-4 sticky top-24 space-y-6">
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-6">
+              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                Account Controls
+              </h2>
+
+              <div className="space-y-3">
+                {!seller.isApproved && !seller.isBanned && (
+                  <button
+                    onClick={toggleApprovalStatus}
+                    disabled={actionLoading}
+                    className="w-full py-4 rounded-2xl font-extrabold text-white text-xs bg-emerald-600 hover:bg-emerald-700 shadow-md transition disabled:opacity-50"
+                  >
+                    {actionLoading ? "Processing..." : "Approve Merchant Account"}
+                  </button>
+                )}
+
+                <button
+                  onClick={toggleBanStatus}
+                  disabled={actionLoading}
+                  className={`w-full py-4 rounded-2xl font-extrabold text-xs shadow-md transition disabled:opacity-50 ${
+                    seller.isBanned
+                      ? "bg-slate-800 hover:bg-slate-900 text-white"
+                      : "bg-red-600 hover:bg-red-700 text-white"
+                  }`}
+                >
+                  {actionLoading ? "Processing..." : seller.isBanned ? "Unban Seller Account" : "Ban Seller Account"}
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
       </div>
     </div>
   );

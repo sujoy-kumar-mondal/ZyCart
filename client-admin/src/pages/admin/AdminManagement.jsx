@@ -63,7 +63,7 @@ const AdminManagement = () => {
 
   useEffect(() => {
     fetchAdmins();
-    document.title = "Manage Admins | ZyCart Admin";
+    document.title = "Sub-Admin Roles & Permissions | ZyCart Admin";
   }, []);
 
   const openAddModal = () => {
@@ -133,7 +133,7 @@ const AdminManagement = () => {
     const hasNumber = /[0-9]/.test(pwd);
     const hasSymbol = /[^A-Za-z0-9]/.test(pwd);
     if (pwd.length < 8 || !hasUpper || !hasLower || !hasNumber || !hasSymbol) {
-      toast.error("Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character (symbol).");
+      toast.error("Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character.");
       return;
     }
 
@@ -157,7 +157,7 @@ const AdminManagement = () => {
     try {
       setSubmitting(true);
       const payload = { ...formData };
-      if (!payload.password) delete payload.password; // Don't overwrite password if blank
+      if (!payload.password) delete payload.password;
 
       const res = await axios.put(`/admin/admins/${selectedAdmin._id}`, payload);
       toast.success(res.data.message || "Admin updated successfully!");
@@ -177,7 +177,7 @@ const AdminManagement = () => {
       return;
     }
 
-    if (!window.confirm(`Are you sure you want to delete admin '${adminName}'? This action cannot be undone.`)) {
+    if (!window.confirm(`Are you sure you want to delete admin '${adminName}'?`)) {
       return;
     }
 
@@ -206,248 +206,204 @@ const AdminManagement = () => {
     }
   };
 
-  if (loading) return <Loader />;
+  if (loading) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <Loader />
+      </div>
+    );
+  }
 
   const superAdminCount = admins.filter((a) => a.role === "super_admin").length;
   const activeCount = admins.filter((a) => a.isActive).length;
 
   return (
-    <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 py-10 space-y-8">
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-3xl font-extrabold text-[#1B2A41]">
-              Admin Management
+    <div className="min-h-screen bg-[#F8FAFC] py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+              Sub-Admin Team &amp; Permissions
             </h1>
-            <span className="px-3 py-1 text-xs font-bold uppercase rounded-full bg-purple-100 text-purple-700 border border-purple-200">
-              Super Admin Feature
-            </span>
+            <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
+              Create sub-admin accounts and configure fine-grained operational permissions.
+            </p>
           </div>
-          <p className="text-gray-600 mt-1 text-base">
-            Create secondary admins, assign fine-grained permissions, and manage platform roles.
-          </p>
+
+          <button
+            onClick={openAddModal}
+            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-extrabold text-xs shadow-lg shadow-purple-500/20 hover:opacity-95 transition flex items-center gap-2 shrink-0"
+          >
+            <UserPlus className="w-4 h-4" /> Add Sub-Admin
+          </button>
         </div>
 
-        <button
-          onClick={openAddModal}
-          className="flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-90 transition shadow-md shrink-0"
-        >
-          <UserPlus className="w-5 h-5" />
-          Add New Admin
-        </button>
-      </div>
+        {/* 3 Metric Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-1">
+            <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Total System Admins</p>
+            <p className="text-3xl font-black text-[#3F51F4]">{admins.length}</p>
+          </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-center gap-4">
-          <div className="p-4 bg-blue-50 text-blue-600 rounded-xl">
-            <ShieldCheck className="w-8 h-8" />
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-1">
+            <p className="text-[10px] font-extrabold uppercase tracking-wider text-purple-600">Super Admins</p>
+            <p className="text-3xl font-black text-purple-600">{superAdminCount}</p>
           </div>
-          <div>
-            <p className="text-sm text-gray-500 font-medium">Total Admins</p>
-            <p className="text-2xl font-bold text-[#1B2A41]">{admins.length}</p>
-          </div>
-        </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-center gap-4">
-          <div className="p-4 bg-purple-50 text-purple-600 rounded-xl">
-            <Shield className="w-8 h-8" />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500 font-medium">Super Admins</p>
-            <p className="text-2xl font-bold text-[#1B2A41]">{superAdminCount}</p>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-1">
+            <p className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-600">Active Accounts</p>
+            <p className="text-3xl font-black text-emerald-600">{activeCount}</p>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex items-center gap-4">
-          <div className="p-4 bg-green-50 text-green-600 rounded-xl">
-            <UserCheck className="w-8 h-8" />
-          </div>
-          <div>
-            <p className="text-sm text-gray-500 font-medium">Active Accounts</p>
-            <p className="text-2xl font-bold text-[#1B2A41]">{activeCount}</p>
-          </div>
-        </div>
-      </div>
+        {/* Table */}
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                  <th className="px-6 py-4 whitespace-nowrap">Admin User</th>
+                  <th className="px-6 py-4 whitespace-nowrap">Role</th>
+                  <th className="px-6 py-4 whitespace-nowrap">Status</th>
+                  <th className="px-6 py-4 whitespace-nowrap">Permissions Matrix</th>
+                  <th className="px-6 py-4 text-right whitespace-nowrap">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 text-xs font-semibold text-slate-800">
+                {admins.map((adm) => {
+                  const isSuper = adm.role === "super_admin";
+                  const isSelf = adm._id === currentUser?._id;
 
-      {/* Admins Table */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="px-6 py-5 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-[#1B2A41]">All System Admins ({admins.length})</h2>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
-                <th className="py-4 px-6">Admin User</th>
-                <th className="py-4 px-6">Role</th>
-                <th className="py-4 px-6">Status</th>
-                <th className="py-4 px-6">Assigned Permissions</th>
-                <th className="py-4 px-6 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 text-sm">
-              {admins.map((adm) => {
-                const isSuper = adm.role === "super_admin";
-                const isSelf = adm._id === currentUser?._id;
-
-                return (
-                  <tr key={adm._id} className="hover:bg-gray-50/80 transition-colors">
-                    <td className="py-4 px-6">
-                      <div className="font-semibold text-gray-900 flex items-center gap-2">
-                        {adm.name}
-                        {isSelf && (
-                          <span className="px-2 py-0.5 text-[10px] font-bold bg-blue-100 text-blue-700 rounded-full">
-                            YOU
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-xs text-gray-500">{adm.email}</div>
-                      {adm.mobile && <div className="text-xs text-gray-400">📞 {adm.mobile}</div>}
-                    </td>
-
-                    <td className="py-4 px-6">
-                      {isSuper ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-linear-to-r from-purple-600 to-indigo-600 text-white shadow-xs">
-                          <ShieldCheck className="w-3.5 h-3.5" /> SUPER ADMIN
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-blue-200">
-                          ADMIN
-                        </span>
-                      )}
-                    </td>
-
-                    <td className="py-4 px-6">
-                      <button
-                        onClick={() => handleToggleStatus(adm)}
-                        disabled={isSelf}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition ${
-                          adm.isActive
-                            ? "bg-green-100 text-green-700 border border-green-200 hover:bg-green-200"
-                            : "bg-red-100 text-red-700 border border-red-200 hover:bg-red-200"
-                        } disabled:opacity-60 disabled:cursor-not-allowed`}
-                      >
-                        {adm.isActive ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-                        {adm.isActive ? "Active" : "Inactive"}
-                      </button>
-                    </td>
-
-                    <td className="py-4 px-6">
-                      {isSuper ? (
-                        <span className="text-xs font-bold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-md border border-purple-200">
-                          ⚡ Full System Privileges (All Permissions)
-                        </span>
-                      ) : adm.permissions && adm.permissions.length > 0 ? (
-                        <div className="flex flex-wrap gap-1.5 max-w-md">
-                          {adm.permissions.map((p) => (
-                            <span
-                              key={p}
-                              className="px-2 py-0.5 text-[11px] font-medium bg-gray-100 text-gray-700 rounded-md border border-gray-200"
-                            >
-                              {p.replace(/_/g, " ")}
-                            </span>
-                          ))}
+                  return (
+                    <tr key={adm._id} className="hover:bg-slate-50/60 transition">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] text-white font-extrabold text-xs flex items-center justify-center shrink-0">
+                            {adm.name ? adm.name[0].toUpperCase() : "A"}
+                          </div>
+                          <div>
+                            <p className="font-extrabold text-slate-900 flex items-center gap-1.5">
+                              {adm.name}
+                              {isSelf && (
+                                <span className="px-2 py-0.5 text-[9px] font-black uppercase bg-blue-100 text-blue-800 rounded-full">
+                                  YOU
+                                </span>
+                              )}
+                            </p>
+                            <p className="text-[10px] text-slate-400 font-bold">{adm.email}</p>
+                          </div>
                         </div>
-                      ) : (
-                        <span className="text-xs text-gray-400 italic">No permissions assigned</span>
-                      )}
-                    </td>
+                      </td>
 
-                    <td className="py-4 px-6 text-right space-x-2">
-                      <button
-                        onClick={() => openEditModal(adm)}
-                        className="px-3 py-1.5 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition inline-flex items-center gap-1"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" /> Edit
-                      </button>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black ${
+                          isSuper ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"
+                        }`}>
+                          {isSuper ? "Super Admin" : "Sub-Admin"}
+                        </span>
+                      </td>
 
-                      <button
-                        onClick={() => handleDeleteAdmin(adm._id, adm.name)}
-                        disabled={isSelf}
-                        className="px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition inline-flex items-center gap-1 disabled:opacity-40 disabled:cursor-not-allowed"
-                        title={isSelf ? "Cannot delete your own account" : "Delete Admin"}
-                      >
-                        <Trash2 className="w-3.5 h-3.5" /> Delete
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <button
+                          onClick={() => handleToggleStatus(adm)}
+                          disabled={isSelf}
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-black cursor-pointer transition ${
+                            adm.isActive ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"
+                          } disabled:opacity-50`}
+                        >
+                          {adm.isActive ? "Active" : "Inactive"}
+                        </button>
+                      </td>
+
+                      <td className="px-6 py-4">
+                        {isSuper ? (
+                          <span className="text-[10px] font-extrabold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-100">
+                            Full Privileges
+                          </span>
+                        ) : adm.permissions && adm.permissions.length > 0 ? (
+                          <div className="flex flex-wrap gap-1 max-w-xs">
+                            {adm.permissions.map((p) => (
+                              <span key={p} className="text-[9px] font-extrabold px-2 py-0.5 bg-slate-100 text-slate-700 rounded-full">
+                                {p.replace(/_/g, " ")}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-slate-400 font-bold text-[10px]">No permissions</span>
+                        )}
+                      </td>
+
+                      <td className="px-6 py-4 text-right whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => openEditModal(adm)}
+                            className="px-3 py-1.5 rounded-xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-extrabold text-xs transition"
+                          >
+                            Edit
+                          </button>
+
+                          <button
+                            onClick={() => handleDeleteAdmin(adm._id, adm.name)}
+                            disabled={isSelf}
+                            className="px-3 py-1.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 font-extrabold text-xs transition disabled:opacity-40"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
+
       </div>
 
-      {/* CREATE ADMIN MODAL */}
+      {/* Add Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-6 space-y-6 my-8 border border-gray-200">
-            <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-              <h3 className="text-xl font-bold text-[#1B2A41] flex items-center gap-2">
-                <UserPlus className="w-6 h-6 text-[#3F51F4]" /> Add New Admin Account
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full my-8 space-y-6 shadow-2xl border border-slate-200">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 className="text-lg font-black text-[#1B2A41]">
+                Create Sub-Admin Account
               </h3>
-              <button
-                onClick={() => setShowAddModal(false)}
-                className="text-gray-400 hover:text-gray-600 transition"
-              >
-                <X className="w-6 h-6" />
+              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleCreateSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    Full Name <span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g. Rahul Sharma"
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#3F51F4] outline-none"
-                  />
-                </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Full Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Admin Name"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none"
+                />
+              </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    Email Address <span className="text-red-600">*</span>
-                  </label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Email *</label>
                   <input
                     type="email"
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="admin@zycart.com"
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#3F51F4] outline-none"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none"
                   />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    Password <span className="text-red-600">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    required
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    placeholder="e.g. Sujoy@2026"
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#3F51F4] outline-none"
-                  />
-                  <p className="text-[11px] text-gray-500 mt-1">Min 8 chars: Upper, Lower, Number & Symbol</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    Mobile Number <span className="text-red-600">*</span>
-                  </label>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Mobile *</label>
                   <input
                     type="tel"
                     required
@@ -455,127 +411,55 @@ const AdminManagement = () => {
                     value={formData.mobile}
                     onChange={(e) => setFormData({ ...formData, mobile: e.target.value.replace(/\D/g, "") })}
                     placeholder="9876543210"
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#3F51F4] outline-none"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">Admin Role</label>
-                <div className="grid grid-cols-2 gap-4">
-                  <label
-                    className={`p-3 rounded-xl border cursor-pointer flex items-center gap-3 transition ${
-                      formData.role === "admin"
-                        ? "border-[#3F51F4] bg-blue-50/50 text-[#3F51F4] font-bold"
-                        : "border-gray-200 text-gray-700"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="role"
-                      value="admin"
-                      checked={formData.role === "admin"}
-                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                      className="hidden"
-                    />
-                    <Shield className="w-5 h-5" />
-                    <div>
-                      <div className="text-sm">Regular Admin</div>
-                      <div className="text-xs text-gray-500 font-normal">Restricted to selected permissions</div>
-                    </div>
-                  </label>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Password *</label>
+                <input
+                  type="password"
+                  required
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  placeholder="••••••••"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none"
+                />
+              </div>
 
-                  <label
-                    className={`p-3 rounded-xl border cursor-pointer flex items-center gap-3 transition ${
-                      formData.role === "super_admin"
-                        ? "border-purple-600 bg-purple-50/50 text-purple-700 font-bold"
-                        : "border-gray-200 text-gray-700"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      name="role"
-                      value="super_admin"
-                      checked={formData.role === "super_admin"}
-                      onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                      className="hidden"
-                    />
-                    <ShieldCheck className="w-5 h-5 text-purple-600" />
-                    <div>
-                      <div className="text-sm">Super Admin</div>
-                      <div className="text-xs text-gray-500 font-normal">Full system control + Manage Admins</div>
-                    </div>
-                  </label>
+              {/* Permissions Checkboxes */}
+              <div className="space-y-2 pt-2 border-t border-slate-100">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">Assign Permissions</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                  {ALL_PERMISSIONS.map((perm) => (
+                    <label key={perm.id} className="flex items-center gap-2 p-2 bg-slate-50 rounded-xl border border-slate-100 text-xs font-semibold text-slate-700 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.permissions.includes(perm.id)}
+                        onChange={() => handlePermissionToggle(perm.id)}
+                        className="rounded text-[#3F51F4]"
+                      />
+                      <span>{perm.label}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
 
-              {/* Permissions Section */}
-              {formData.role === "admin" && (
-                <div className="space-y-2 pt-2 border-t border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-semibold text-gray-800">Assign Permissions</label>
-                    <div className="space-x-3 text-xs">
-                      <button
-                        type="button"
-                        onClick={handleSelectAllPermissions}
-                        className="text-blue-600 hover:underline font-medium"
-                      >
-                        Select All
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleClearPermissions}
-                        className="text-gray-500 hover:underline"
-                      >
-                        Clear All
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-56 overflow-y-auto p-1">
-                    {ALL_PERMISSIONS.map((perm) => {
-                      const isChecked = formData.permissions.includes(perm.id);
-                      return (
-                        <label
-                          key={perm.id}
-                          className={`p-2.5 rounded-xl border text-xs cursor-pointer flex items-start gap-2.5 transition ${
-                            isChecked
-                              ? "border-blue-500 bg-blue-50/40 text-blue-900 font-semibold"
-                              : "border-gray-200 hover:bg-gray-50 text-gray-700"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() => handlePermissionToggle(perm.id)}
-                            className="mt-0.5 rounded text-blue-600 focus:ring-blue-500"
-                          />
-                          <div>
-                            <div>{perm.label}</div>
-                            <div className="text-[11px] text-gray-500 font-normal">{perm.desc}</div>
-                          </div>
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+              <div className="flex gap-3 pt-4 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition text-sm"
+                  className="flex-1 py-3 rounded-2xl border border-slate-200 font-bold text-xs text-slate-700"
                 >
                   Cancel
                 </button>
-
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2.5 rounded-xl text-white font-semibold bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-90 transition text-sm shadow-md disabled:opacity-50"
+                  className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-extrabold text-xs shadow-md"
                 >
-                  {submitting ? "Creating..." : "Create Admin Account"}
+                  {submitting ? "Creating..." : "Create Account"}
                 </button>
               </div>
             </form>
@@ -583,165 +467,60 @@ const AdminManagement = () => {
         </div>
       )}
 
-      {/* EDIT ADMIN MODAL */}
+      {/* Edit Modal */}
       {showEditModal && selectedAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-6 space-y-6 my-8 border border-gray-200">
-            <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-              <h3 className="text-xl font-bold text-[#1B2A41] flex items-center gap-2">
-                <Edit3 className="w-6 h-6 text-[#3F51F4]" /> Edit Admin: {selectedAdmin.name}
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full my-8 space-y-6 shadow-2xl border border-slate-200">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h3 className="text-lg font-black text-[#1B2A41]">
+                Edit Sub-Admin: {selectedAdmin.name}
               </h3>
-              <button
-                onClick={() => setShowEditModal(false)}
-                className="text-gray-400 hover:text-gray-600 transition"
-              >
-                <X className="w-6 h-6" />
+              <button onClick={() => setShowEditModal(false)} className="text-slate-400 hover:text-slate-600">
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleEditSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#3F51F4] outline-none"
-                  />
-                </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Full Name</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none"
+                />
+              </div>
 
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#3F51F4] outline-none"
-                  />
+              <div className="space-y-2 pt-2 border-t border-slate-100">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">Permissions</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                  {ALL_PERMISSIONS.map((perm) => (
+                    <label key={perm.id} className="flex items-center gap-2 p-2 bg-slate-50 rounded-xl border border-slate-100 text-xs font-semibold text-slate-700 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.permissions.includes(perm.id)}
+                        onChange={() => handlePermissionToggle(perm.id)}
+                        className="rounded text-[#3F51F4]"
+                      />
+                      <span>{perm.label}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">
-                    New Password <span className="text-xs text-gray-400">(Leave blank to keep current)</span>
-                  </label>
-                  <input
-                    type="password"
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    placeholder="••••••••"
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#3F51F4] outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Mobile Number</label>
-                  <input
-                    type="text"
-                    value={formData.mobile}
-                    onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#3F51F4] outline-none"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Admin Role</label>
-                  <select
-                    value={formData.role}
-                    disabled={selectedAdmin._id === currentUser?._id}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#3F51F4] outline-none disabled:opacity-50"
-                  >
-                    <option value="admin">Regular Admin</option>
-                    <option value="super_admin">Super Admin</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1">Account Status</label>
-                  <select
-                    value={formData.isActive ? "active" : "inactive"}
-                    disabled={selectedAdmin._id === currentUser?._id}
-                    onChange={(e) => setFormData({ ...formData, isActive: e.target.value === "active" })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#3F51F4] outline-none disabled:opacity-50"
-                  >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Permissions Section */}
-              {formData.role === "admin" && (
-                <div className="space-y-2 pt-2 border-t border-gray-200">
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-semibold text-gray-800">Assigned Permissions</label>
-                    <div className="space-x-3 text-xs">
-                      <button
-                        type="button"
-                        onClick={handleSelectAllPermissions}
-                        className="text-blue-600 hover:underline font-medium"
-                      >
-                        Select All
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleClearPermissions}
-                        className="text-gray-500 hover:underline"
-                      >
-                        Clear All
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-56 overflow-y-auto p-1">
-                    {ALL_PERMISSIONS.map((perm) => {
-                      const isChecked = formData.permissions.includes(perm.id);
-                      return (
-                        <label
-                          key={perm.id}
-                          className={`p-2.5 rounded-xl border text-xs cursor-pointer flex items-start gap-2.5 transition ${
-                            isChecked
-                              ? "border-blue-500 bg-blue-50/40 text-blue-900 font-semibold"
-                              : "border-gray-200 hover:bg-gray-50 text-gray-700"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() => handlePermissionToggle(perm.id)}
-                            className="mt-0.5 rounded text-blue-600 focus:ring-blue-500"
-                          />
-                          <div>
-                            <div>{perm.label}</div>
-                            <div className="text-[11px] text-gray-500 font-normal">{perm.desc}</div>
-                          </div>
-                        </label>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+              <div className="flex gap-3 pt-4 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setShowEditModal(false)}
-                  className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-100 transition text-sm"
+                  className="flex-1 py-3 rounded-2xl border border-slate-200 font-bold text-xs text-slate-700"
                 >
                   Cancel
                 </button>
-
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2.5 rounded-xl text-white font-semibold bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-90 transition text-sm shadow-md disabled:opacity-50"
+                  className="flex-1 py-3 rounded-2xl bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] text-white font-extrabold text-xs shadow-md"
                 >
                   {submitting ? "Saving..." : "Save Changes"}
                 </button>
@@ -750,6 +529,7 @@ const AdminManagement = () => {
           </div>
         </div>
       )}
+
     </div>
   );
 };

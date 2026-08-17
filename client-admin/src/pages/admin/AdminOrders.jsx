@@ -2,17 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../utils/axiosInstance.js";
 import Loader from "../../components/Loader";
-import { Eye } from "lucide-react";
+import { Eye, ShoppingBag, Package, Truck, CheckCircle2, Search } from "lucide-react";
 import toast from "react-hot-toast";
 
 const AdminOrders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // FETCH ALL PARENT ORDERS
   const fetchOrders = async () => {
     try {
+      setLoading(true);
       const res = await axios.get("/admin/orders");
       setOrders(res.data.orders || []);
     } catch (error) {
@@ -26,7 +27,6 @@ const AdminOrders = () => {
     fetchOrders();
   }, []);
 
-  // UPDATE PARENT ORDER STATUS
   const updateStatus = async (id, newStatus) => {
     try {
       await axios.patch(`/admin/orders/status/${id}`, { status: newStatus });
@@ -38,163 +38,159 @@ const AdminOrders = () => {
   };
 
   useEffect(() => {
-    document.title = "Orders | ZyCart";
+    document.title = "Global Orders | ZyCart Admin";
   }, []);
 
-  if (loading) return <Loader />;
-
-  if (!orders.length) {
+  if (loading) {
     return (
-      <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 text-center py-20 text-gray-500">
-        No orders found.
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <Loader />
       </div>
     );
   }
 
+  const filteredOrders = orders.filter((o) =>
+    (o.parentOrderNumber || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (o.user?.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (o.user?.email || "").toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 space-y-10 py-10">
-
-      <h1
-        className="
-          text-4xl font-extrabold
-          bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
-          text-transparent bg-clip-text
-          mb-4
-        "
-      >
-        Manage Orders
-      </h1>
-
-      {orders.map((order) => (
-        <div
-          key={order._id}
-          className="
-            p-7 rounded-2xl shadow-lg
-            bg-white/60 backdrop-blur-xl
-            border border-[#8FD6F6]/40
-            space-y-6
-          "
-        >
-
-          {/* Parent Header */}
-          <div className="flex justify-between items-center border-b pb-3">
-            <div>
-              <p className="text-gray-600 text-sm">Order Number</p>
-              <h3 className="font-semibold text-[#1B2A41]">
-                {order.parentOrderNumber}
-              </h3>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <span
-                className={`
-                  px-3 py-1 rounded-lg text-sm text-white font-medium
-                  ${order.status === "Delivered"
-                    ? "bg-linear-to-r from-green-400 to-green-600"
-                    : order.status === "Out for Delivery"
-                      ? "bg-linear-to-r from-orange-400 to-orange-600"
-                      : order.status === "Shipped"
-                        ? "bg-linear-to-r from-blue-400 to-blue-600"
-                        : "bg-gray-600"
-                  }
-                `}
-              >
-                {order.status}
-              </span>
-
-              <button
-                onClick={() => navigate(`/admin/orders/${order._id}`)}
-                className="flex items-center gap-2 px-4 py-2 bg-[#3F51F4] text-white rounded-lg hover:bg-[#2F3FA8] transition"
-              >
-                <Eye className="w-4 h-4" />
-                View Details
-              </button>
-            </div>
+    <div className="min-h-screen bg-[#F8FAFC] py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        
+        {/* Header & Search */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+              Global Order Audits ({orders.length})
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
+              Audit multi-seller child packages, platform commission cuts, and delivery status updates.
+            </p>
           </div>
 
-          {/* Child Orders */}
-          <div className="space-y-4">
-            {order.childOrders.map((child) => (
+          <div className="relative w-full sm:w-72">
+            <input
+              type="text"
+              placeholder="Search Order # or customer..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+            />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
+          </div>
+        </div>
+
+        {/* Orders Stack */}
+        {filteredOrders.length === 0 ? (
+          <div className="bg-white rounded-3xl p-12 text-center shadow-sm border border-slate-200/80 space-y-2">
+            <ShoppingBag className="w-10 h-10 text-slate-300 mx-auto" />
+            <p className="text-lg font-bold text-[#1B2A41]">No matching orders found</p>
+            <p className="text-xs text-slate-500">Try clearing search filters.</p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {filteredOrders.map((order) => (
               <div
-                key={child._id}
-                className="
-                  border p-4 rounded-xl
-                  bg-white/50 backdrop-blur
-                  border-[#8FD6F6]/30
-                "
+                key={order._id}
+                className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6"
               >
-                <div className="flex justify-between items-center">
-                  <h4 className="font-semibold text-[#1B2A41]">
-                    Seller: {child.seller?.shopName || "Seller"}
-                  </h4>
-
-                  <span
-                    className={`
-                      px-3 py-1 rounded-lg text-white text-xs font-medium
-                      ${child.status === "Shipped"
-                        ? "bg-linear-to-r from-blue-400 to-blue-600"
-                        : child.status === "Packed"
-                          ? "bg-linear-to-r from-purple-400 to-purple-600"
-                          : "bg-gray-600"
-                      }
-                    `}
-                  >
-                    {child.status}
-                  </span>
-                </div>
-
-                {/* Items */}
-                <div className="mt-3 text-sm text-gray-700 space-y-1">
-                  {child.items.map((item) => (
-                    <div key={item.productId} className="flex justify-between">
-                      <span>
-                        {item.title} × {item.qty}
-                      </span>
-                      <span className="font-semibold text-[#1B2A41]">
-                        ₹{item.subtotal}
+                {/* Header Strip */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-lg font-black text-[#1B2A41]">
+                        Order #{order.parentOrderNumber}
+                      </h3>
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                        order.status === "Delivered"
+                          ? "bg-emerald-100 text-emerald-800"
+                          : order.status === "Out for Delivery"
+                          ? "bg-amber-100 text-amber-800"
+                          : "bg-blue-100 text-blue-800"
+                      }`}>
+                        {order.status}
                       </span>
                     </div>
-                  ))}
+                    <p className="text-xs font-semibold text-slate-500">
+                      Customer: <span className="font-bold text-slate-800">{order.user?.name || "Customer"}</span> ({order.user?.email}) • Total Amount: <span className="font-black text-slate-900">₹{order.totalAmount?.toLocaleString()}</span>
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => navigate(`/admin/orders/${order._id}`)}
+                      className="px-4 py-2.5 rounded-2xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-extrabold text-xs transition flex items-center gap-1.5 shrink-0"
+                    >
+                      <Eye className="w-4 h-4" /> Inspect Audit Details
+                    </button>
+                  </div>
                 </div>
 
-                <div className="text-right mt-2 font-semibold text-[#1B2A41]">
-                  Subtotal: ₹{child.amount}
+                {/* Sub Packages */}
+                <div className="space-y-3">
+                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                    Seller Packages ({order.childOrders?.length || 0})
+                  </p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {order.childOrders?.map((child) => (
+                      <div key={child._id} className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2 text-xs font-semibold">
+                        <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                          <span className="font-black text-[#1B2A41]">
+                            Seller: {child.seller?.shopName || "Merchant"}
+                          </span>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-slate-200 text-slate-700">
+                            {child.status}
+                          </span>
+                        </div>
+
+                        <div className="space-y-1">
+                          {child.items?.map((item) => (
+                            <div key={item.productId} className="flex justify-between text-slate-600">
+                              <span className="truncate max-w-[200px]">{item.title} × {item.qty}</span>
+                              <span className="font-bold text-slate-900">₹{item.subtotal}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="border-t border-slate-200/60 pt-2 flex justify-between font-black text-slate-900">
+                          <span>Subtotal:</span>
+                          <span>₹{child.amount}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-end gap-3 border-t border-slate-100 pt-4">
+                  {order.status === "Shipped" && (
+                    <button
+                      onClick={() => updateStatus(order._id, "Out for Delivery")}
+                      className="px-5 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-xs shadow-sm transition"
+                    >
+                      Mark Out for Delivery
+                    </button>
+                  )}
+
+                  {order.status === "Out for Delivery" && (
+                    <button
+                      onClick={() => updateStatus(order._id, "Delivered")}
+                      className="px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm transition"
+                    >
+                      Mark Delivered
+                    </button>
+                  )}
+                </div>
+
               </div>
             ))}
           </div>
+        )}
 
-          {/* Status Actions */}
-          <div className="flex gap-4 justify-end">
-            {order.status === "Shipped" && (
-              <button
-                onClick={() => updateStatus(order._id, "Out for Delivery")}
-                className="
-                  px-4 py-2 rounded-xl text-white font-semibold
-                  bg-linear-to-r from-orange-400 to-orange-600
-                  hover:opacity-90 transition
-                "
-              >
-                Mark Out for Delivery
-              </button>
-            )}
-
-            {order.status === "Out for Delivery" && (
-              <button
-                onClick={() => updateStatus(order._id, "Delivered")}
-                className="
-                  px-4 py-2 rounded-xl text-white font-semibold
-                  bg-linear-to-r from-green-400 to-green-600
-                  hover:opacity-90 transition
-                "
-              >
-                Mark Delivered
-              </button>
-            )}
-          </div>
-
-        </div>
-      ))}
+      </div>
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../../utils/axiosInstance";
 import Loader from "../../components/Loader";
-import { ArrowLeft, Calendar, MapPin, CreditCard, CheckCircle, TrendingUp } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, CreditCard, CheckCircle, TrendingUp, ShoppingBag, Package } from "lucide-react";
 import toast from "react-hot-toast";
 
 const AdminOrderDetails = () => {
@@ -14,7 +14,7 @@ const AdminOrderDetails = () => {
 
   useEffect(() => {
     fetchOrderDetails();
-    document.title = "Order Details | ZyCart Admin";
+    document.title = "Order Audit Details | ZyCart Admin";
   }, [orderId]);
 
   const fetchOrderDetails = async () => {
@@ -43,256 +43,178 @@ const AdminOrderDetails = () => {
     }
   };
 
-  if (loading) return <Loader />;
-
-  if (!order) {
+  if (loading) {
     return (
-      <div className="text-center mt-20 max-w-screen-2xl container mx-auto">
-        <h2 className="text-xl font-semibold text-red-500">Order not found</h2>
-        <button
-          className="mt-4 px-6 py-2 rounded-lg text-white font-semibold bg-[#3F51F4]"
-          onClick={() => navigate("/admin/orders")}
-        >
-          Back to Orders
-        </button>
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <Loader />
       </div>
     );
   }
 
-  const getStatusColor = (status) => {
-    const colors = {
-      Pending: "bg-yellow-100 text-yellow-800",
-      Confirmed: "bg-blue-100 text-blue-800",
-      Shipped: "bg-purple-100 text-purple-800",
-      "Out for Delivery": "bg-orange-100 text-orange-800",
-      Delivered: "bg-green-100 text-green-800",
-    };
-    return colors[status] || "bg-gray-100 text-gray-800";
-  };
+  if (!order) return null;
 
-  const getPaymentStatusColor = (status) => {
-    const colors = {
-      pending: "bg-yellow-100 text-yellow-800",
-      completed: "bg-green-100 text-green-800",
-      failed: "bg-red-100 text-red-800",
-    };
-    return colors[status] || "bg-gray-100 text-gray-800";
-  };
-
-  const totalRevenue = order?.totalAmount || 0;
+  const totalRevenue = order.totalAmount || 0;
   const platformFee = totalRevenue * 0.2;
   const sellerRevenue = totalRevenue * 0.8;
 
   return (
-    <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 py-16">
-      <div className="flex items-center gap-3 mb-8">
-        <button
-          onClick={() => navigate("/admin/orders")}
-          className="p-2 hover:bg-gray-100 rounded-lg transition"
-        >
-          <ArrowLeft className="w-6 h-6 text-gray-600" />
-        </button>
-        <div>
-          <h1 className="text-3xl font-bold text-[#1B2A41]">Order Details</h1>
-          <p className="text-gray-600">Order #{order?.parentOrderNumber}</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40">
-            <h2 className="text-2xl font-bold text-[#1B2A41] mb-6">Order Status</h2>
-
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-1">Order Status</p>
-                <span className={`inline-block px-4 py-2 rounded-lg font-semibold text-sm ${getStatusColor(order?.status)}`}>
-                  {order?.status}
+    <div className="min-h-screen bg-[#F8FAFC] py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate("/admin/orders")}
+              className="p-2.5 rounded-2xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+                  Order #{order.parentOrderNumber}
+                </h1>
+                <span className={`px-3 py-0.5 rounded-full text-[10px] font-black uppercase ${
+                  order.status === "Delivered" ? "bg-emerald-100 text-emerald-800" : "bg-blue-100 text-blue-800"
+                }`}>
+                  {order.status}
                 </span>
               </div>
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-1">Payment Status</p>
-                <span className={`inline-block px-4 py-2 rounded-lg font-semibold text-sm ${getPaymentStatusColor(order?.paymentStatus)}`}>
-                  {order?.paymentStatus?.charAt(0).toUpperCase() + order?.paymentStatus?.slice(1)}
-                </span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-1 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" /> Order Date
-                </p>
-                <p className="text-[#1B2A41] font-semibold">
-                  {order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
-                </p>
-              </div>
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-1">Payment Method</p>
-                <p className="text-[#1B2A41] font-semibold capitalize">
-                  {order?.paymentMethod || "N/A"}
-                </p>
-              </div>
+              <p className="text-xs text-slate-500 font-semibold mt-0.5">
+                Placed on {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
+              </p>
             </div>
           </div>
+        </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40">
-            <h2 className="text-2xl font-bold text-[#1B2A41] mb-6">Child Orders</h2>
+        {/* 2-Column Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Main Content */}
+          <div className="lg:col-span-8 space-y-6">
+            
+            {/* Child Seller Packages */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
+              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                Itemized Seller Sub-Packages ({order.childOrders?.length || 0})
+              </h2>
 
-            <div className="space-y-6">
-              {order?.childOrders?.map((childOrder) => (
-                <div key={childOrder._id} className="border border-gray-200 rounded-xl p-6 bg-gray-50">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h3 className="text-lg font-bold text-[#1B2A41]">
-                        {childOrder.seller?.shopName}
-                      </h3>
-                      <p className="text-gray-600 text-sm">
-                        Seller: {childOrder.seller?.email || 'N/A'}
-                      </p>
-                    </div>
-                    <span className={`px-4 py-2 rounded-lg font-semibold text-sm ${getStatusColor(childOrder.status)}`}>
-                      {childOrder.status}
-                    </span>
-                  </div>
-
-                  <div className="space-y-3 mb-4">
-                    {childOrder.items.map((item, idx) => (
-                      <div key={idx} className="flex justify-between text-sm">
-                        <span className="text-gray-700">{item.title} × {item.qty}</span>
-                        <span className="font-semibold text-[#1B2A41]">
-                          ₹{item.subtotal?.toLocaleString()}
-                        </span>
+              <div className="space-y-4">
+                {order.childOrders?.map((child) => (
+                  <div key={child._id} className="p-5 rounded-2xl bg-slate-50 border border-slate-100 space-y-3">
+                    <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                      <div>
+                        <p className="font-extrabold text-sm text-[#1B2A41]">{child.seller?.shopName || "Merchant Store"}</p>
+                        <p className="text-[10px] text-slate-400 font-semibold">{child.seller?.email}</p>
                       </div>
-                    ))}
+                      <span className="px-3 py-1 rounded-full text-[10px] font-black bg-blue-100 text-blue-800">
+                        {child.status}
+                      </span>
+                    </div>
+
+                    <div className="space-y-2 text-xs font-semibold text-slate-700">
+                      {child.items?.map((item, idx) => (
+                        <div key={idx} className="flex justify-between items-center">
+                          <span>{item.title} × {item.qty}</span>
+                          <span className="font-black text-slate-900">₹{item.subtotal?.toLocaleString()}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="border-t border-slate-200/60 pt-2 flex justify-between font-black text-xs text-slate-900">
+                      <span>Package Amount:</span>
+                      <span>₹{child.amount?.toLocaleString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Customer Shipping Address */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
+              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                Customer Delivery Address
+              </h2>
+
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1 text-xs font-semibold text-slate-700">
+                <p className="font-black text-slate-900">{order.address?.line1}</p>
+                <p>{order.address?.city}, {order.address?.state} — {order.address?.postalCode}</p>
+                <p className="text-slate-500 pt-1">
+                  Recipient: <span className="font-bold text-slate-900">{order.user?.name}</span> ({order.user?.mobile || "No phone"})
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Sidebar Audit Breakdown */}
+          <div className="lg:col-span-4 sticky top-24 space-y-6">
+            
+            {/* Financial Audit */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-4">
+              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                Financial Split Audit
+              </h2>
+
+              <div className="space-y-3 text-xs font-semibold">
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Gross Total Amount</span>
+                    <span className="font-black text-slate-900">₹{totalRevenue?.toLocaleString()}</span>
                   </div>
 
-                  <div className="border-t pt-3 flex justify-between">
-                    <span className="font-semibold text-[#1B2A41]">Subtotal:</span>
-                    <span className="font-bold text-[#1B2A41]">
-                      ₹{childOrder.amount?.toLocaleString()}
-                    </span>
+                  <div className="flex justify-between text-emerald-600">
+                    <span>ZyCart Platform Fee (20%)</span>
+                    <span className="font-black">₹{platformFee?.toLocaleString()}</span>
+                  </div>
+
+                  <div className="flex justify-between text-purple-600">
+                    <span>Net Seller Cut (80%)</span>
+                    <span className="font-black">₹{sellerRevenue?.toLocaleString()}</span>
                   </div>
                 </div>
-              ))}
+
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold uppercase text-slate-400">Payment Status</span>
+                  <p className="font-black text-xs text-slate-900 uppercase">{order.paymentStatus || "completed"}</p>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40">
-            <h2 className="text-2xl font-bold text-[#1B2A41] mb-6 flex items-center gap-2">
-              <MapPin className="w-6 h-6" /> Delivery Address
-            </h2>
-
-            <div className="bg-gray-50 rounded-xl p-6">
-              <p className="text-[#1B2A41] font-semibold text-lg">{order?.address?.line1}</p>
-              <p className="text-gray-600 mt-2">
-                {order?.address?.city}, {order?.address?.state} {order?.address?.postalCode}
-              </p>
-              <p className="text-gray-600 mt-2">
-                Customer: {order?.user?.name} ({order?.user?.mobile})
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40 sticky top-20 space-y-6">
-            <div>
-              <h3 className="text-xl font-bold text-[#1B2A41] mb-4">Actions</h3>
+            {/* Actions */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-4">
+              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                Order Status Actions
+              </h2>
 
               <div className="space-y-3">
-                {order?.status === "Shipped" && (
+                {order.status === "Shipped" && (
                   <button
                     onClick={() => updateOrderStatus("Out for Delivery")}
                     disabled={updating}
-                    className="w-full px-4 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition font-semibold disabled:opacity-50"
+                    className="w-full py-4 rounded-2xl font-extrabold text-xs text-white bg-amber-500 hover:bg-amber-600 shadow-md transition disabled:opacity-50"
                   >
                     {updating ? "Updating..." : "Mark Out for Delivery"}
                   </button>
                 )}
 
-                {order?.status === "Out for Delivery" && (
+                {order.status === "Out for Delivery" && (
                   <button
                     onClick={() => updateOrderStatus("Delivered")}
                     disabled={updating}
-                    className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold disabled:opacity-50"
+                    className="w-full py-4 rounded-2xl font-extrabold text-xs text-white bg-emerald-600 hover:bg-emerald-700 shadow-md transition disabled:opacity-50"
                   >
                     {updating ? "Updating..." : "Mark as Delivered"}
                   </button>
                 )}
-
-                {order?.status === "Delivered" && (
-                  <div className="p-4 bg-green-50 rounded-xl border border-green-200">
-                    <CheckCircle className="w-6 h-6 text-green-600 mb-2" />
-                    <p className="text-green-800 font-semibold">Order Delivered</p>
-                  </div>
-                )}
               </div>
             </div>
 
-            {/* Revenue Breakdown */}
-            <div className="border-t pt-6">
-              <h4 className="font-bold text-[#1B2A41] mb-4 flex items-center gap-2">
-                <TrendingUp className="w-5 h-5" /> Revenue Breakdown
-              </h4>
-
-              <div className="space-y-3 bg-gray-50 p-4 rounded-xl">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Total Amount:</span>
-                  <span className="font-bold text-[#1B2A41]">
-                    ₹{totalRevenue?.toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Platform Fee (20%):</span>
-                  <span className="font-bold text-green-600">
-                    ₹{platformFee?.toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Sellers (80%):</span>
-                  <span className="font-bold text-blue-600">
-                    ₹{sellerRevenue?.toLocaleString()}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-t pt-6">
-              <h4 className="font-bold text-[#1B2A41] mb-4">Summary</h4>
-
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Child Orders:</span>
-                  <span className="font-semibold text-[#1B2A41]">
-                    {order?.childOrders?.length}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Total Items:</span>
-                  <span className="font-semibold text-[#1B2A41]">
-                    {order?.childOrders?.reduce((sum, co) => sum + co.items.length, 0)}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="border-t pt-6">
-              <h4 className="font-bold text-[#1B2A41] mb-4">Customer</h4>
-              <div className="space-y-2">
-                <p className="text-[#1B2A41] font-semibold">
-                  {order?.user?.name}
-                </p>
-                <p className="text-gray-600 text-sm">
-                  {order?.user?.email}
-                </p>
-                <p className="text-gray-600 text-sm">
-                  {order?.user?.mobile}
-                </p>
-              </div>
-            </div>
           </div>
+
         </div>
+
       </div>
     </div>
   );
