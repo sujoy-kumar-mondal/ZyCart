@@ -52,7 +52,9 @@ const ProductCard = ({ product }) => {
     (!product.discountPeriod || new Date(product.discountPeriod) > new Date());
 
   const discountedPrice = hasActiveDiscount
-    ? Math.floor(product.price * (1 - product.discount / 100))
+    ? (product.discountedPrice && product.discountedPrice > 0
+        ? product.discountedPrice
+        : Math.round(product.price * (1 - product.discount / 100)))
     : product.price;
 
   return (

@@ -91,6 +91,11 @@ const productSchema = new mongoose.Schema(
       default: null,
     },
 
+    discountedPrice: {
+      type: Number,
+      default: null,
+    },
+
     // --------------------------------------
     // Purchase Limit
     // --------------------------------------

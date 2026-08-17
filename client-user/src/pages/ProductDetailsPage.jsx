@@ -392,7 +392,12 @@ const ProductDetailsPage = () => {
               <div className="flex items-baseline gap-3">
                 {product.discount > 0 && discountCountdown !== 'Expired' ? (
                   <>
-                    <span className="text-4xl font-bold text-gray-900">₹{Math.floor(product.price * (1 - (product.discount || 0) / 100)).toLocaleString()}</span>
+                    <span className="text-4xl font-bold text-gray-900">
+                      ₹{(product.discountedPrice && product.discountedPrice > 0
+                        ? product.discountedPrice
+                        : Math.round(product.price * (1 - (product.discount || 0) / 100))
+                      ).toLocaleString()}
+                    </span>
                     <span className="text-lg text-gray-500 line-through">₹{product.price.toLocaleString()}</span>
                     <span className="text-green-600 font-bold text-lg">{product.discount}% off</span>
                   </>

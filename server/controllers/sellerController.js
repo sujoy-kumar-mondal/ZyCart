@@ -184,9 +184,9 @@ export const addProduct = async (req, res) => {
     }
 
     // 2. Discounted Price & Discount Expiry Date validation
+    let parsedDiscountedPrice = discountedPrice !== undefined && discountedPrice !== null && discountedPrice !== "" ? parseFloat(discountedPrice) : null;
     let parsedDiscount = discount ? parseInt(discount) : 0;
-    if (discountedPrice !== undefined && discountedPrice !== null && discountedPrice !== "") {
-      const parsedDiscountedPrice = parseFloat(discountedPrice);
+    if (parsedDiscountedPrice !== null) {
       if (isNaN(parsedDiscountedPrice) || parsedDiscountedPrice <= 0) {
         return res.status(400).json({
           success: false,
@@ -200,6 +200,8 @@ export const addProduct = async (req, res) => {
         });
       }
       parsedDiscount = Math.round(((parsedPrice - parsedDiscountedPrice) / parsedPrice) * 100);
+    } else if (parsedDiscount > 0) {
+      parsedDiscountedPrice = Math.round(parsedPrice * (1 - parsedDiscount / 100));
     }
 
     if (parsedDiscount > 0 && !discountPeriod) {
@@ -253,6 +255,7 @@ export const addProduct = async (req, res) => {
       subSubCategory,
       attributes: validation.attributes,
       discount: parsedDiscount,
+      discountedPrice: parsedDiscount > 0 ? parsedDiscountedPrice : null,
       discountPeriod: parsedDiscount > 0 && discountPeriod ? new Date(discountPeriod) : null,
       maxQuantityPerPurchase: parsedMaxQty,
     });
@@ -429,6 +432,8 @@ export const updateProduct = async (req, res) => {
 
     // Validate Discounted Price / Discount & Expiry Date
     let finalDiscount = discount !== undefined && discount !== "" ? parseInt(discount) : product.discount;
+    let finalDiscountedPrice = discountedPrice !== undefined && discountedPrice !== null && discountedPrice !== "" ? parseFloat(discountedPrice) : product.discountedPrice;
+
     if (discountedPrice !== undefined && discountedPrice !== null && discountedPrice !== "") {
       const parsedDiscountedPrice = parseFloat(discountedPrice);
       if (isNaN(parsedDiscountedPrice) || parsedDiscountedPrice <= 0) {
@@ -444,6 +449,9 @@ export const updateProduct = async (req, res) => {
         });
       }
       finalDiscount = Math.round(((finalPrice - parsedDiscountedPrice) / finalPrice) * 100);
+      finalDiscountedPrice = parsedDiscountedPrice;
+    } else if (discount !== undefined && discount !== "") {
+      finalDiscountedPrice = finalDiscount > 0 ? Math.round(finalPrice * (1 - finalDiscount / 100)) : null;
     }
 
     const finalDiscountPeriod = discountPeriod !== undefined && discountPeriod !== "" ? new Date(discountPeriod) : product.discountPeriod;
@@ -459,6 +467,7 @@ export const updateProduct = async (req, res) => {
     product.stock = stock || product.stock;
     product.description = description || product.description;
     product.discount = finalDiscount;
+    product.discountedPrice = finalDiscount > 0 ? finalDiscountedPrice : null;
     product.discountPeriod = finalDiscount > 0 ? finalDiscountPeriod : null;
 
     if (newImages.length > 0) {

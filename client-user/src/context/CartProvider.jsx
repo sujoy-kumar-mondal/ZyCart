@@ -18,9 +18,11 @@ export const CartProvider = ({ children }) => {
     const hasDiscount =
       product.discount > 0 &&
       (!product.discountPeriod || new Date(product.discountPeriod) > new Date());
-    return hasDiscount
-      ? Math.floor(product.price * (1 - product.discount / 100))
-      : Number(product.price);
+    if (!hasDiscount) return Number(product.price);
+    if (product.discountedPrice && product.discountedPrice > 0) {
+      return Number(product.discountedPrice);
+    }
+    return Math.round(product.price * (1 - product.discount / 100));
   };
 
   // =====================================================
