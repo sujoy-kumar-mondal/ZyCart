@@ -5,6 +5,7 @@ import { Heart, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ReviewSection from '../components/ReviewSection';
 import Breadcrumb from '../components/Breadcrumb';
+import ProductCard from '../components/ProductCard';
 import { useAuth } from '../context/AuthProvider';
 import { useCart } from '../context/CartProvider';
 import { useWishlist } from '../context/WishlistProvider';
@@ -24,6 +25,8 @@ const ProductDetailsPage = () => {
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const [discountCountdown, setDiscountCountdown] = useState('');
   const [showCountdownBanner, setShowCountdownBanner] = useState(false);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [relatedLoading, setRelatedLoading] = useState(true);
 
   // Check if product is in wishlist using context function or direct check
   const isInWishlist = checkIsInWishlist(id) || wishlist.some(item => 
@@ -122,6 +125,41 @@ const ProductDetailsPage = () => {
     const interval = setInterval(calculateCountdown, 1000);
 
     return () => clearInterval(interval);
+  }, [product]);
+
+  // Fetch related products ("You might also like")
+  useEffect(() => {
+    if (!product) return;
+
+    const fetchRelatedProducts = async () => {
+      try {
+        setRelatedLoading(true);
+        const response = await axiosInstance.get(`/products?mainCategory=${encodeURIComponent(product.mainCategory)}`);
+        if (response.data.success) {
+          const list = response.data.products || response.data.allProducts || [];
+          let filtered = list.filter((p) => p._id !== product._id && p.isAvailable);
+
+          if (filtered.length < 4) {
+            const allRes = await axiosInstance.get('/products');
+            if (allRes.data.success) {
+              const allList = allRes.data.products || allRes.data.allProducts || [];
+              const extra = allList.filter(
+                (p) => p._id !== product._id && p.isAvailable && !filtered.some((f) => f._id === p._id)
+              );
+              filtered = [...filtered, ...extra];
+            }
+          }
+
+          setRelatedProducts(filtered.slice(0, 4));
+        }
+      } catch (err) {
+        console.error("Error fetching related products:", err);
+      } finally {
+        setRelatedLoading(false);
+      }
+    };
+
+    fetchRelatedProducts();
   }, [product]);
 
   const handleAddToCart = async () => {
@@ -514,15 +552,25 @@ const ProductDetailsPage = () => {
           </div>
         </div>
 
-        {/* Related Products Section */}
+        {/* Related Products Section ("You might also like") */}
         <div className="mt-16">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">You might also like</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-gray-200 h-64 rounded-lg animate-pulse"></div>
-            <div className="bg-gray-200 h-64 rounded-lg animate-pulse"></div>
-            <div className="bg-gray-200 h-64 rounded-lg animate-pulse"></div>
-            <div className="bg-gray-200 h-64 rounded-lg animate-pulse"></div>
-          </div>
+          <h2 className="text-2xl font-bold text-[#1B2A41] mb-6">You might also like</h2>
+          {relatedLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-gray-200 h-80 rounded-2xl animate-pulse"></div>
+              <div className="bg-gray-200 h-80 rounded-2xl animate-pulse"></div>
+              <div className="bg-gray-200 h-80 rounded-2xl animate-pulse"></div>
+              <div className="bg-gray-200 h-80 rounded-2xl animate-pulse"></div>
+            </div>
+          ) : relatedProducts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {relatedProducts.map((relProduct) => (
+                <ProductCard key={relProduct._id} product={relProduct} />
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-sm italic">No related products found.</p>
+          )}
         </div>
 
         {/* Reviews Section */}
