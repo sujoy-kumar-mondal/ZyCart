@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "../../utils/axiosInstance.js";
 import Loader from "../../components/Loader";
 import { toast } from "react-hot-toast";
-import { Eye, Package, ShoppingBag, Truck, CheckCircle2, ArrowRight } from "lucide-react";
+import { Eye, Package, ShoppingBag, Truck, CheckCircle2, ArrowRight, Calendar } from "lucide-react";
 
 const SellerOrders = () => {
   const navigate = useNavigate();
