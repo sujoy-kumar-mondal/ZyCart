@@ -257,11 +257,6 @@ const SellerProducts = () => {
       return;
     }
 
-    if (parseInt(form.discount) > 0 && !form.discountPeriod) {
-      toast.error("If Discount (%) is entered, Discount Expiry Date must be entered!");
-      return;
-    }
-
     if (form.images.length < 2) {
       toast.error("At least 2 product images must be uploaded!");
       return;
@@ -389,11 +384,6 @@ const SellerProducts = () => {
 
     if (parsedMaxQty >= parsedStock) {
       toast.error("Max Quantity Per Purchase must be less than Stock Quantity!");
-      return;
-    }
-
-    if ((parseInt(form.discount) > 0 || parseFloat(form.discountedPrice) > 0) && !form.discountPeriod) {
-      toast.error("If Discounted Price or Discount (%) is entered, Discount Expiry Date must be entered!");
       return;
     }
 
@@ -650,7 +640,7 @@ const SellerProducts = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Discount Expiry Date {(parseInt(form.discount) > 0 || parseFloat(form.discountedPrice) > 0) && <span className="text-red-600">*</span>}
+                      Discount Expiry Date
                     </label>
                     <input
                       type="datetime-local"
@@ -659,6 +649,9 @@ const SellerProducts = () => {
                       onChange={handleChange}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition"
                     />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Optional. Leave blank for permanent discount (all time).
+                    </p>
                   </div>
 
                   <div>

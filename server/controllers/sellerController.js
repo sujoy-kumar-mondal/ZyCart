@@ -204,13 +204,6 @@ export const addProduct = async (req, res) => {
       parsedDiscountedPrice = Math.round(parsedPrice * (1 - parsedDiscount / 100));
     }
 
-    if (parsedDiscount > 0 && !discountPeriod) {
-      return res.status(400).json({
-        success: false,
-        message: "If Discounted Price or Discount (%) is entered, Discount Expiry Date is required.",
-      });
-    }
-
     // 3. Image Count Validation (at least 2 images, max 5 images)
     if (imageUrls.length < 2) {
       return res.status(400).json({
@@ -454,12 +447,13 @@ export const updateProduct = async (req, res) => {
       finalDiscountedPrice = finalDiscount > 0 ? Math.round(finalPrice * (1 - finalDiscount / 100)) : null;
     }
 
-    const finalDiscountPeriod = discountPeriod !== undefined && discountPeriod !== "" ? new Date(discountPeriod) : product.discountPeriod;
-    if (finalDiscount > 0 && !finalDiscountPeriod) {
-      return res.status(400).json({
-        success: false,
-        message: "If Discounted Price or Discount (%) is entered, Discount Expiry Date is required.",
-      });
+    let finalDiscountPeriod = null;
+    if (discountPeriod !== undefined && discountPeriod !== null && discountPeriod !== "") {
+      finalDiscountPeriod = new Date(discountPeriod);
+    } else if (discountPeriod === "" || discountPeriod === null) {
+      finalDiscountPeriod = null;
+    } else {
+      finalDiscountPeriod = product.discountPeriod;
     }
 
     product.title = title || product.title;

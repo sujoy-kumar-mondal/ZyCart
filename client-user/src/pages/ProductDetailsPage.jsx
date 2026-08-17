@@ -23,6 +23,7 @@ const ProductDetailsPage = () => {
   const [userOrders, setUserOrders] = useState([]);
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const [discountCountdown, setDiscountCountdown] = useState('');
+  const [showCountdownBanner, setShowCountdownBanner] = useState(false);
 
   // Check if product is in wishlist using context function or direct check
   const isInWishlist = checkIsInWishlist(id) || wishlist.some(item => 
@@ -79,9 +80,10 @@ const ProductDetailsPage = () => {
     fetchUserOrders();
   }, [id, user]);
 
-  // Countdown timer for discount
+  // Countdown timer for discount (only show if remaining time < 24h)
   useEffect(() => {
     if (!product || !product.discountPeriod || product.discount <= 0) {
+      setShowCountdownBanner(false);
       return;
     }
 
@@ -92,18 +94,20 @@ const ProductDetailsPage = () => {
 
       if (difference <= 0) {
         setDiscountCountdown('Expired');
+        setShowCountdownBanner(false);
         return;
       }
 
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
+      // Show countdown banner ONLY if remaining time < 24 hours
+      const isUnder24Hours = difference < 24 * 60 * 60 * 1000;
+      setShowCountdownBanner(isUnder24Hours);
+
+      const hours = Math.floor(difference / (1000 * 60 * 60));
       const minutes = Math.floor((difference / (1000 * 60)) % 60);
       const seconds = Math.floor((difference / 1000) % 60);
 
       let countdownText = '';
-      if (days > 0) {
-        countdownText = `${days}d ${hours}h ${minutes}m ${seconds}s left`;
-      } else if (hours > 0) {
+      if (hours > 0) {
         countdownText = `${hours}h ${minutes}m ${seconds}s left`;
       } else if (minutes > 0) {
         countdownText = `${minutes}m ${seconds}s left`;
@@ -406,8 +410,8 @@ const ProductDetailsPage = () => {
                 )}
               </div>
               
-              {/* Discount Expiry Date */}
-              {product.discount > 0 && product.discountPeriod && discountCountdown !== 'Expired' && (
+              {/* Discount Expiry Date (Only show if under 24 hours) */}
+              {product.discount > 0 && product.discountPeriod && showCountdownBanner && discountCountdown !== 'Expired' && (
                 <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                   <p className="text-sm text-gray-600">Discount expires in</p>
                   <p className="text-lg font-bold text-green-700">
