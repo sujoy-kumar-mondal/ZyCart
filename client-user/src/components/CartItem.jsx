@@ -54,11 +54,6 @@ const CartItem = ({ item }) => {
             {item.stock < 5 ? `Only ${item.stock} left` : "Only few left"}
           </p>
         )}
-        {item.maxQuantityPerPurchase && item.maxQuantityPerPurchase < item.stock && (
-          <p className="text-xs text-orange-600 font-semibold mt-0.5">
-            ⚠️ Max {item.maxQuantityPerPurchase} unit(s) allowed per purchase
-          </p>
-        )}
 
         {/* Quantity Controls - Not clickable for navigation */}
         <div className="flex items-center gap-3 mt-3">

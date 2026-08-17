@@ -480,11 +480,6 @@ const ProductDetailsPage = () => {
                     </button>
                   </div>
                 </div>
-                {product.maxQuantityPerPurchase && product.maxQuantityPerPurchase < product.stock && (
-                  <p className="text-sm text-orange-600 mt-3">
-                    ⚠️ Maximum {product.maxQuantityPerPurchase} unit(s) allowed per purchase
-                  </p>
-                )}
               </div>
             )}
 
