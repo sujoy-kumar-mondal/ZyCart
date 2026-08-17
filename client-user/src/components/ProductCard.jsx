@@ -12,7 +12,6 @@ const ProductCard = ({ product }) => {
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [wishlistLoading, setWishlistLoading] = useState(false);
   
-  // Compute inWishlist dynamically so it updates when wishlist context changes
   const inWishlist = isInWishlist(product._id);
 
   const handleWishlistToggle = async (e) => {
@@ -46,7 +45,6 @@ const ProductCard = ({ product }) => {
     }
   };
 
-  // Compute active discount
   const hasActiveDiscount =
     product.discount > 0 &&
     (!product.discountPeriod || new Date(product.discountPeriod) > new Date());
@@ -61,98 +59,103 @@ const ProductCard = ({ product }) => {
     <div
       className="
         bg-white rounded-2xl p-4 shadow-md
-        border border-[#8FD6F6]/40
+        border border-slate-200/80
         transition-all hover:shadow-xl hover:-translate-y-1
-        relative
+        relative flex flex-col justify-between h-full group
       "
     >
-      {/* Wishlist Button */}
-      <button
-        onClick={handleWishlistToggle}
-        disabled={wishlistLoading}
-        className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-all z-10 disabled:opacity-50"
-      >
-        <Heart
-          className={`w-5 h-5 transition-all ${
-            inWishlist ? "fill-red-500 text-red-500" : "text-gray-600"
-          }`}
-        />
-      </button>
-
-      {/* Product Image */}
-      <Link to={`/product/${product._id}`}>
-        <img
-          src={product.images?.[0] || "https://placehold.co/400x400/e2e8f0/1e293b?text=Product+Image"}
-          alt={product.title}
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = "https://placehold.co/400x400/e2e8f0/1e293b?text=Product+Image";
-          }}
-          className="w-full h-52 object-cover rounded-xl"
-        />
-      </Link>
-
-      {/* Product Info */}
-      <div className="mt-3 space-y-1">
-        <h3 className="font-semibold text-lg text-[#1B2A41] line-clamp-1">
-          {product.title}
-        </h3>
-
-        {hasActiveDiscount ? (
-          <div className="flex items-baseline gap-2 flex-wrap">
-            <span
-              className="
-                font-extrabold text-xl
-                bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
-                text-transparent bg-clip-text
-              "
-            >
-              ₹{discountedPrice.toLocaleString()}
-            </span>
-            <span className="text-sm text-gray-400 line-through">
-              ₹{product.price.toLocaleString()}
-            </span>
-            <span className="text-xs font-bold text-green-600 bg-green-100 px-1.5 py-0.5 rounded">
-              {product.discount}% OFF
-            </span>
-          </div>
-        ) : (
-          <p
-            className="
-              font-extrabold text-xl
-              bg-linear-to-r from-[#6A8EF0] to-[#3F51F4]
-              text-transparent bg-clip-text
-            "
+      {/* Top Part: Image + Title + Price */}
+      <div className="space-y-3 flex-1 flex flex-col justify-between">
+        <div>
+          {/* Wishlist Button */}
+          <button
+            onClick={handleWishlistToggle}
+            disabled={wishlistLoading}
+            className="absolute top-3 right-3 bg-white/90 backdrop-blur-md rounded-full p-2 shadow-md hover:shadow-lg transition-all z-10 disabled:opacity-50"
+            title={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
           >
-            ₹{product.price.toLocaleString()}
-          </p>
-        )}
+            <Heart
+              className={`w-5 h-5 transition-all ${
+                inWishlist ? "fill-red-500 text-red-500" : "text-slate-600 hover:text-red-500"
+              }`}
+            />
+          </button>
 
-        {product.stock < 10 && (
-          <p className="text-xs font-semibold text-amber-600 mt-0.5">
-            {product.stock < 5 ? `Only ${product.stock} left` : "Only few left"}
-          </p>
-        )}
+          {/* Product Image */}
+          <Link to={`/product/${product._id}`} className="block overflow-hidden rounded-xl bg-slate-50">
+            <img
+              src={product.images?.[0] || "https://placehold.co/400x400/e2e8f0/1e293b?text=Product+Image"}
+              alt={product.title}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://placehold.co/400x400/e2e8f0/1e293b?text=Product+Image";
+              }}
+              className="w-full h-52 object-cover rounded-xl group-hover:scale-105 transition duration-300"
+            />
+          </Link>
+
+          {/* Product Title */}
+          <h3 className="font-semibold text-base sm:text-lg text-[#1B2A41] line-clamp-1 mt-3">
+            {product.title}
+          </h3>
+        </div>
+
+        {/* Pricing & Stock Details (Equalized Min-Height) */}
+        <div className="space-y-1.5 pt-2">
+          {hasActiveDiscount ? (
+            <div className="flex items-baseline gap-2 flex-wrap min-h-[1.75rem]">
+              <span className="font-extrabold text-xl bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] text-transparent bg-clip-text">
+                ₹{discountedPrice.toLocaleString()}
+              </span>
+              <span className="text-xs text-slate-400 line-through">
+                ₹{product.price.toLocaleString()}
+              </span>
+              <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-md">
+                {product.discount}% OFF
+              </span>
+            </div>
+          ) : (
+            <div className="min-h-[1.75rem] flex items-center">
+              <p className="font-extrabold text-xl bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] text-transparent bg-clip-text">
+                ₹{product.price.toLocaleString()}
+              </p>
+            </div>
+          )}
+
+          {/* Stock Scarcity (Equalized Min-Height placeholder) */}
+          <div className="min-h-[1.25rem]">
+            {product.stock < 10 && (
+              <p className="text-xs font-bold text-amber-600">
+                {product.stock < 5 ? `Only ${product.stock} left in stock!` : "Only few left"}
+              </p>
+            )}
+          </div>
+        </div>
       </div>
-      <button
-        onClick={() => {
-          if (product.isAvailable && product.stock > 0) {
-            addToCart(product);
-            toast.success("Added to cart!");
-          }
-        }}
-        disabled={product.stock === 0}
-        className={`
-          w-full mt-4 py-2 rounded-xl font-semibold text-white transition shadow-sm
-          ${product.isAvailable ? product.stock === 0
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-90"
-            : "bg-gray-400 cursor-not-allowed"
-          }
-        `}
-      >
-        {product.isAvailable ? product.stock === 0 ? "Out of Stock" : "Add to Cart" : "Unavailable"}
-      </button>
+
+      {/* Bottom Action Button (Always Flush at Bottom) */}
+      <div className="pt-3 mt-auto">
+        <button
+          onClick={() => {
+            if (product.isAvailable && product.stock > 0) {
+              addToCart(product);
+              toast.success("Added to cart!");
+            }
+          }}
+          disabled={product.stock === 0}
+          className={`
+            w-full py-2.5 rounded-xl font-extrabold text-white transition shadow-sm text-sm
+            ${product.isAvailable
+              ? product.stock === 0
+                ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                : "bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-blue-500/20 active:scale-95"
+              : "bg-slate-300 text-slate-500 cursor-not-allowed"
+            }
+          `}
+        >
+          {product.isAvailable ? (product.stock === 0 ? "Out of Stock" : "Add to Cart") : "Unavailable"}
+        </button>
+      </div>
     </div>
   );
 };

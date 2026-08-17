@@ -4,26 +4,14 @@ import ProductCard from "./ProductCard.jsx";
 const ProductList = ({ products = [] }) => {
   if (!products.length) {
     return (
-      <div
-        className="
-          text-center py-20 text-lg
-          text-gray-600
-        "
-      >
+      <div className="text-center py-20 text-lg text-slate-500 font-semibold bg-white rounded-3xl border border-slate-200/80">
         No products found.
       </div>
     );
   }
 
   return (
-    <div
-      className="
-        grid gap-7
-        sm:grid-cols-2 
-        md:grid-cols-3 
-        lg:grid-cols-4
-      "
-    >
+    <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 items-stretch">
       {products.map((product) => (
         <ProductCard key={product._id} product={product} />
       ))}
