@@ -31,8 +31,8 @@ router.get("/dashboard", protectSeller, sellerDashboard);
 router.post(
   "/products",
   protectSeller,
-  upload.array("images", 5),
-  uploadMultiple("products", 5),
+  upload.array("images", 10),
+  uploadMultiple("products", 10),
   addProduct
 );
 
@@ -42,8 +42,8 @@ router.post(
 router.put(
   "/products/:id",
   protectSeller,
-  upload.array("images", 5),
-  uploadMultiple("products", 5),
+  upload.array("images", 10),
+  uploadMultiple("products", 10),
   updateProduct
 );
 

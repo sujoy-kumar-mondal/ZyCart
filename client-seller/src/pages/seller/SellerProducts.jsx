@@ -231,7 +231,7 @@ const SellerProducts = () => {
     if (name === "images") {
       const selectedFiles = Array.from(files);
       const currentImages = form.images || [];
-      const combined = [...currentImages, ...selectedFiles].slice(0, 5);
+      const combined = [...currentImages, ...selectedFiles].slice(0, 10);
       setForm((prev) => ({ ...prev, images: combined }));
 
       const previews = combined.map((file) => {
@@ -312,8 +312,8 @@ const SellerProducts = () => {
       return;
     }
 
-    if (form.images.length > 5) {
-      toast.error("Maximum 5 product images allowed!");
+    if (form.images.length > 10) {
+      toast.error("Maximum 10 product images allowed!");
       return;
     }
 
@@ -438,8 +438,8 @@ const SellerProducts = () => {
     }
 
     // Check total image count
-    if (form.images.length < 2 || form.images.length > 5) {
-      toast.error("Product must have between 2 and 5 images!");
+    if (form.images.length < 2 || form.images.length > 10) {
+      toast.error("Product must have between 2 and 10 images!");
       return;
     }
 
@@ -955,7 +955,7 @@ const SellerProducts = () => {
               {/* IMAGES */}
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                  Product Images (Min 2, Max 5) <span className="text-red-600">*</span>
+                  Product Images (Min 2, Max 10) <span className="text-red-600">*</span>
                 </h3>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
                   <input
@@ -967,7 +967,7 @@ const SellerProducts = () => {
                     className="block w-full text-sm text-gray-500"
                   />
                   <p className="text-xs text-gray-500 mt-2">
-                    Upload at least 2 and up to 5 images. Supported formats: JPG, PNG, WEBP, GIF
+                    Upload at least 2 and up to 10 images. Supported formats: JPG, PNG, WEBP, GIF
                   </p>
                 </div>
 
@@ -975,7 +975,7 @@ const SellerProducts = () => {
                   <div className="mt-4">
                     <div className="flex items-center justify-between mb-3">
                       <p className="text-sm font-medium text-gray-700">
-                        Preview ({imagePreviews.length}/5)
+                        Preview ({imagePreviews.length}/10)
                       </p>
                       <p className="text-xs text-blue-600 font-medium flex items-center gap-1">
                         💡 Drag thumbnails to reorder image priority

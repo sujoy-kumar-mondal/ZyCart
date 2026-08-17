@@ -49,9 +49,9 @@ export const uploadSingle = (folder) => {
 
 // ----------------------------------------------
 // Middleware to handle multiple file uploads
-// Usage: uploadMultiple("images", "products", 5)
+// Usage: uploadMultiple("images", "products", 10)
 // ----------------------------------------------
-export const uploadMultiple = (folder, maxFiles = 5) => {
+export const uploadMultiple = (folder, maxFiles = 10) => {
   return async (req, res, next) => {
     try {
       if (!req.files || req.files.length === 0) {

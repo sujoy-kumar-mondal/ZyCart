@@ -204,17 +204,17 @@ export const addProduct = async (req, res) => {
       parsedDiscountedPrice = Math.round(parsedPrice * (1 - parsedDiscount / 100));
     }
 
-    // 3. Image Count Validation (at least 2 images, max 5 images)
+    // 3. Image Count Validation (at least 2 images, max 10 images)
     if (imageUrls.length < 2) {
       return res.status(400).json({
         success: false,
         message: "At least 2 product images must be uploaded.",
       });
     }
-    if (imageUrls.length > 5) {
+    if (imageUrls.length > 10) {
       return res.status(400).json({
         success: false,
-        message: "Maximum 5 product images allowed.",
+        message: "Maximum 10 product images allowed.",
       });
     }
 
@@ -498,10 +498,10 @@ export const updateProduct = async (req, res) => {
     }
 
     if (finalImages.length > 0) {
-      if (finalImages.length < 2 || finalImages.length > 5) {
+      if (finalImages.length < 2 || finalImages.length > 10) {
         return res.status(400).json({
           success: false,
-          message: "Product must have between 2 and 5 images.",
+          message: "Product must have between 2 and 10 images.",
         });
       }
       product.images = finalImages;
