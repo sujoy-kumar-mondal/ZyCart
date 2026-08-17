@@ -81,7 +81,6 @@ export const CartProvider = ({ children }) => {
       if (existing) {
         const newQty = existing.qty + qty;
         if (newQty > maxAllowed) {
-          toast.error(`Maximum ${maxAllowed} unit(s) allowed per purchase for this product.`);
           canProceed = false;
           return prev;
         }
@@ -92,7 +91,6 @@ export const CartProvider = ({ children }) => {
       }
 
       if (qty > maxAllowed) {
-        toast.error(`Maximum ${maxAllowed} unit(s) allowed per purchase for this product.`);
         canProceed = false;
         return prev;
       }
@@ -153,7 +151,6 @@ export const CartProvider = ({ children }) => {
         if (item.productId === productId) {
           const maxAllowed = Math.min(item.stock, item.maxQuantityPerPurchase || item.stock);
           if (qty > maxAllowed) {
-            toast.error(`Maximum ${maxAllowed} unit(s) allowed per purchase for this product.`);
             finalQty = maxAllowed;
             return { ...item, qty: maxAllowed };
           }

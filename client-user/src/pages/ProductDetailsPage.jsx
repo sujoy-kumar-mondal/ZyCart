@@ -462,8 +462,6 @@ const ProductDetailsPage = () => {
                         const maxQty = product.maxQuantityPerPurchase || product.stock;
                         if (quantity < maxQty) {
                           setQuantity(quantity + 1);
-                        } else {
-                          toast.error(`Maximum ${maxQty} unit(s) allowed per purchase.`);
                         }
                       }}
                       className="px-3.5 py-2 text-slate-600 hover:bg-slate-200 font-bold transition"
@@ -513,10 +511,20 @@ const ProductDetailsPage = () => {
           </div>
         </div>
 
-        {/* MIDDLE SECTION: Specifications & Description */}
+        {/* MIDDLE SECTION: Description & Specifications */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
-          {/* Specifications Card */}
+          {/* Description Card (FIRST) */}
+          <div className={`${product.attributes && Object.keys(product.attributes).length > 0 ? "lg:col-span-6" : "lg:col-span-12"} flex flex-col bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4`}>
+            <h2 className="text-xl font-extrabold text-[#1B2A41] flex items-center gap-2 border-b border-slate-100 pb-4">
+              <span>📝</span> Product Description
+            </h2>
+            <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-line grow">
+              {product.description || "No description provided."}
+            </p>
+          </div>
+
+          {/* Specifications Card (SECOND) */}
           {product.attributes && Object.keys(product.attributes).length > 0 && (
             <div className="lg:col-span-6 flex flex-col bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
               <h2 className="text-xl font-extrabold text-[#1B2A41] flex items-center gap-2 border-b border-slate-100 pb-4">
@@ -537,16 +545,6 @@ const ProductDetailsPage = () => {
               </div>
             </div>
           )}
-
-          {/* Description Card */}
-          <div className={`${product.attributes && Object.keys(product.attributes).length > 0 ? "lg:col-span-6" : "lg:col-span-12"} flex flex-col bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4`}>
-            <h2 className="text-xl font-extrabold text-[#1B2A41] flex items-center gap-2 border-b border-slate-100 pb-4">
-              <span>📝</span> Product Description
-            </h2>
-            <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-line grow">
-              {product.description || "No description provided."}
-            </p>
-          </div>
         </div>
 
         {/* "You Might Also Like" Recommendation Section */}

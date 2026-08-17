@@ -14,8 +14,6 @@ const CartItem = ({ item }) => {
   const increase = () => {
     if (item.qty < maxAllowed) {
       updateQty(item.productId, item.qty + 1);
-    } else {
-      toast.error(`Maximum ${maxAllowed} unit(s) allowed per purchase for this product.`);
     }
   };
 
