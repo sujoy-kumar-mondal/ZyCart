@@ -1061,12 +1061,10 @@ const SellerProducts = () => {
                     {paginatedProducts.map((product) => (
                       <tr key={product._id} className="hover:bg-blue-50/50 transition">
                         <td className="px-6 py-4">
-                          <a
-                            href={`${import.meta.env.VITE_USER_URL || "http://localhost:5173"}/product/${product._id}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <div
+                            onClick={() => handleEdit(product)}
                             className="flex items-center gap-4 group cursor-pointer"
-                            title="Click to view product on storefront"
+                            title="Click to edit product"
                           >
                             <img
                               src={product.images?.[0] || "https://via.placeholder.com/50"}
@@ -1081,7 +1079,7 @@ const SellerProducts = () => {
                                 {product.mainCategory} • {product.subCategory}
                               </p>
                             </div>
-                          </a>
+                          </div>
                         </td>
 
                         <td className="px-6 py-4">

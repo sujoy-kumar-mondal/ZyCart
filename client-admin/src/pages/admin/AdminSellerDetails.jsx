@@ -216,15 +216,9 @@ const AdminSellerDetails = () => {
                     {products.slice(0, 10).map((product) => (
                       <tr key={product._id} className="border-b hover:bg-gray-50">
                         <td className="py-3">
-                          <a
-                            href={`${import.meta.env.VITE_USER_URL || "http://localhost:5173"}/product/${product._id}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-semibold text-[#1B2A41] hover:text-[#3F51F4] hover:underline transition"
-                            title="Click to view product on storefront"
-                          >
+                          <p className="font-semibold text-[#1B2A41]">
                             {product.title}
-                          </a>
+                          </p>
                         </td>
                         <td className="font-semibold">₹{product.price?.toLocaleString()}</td>
                         <td>
