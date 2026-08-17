@@ -382,21 +382,12 @@ export const getAdminSellerDetails = async (req, res) => {
     // Get seller products
     const products = await Product.find({ seller: sellerId }).select("title price stock discount discountedPrice discountPeriod images description mainCategory subCategory subSubCategory attributes maxQuantityPerPurchase");
 
+    const sellerObj = seller.toObject();
+
     res.status(200).json({
       success: true,
       seller: {
-        _id: seller._id,
-        name: seller.name,
-        email: seller.email,
-        mobile: seller.mobile,
-        shopName: seller.shopName,
-        shopType: seller.shopType,
-        pan: seller.pan,
-        aadhar: seller.aadhar,
-        gst: seller.gst,
-        isApproved: seller.isApproved,
-        isBanned: seller.isBanned,
-        createdAt: seller.createdAt,
+        ...sellerObj,
         products,
         totalProducts: products.length,
       },

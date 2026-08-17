@@ -110,10 +110,13 @@ const SellerApply = () => {
   };
 
   const handleChange = (e) => {
-    if (e.target.name === "license") {
+    const { name, value } = e.target;
+    if (name === "license") {
       setForm({ ...form, license: e.target.files[0] });
+    } else if (name === "pan" || name === "gst") {
+      setForm({ ...form, [name]: value.toUpperCase() });
     } else {
-      setForm({ ...form, [e.target.name]: e.target.value });
+      setForm({ ...form, [name]: value });
     }
   };
 
@@ -148,8 +151,12 @@ const SellerApply = () => {
       return toast.error("Invalid Bank Account number! (9 to 18 digits)");
     }
 
-    if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(cleanGst)) {
-      return toast.error("Invalid GSTIN number format! (15 characters)");
+    if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{3}$/i.test(cleanGst)) {
+      return toast.error("Invalid GSTIN number format! (Must be 15 characters, e.g. 22ABCDE1234F1Z5)");
+    }
+
+    if (cleanPan && cleanGst.length >= 12 && cleanGst.slice(2, 12) !== cleanPan) {
+      return toast.error("GSTIN characters 3 to 12 must match your PAN number!");
     }
 
     const sellerIdToUse = sellerId || localStorage.getItem("sellerId") || user?.id;
