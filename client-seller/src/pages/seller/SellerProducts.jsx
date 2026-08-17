@@ -100,7 +100,7 @@ const SellerProducts = () => {
     try {
       const res = await axios.get("/products/categories");
       setCategories(res.data.categories || []);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   useEffect(() => {
@@ -360,11 +360,9 @@ const SellerProducts = () => {
       discountPeriodValue = date.toISOString().slice(0, 16);
     }
 
-    const initialDiscountedPrice = (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price)
-      ? product.discountedPrice
-      : ((product.discount > 0 && product.price > 0)
-        ? Math.floor(product.price * (1 - product.discount / 100))
-        : "");
+    const initialDiscountedPrice = (product.discount > 0 && product.price > 0)
+      ? Math.floor(product.price * (1 - product.discount / 100))
+      : "";
 
     setForm({
       title: product.title,
@@ -542,7 +540,7 @@ const SellerProducts = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC] py-8 sm:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80">
           <div>
@@ -804,9 +802,8 @@ const SellerProducts = () => {
                           onDragOver={(e) => handleDragOver(e, idx)}
                           onDrop={(e) => handleDrop(e, idx)}
                           onDragEnd={() => setDraggedIndex(null)}
-                          className={`relative rounded-2xl overflow-hidden border-2 shadow-xs transition cursor-grab ${
-                            draggedIndex === idx ? "border-[#3F51F4] opacity-40" : "border-slate-200"
-                          }`}
+                          className={`relative rounded-2xl overflow-hidden border-2 shadow-xs transition cursor-grab ${draggedIndex === idx ? "border-[#3F51F4] opacity-40" : "border-slate-200"
+                            }`}
                         >
                           <img src={preview} alt={`Thumb ${idx + 1}`} className="w-full h-24 object-cover" />
                           <span className="absolute bottom-1.5 left-1.5 bg-[#3F51F4] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">
@@ -835,7 +832,7 @@ const SellerProducts = () => {
                 >
                   {isSubmitting ? "Saving Product..." : isEditing ? "Update Product" : "Publish Product"}
                 </button>
-                
+
                 <button
                   onClick={() => {
                     setShowForm(false);
@@ -973,17 +970,15 @@ const SellerProducts = () => {
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black whitespace-nowrap ${
-                          product.stock > 0 ? "bg-slate-100 text-slate-800" : "bg-red-100 text-red-800"
-                        }`}>
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black whitespace-nowrap ${product.stock > 0 ? "bg-slate-100 text-slate-800" : "bg-red-100 text-red-800"
+                          }`}>
                           {product.stock} units
                         </span>
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black whitespace-nowrap ${
-                          product.isAvailable ? "bg-emerald-100 text-emerald-800" : "bg-slate-200 text-slate-600"
-                        }`}>
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black whitespace-nowrap ${product.isAvailable ? "bg-emerald-100 text-emerald-800" : "bg-slate-200 text-slate-600"
+                          }`}>
                           {product.isAvailable ? "✓ Visible" : "✕ Hidden"}
                         </span>
                       </td>

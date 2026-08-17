@@ -11,7 +11,7 @@ const ProductCard = ({ product }) => {
   const { user } = useAuth();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [wishlistLoading, setWishlistLoading] = useState(false);
-  
+
   const inWishlist = isInWishlist(product._id);
 
   const handleWishlistToggle = async (e) => {
@@ -46,17 +46,14 @@ const ProductCard = ({ product }) => {
   };
 
   const hasActiveDiscount =
-    (product.discount > 0 || (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price));
+    product.discount > 0 &&
+    (!product.discountPeriod || new Date(product.discountPeriod) > new Date());
 
   const discountedPrice = hasActiveDiscount
-    ? (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price
-        ? product.discountedPrice
-        : Math.round(product.price * (1 - (product.discount || 0) / 100)))
+    ? (product.discountedPrice && product.discountedPrice > 0
+      ? product.discountedPrice
+      : Math.round(product.price * (1 - product.discount / 100)))
     : product.price;
-
-  const discountPct = product.discount > 0
-    ? product.discount
-    : (product.discountedPrice && product.discountedPrice < product.price ? Math.round(((product.price - product.discountedPrice) / product.price) * 100) : 0);
 
   return (
     <div
@@ -78,9 +75,8 @@ const ProductCard = ({ product }) => {
             title={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
           >
             <Heart
-              className={`w-5 h-5 transition-all ${
-                inWishlist ? "fill-red-500 text-red-500" : "text-slate-600 hover:text-red-500"
-              }`}
+              className={`w-5 h-5 transition-all ${inWishlist ? "fill-red-500 text-red-500" : "text-slate-600 hover:text-red-500"
+                }`}
             />
           </button>
 
@@ -114,7 +110,7 @@ const ProductCard = ({ product }) => {
                 ₹{product.price.toLocaleString()}
               </span>
               <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-md">
-                {discountPct}% OFF
+                {product.discount}% OFF
               </span>
             </div>
           ) : (

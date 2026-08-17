@@ -179,9 +179,9 @@ const SellerProductDetails = () => {
                 </div>
 
                 <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-100">
-                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-600">Selling Price</p>
+                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-600">Discounted Selling Price</p>
                   <p className="text-2xl font-black text-emerald-700 mt-1">
-                    {hasDiscount ? `₹${effectivePrice.toLocaleString()}` : `₹${product.price?.toLocaleString()}`}
+                    {hasDiscount ? `₹${effectivePrice.toLocaleString()}` : "—"}
                   </p>
                 </div>
 

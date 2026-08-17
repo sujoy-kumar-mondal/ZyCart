@@ -35,7 +35,7 @@ const AdminSellerDetails = () => {
   const toggleApprovalStatus = async () => {
     try {
       setActionLoading(true);
-      const endpoint = seller.isApproved 
+      const endpoint = seller.isApproved
         ? `/admin/sellers/${sellerId}/approve`
         : `/admin/sellers/approve/${sellerId}`;
       await axios.patch(endpoint);
@@ -75,7 +75,7 @@ const AdminSellerDetails = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC] py-8 sm:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        
+
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80">
           <div className="flex items-center gap-4">
@@ -90,9 +90,8 @@ const AdminSellerDetails = () => {
                 <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
                   {seller.shopName || seller.name}
                 </h1>
-                <span className={`px-3 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                  seller.isBanned ? "bg-red-100 text-red-800" : seller.isApproved ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
-                }`}>
+                <span className={`px-3 py-0.5 rounded-full text-[10px] font-black uppercase ${seller.isBanned ? "bg-red-100 text-red-800" : seller.isApproved ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
+                  }`}>
                   {seller.isBanned ? "Banned" : seller.isApproved ? "Approved Merchant" : "Pending Approval"}
                 </span>
               </div>
@@ -105,10 +104,10 @@ const AdminSellerDetails = () => {
 
         {/* 2-Column Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Main Info */}
           <div className="lg:col-span-8 space-y-6">
-            
+
             {/* Merchant Owner Profile */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
               <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
@@ -270,11 +269,10 @@ const AdminSellerDetails = () => {
                 <button
                   onClick={toggleBanStatus}
                   disabled={actionLoading}
-                  className={`w-full py-4 rounded-2xl font-extrabold text-xs shadow-md transition disabled:opacity-50 ${
-                    seller.isBanned
+                  className={`w-full py-4 rounded-2xl font-extrabold text-xs shadow-md transition disabled:opacity-50 ${seller.isBanned
                       ? "bg-slate-800 hover:bg-slate-900 text-white"
                       : "bg-red-600 hover:bg-red-700 text-white"
-                  }`}
+                    }`}
                 >
                   {actionLoading ? "Processing..." : seller.isBanned ? "Unban Seller Account" : "Ban Seller Account"}
                 </button>
