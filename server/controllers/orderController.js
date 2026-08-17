@@ -52,12 +52,23 @@ export const placeOrder = async (req, res) => {
         sellerGroups[sellerId] = [];
       }
 
+      // Calculate effective price (discounted selling price if active discount period)
+      const isDiscountActive =
+        product.discount > 0 &&
+        (!product.discountPeriod || new Date(product.discountPeriod) > new Date());
+
+      const effectivePrice = isDiscountActive
+        ? (product.discountedPrice && product.discountedPrice > 0
+            ? Number(product.discountedPrice)
+            : Math.round(Number(product.price) * (1 - product.discount / 100)))
+        : Number(product.price);
+
       sellerGroups[sellerId].push({
         productId: product._id,
         title: product.title,
-        price: product.price,
+        price: effectivePrice,
         qty: item.qty,
-        subtotal: product.price * item.qty,
+        subtotal: effectivePrice * item.qty,
       });
     }
 
