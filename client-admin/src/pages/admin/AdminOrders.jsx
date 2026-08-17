@@ -114,7 +114,7 @@ const AdminOrders = () => {
                       </span>
                     </div>
                     <p className="text-xs font-semibold text-slate-500">
-                      Customer: <span className="font-bold text-slate-800">{order.user?.name || "Customer"}</span> ({order.user?.email}) • Total Amount: <span className="font-black text-slate-900">₹{order.totalAmount?.toLocaleString()}</span>
+                      Customer: <span className="font-bold text-slate-800">{order.user?.name || "Customer"}</span> ({order.user?.email}) • Placed: <span className="font-bold text-slate-800">{order.createdAt ? new Date(order.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : "N/A"}</span> • Total: <span className="font-black text-slate-900">₹{order.totalAmount?.toLocaleString()}</span>
                     </p>
                   </div>
 

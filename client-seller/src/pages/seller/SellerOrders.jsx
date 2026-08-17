@@ -112,6 +112,10 @@ const SellerOrders = () => {
                   <h3 className="font-mono font-black text-[#1B2A41] text-lg">
                     #{order.parentOrderId?.parentOrderNumber || order._id.slice(-8)}
                   </h3>
+                  <p className="text-xs font-semibold text-slate-500 flex items-center gap-1.5 pt-0.5">
+                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                    {order.createdAt ? new Date(order.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : "N/A"}
+                  </p>
                 </div>
 
                 <div className="flex items-center gap-4">

@@ -82,7 +82,7 @@ const AdminOrderDetails = () => {
                 </span>
               </div>
               <p className="text-xs text-slate-500 font-semibold mt-0.5">
-                Placed on {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
+                Placed on {order.createdAt ? new Date(order.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : "N/A"}
               </p>
             </div>
           </div>
@@ -208,6 +208,43 @@ const AdminOrderDetails = () => {
                     {updating ? "Updating..." : "Mark as Delivered"}
                   </button>
                 )}
+              </div>
+            </div>
+
+            {/* Status Timeline & Timestamps */}
+            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-4">
+              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-[#3F51F4]" /> Order Status Timestamps
+              </h2>
+
+              <div className="space-y-3 text-xs">
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold text-slate-400 uppercase">Placed Date &amp; Time</span>
+                  <p className="font-extrabold text-slate-900">
+                    {order.placedAt ? new Date(order.placedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : order.createdAt ? new Date(order.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : "N/A"}
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold text-purple-600 uppercase">Packed Date &amp; Time</span>
+                  <p className="font-extrabold text-slate-900">
+                    {order.packedAt ? new Date(order.packedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : ["Packed", "Shipped", "Out for Delivery", "Delivered"].includes(order.status) ? "Packed by merchant" : "Pending packaging"}
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold text-blue-600 uppercase">Shipped Date &amp; Time</span>
+                  <p className="font-extrabold text-slate-900">
+                    {order.shippedAt ? new Date(order.shippedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : ["Shipped", "Out for Delivery", "Delivered"].includes(order.status) ? "Shipped to logistics" : "Pending dispatch"}
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold text-emerald-600 uppercase">Delivered Date &amp; Time</span>
+                  <p className="font-extrabold text-slate-900">
+                    {order.deliveredAt ? new Date(order.deliveredAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : order.status === "Delivered" ? "Delivered to customer" : "Pending delivery"}
+                  </p>
+                </div>
               </div>
             </div>
 

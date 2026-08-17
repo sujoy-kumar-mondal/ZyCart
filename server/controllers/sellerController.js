@@ -714,19 +714,36 @@ export const updateChildOrderStatus = async (req, res) => {
         message: "Order not found.",
       });
 
-    // Update child order status
+    // Update child order status and timestamp
     const child = order.childOrders.id(id);
     child.status = status;
+    const now = new Date();
+    if (status === "Confirmed" && !child.confirmedAt) child.confirmedAt = now;
+    if (status === "Packed" && !child.packedAt) child.packedAt = now;
+    if (status === "Shipped" && !child.shippedAt) child.shippedAt = now;
+    if (status === "Delivered" && !child.deliveredAt) child.deliveredAt = now;
+    if (status === "Cancelled" && !child.cancelledAt) child.cancelledAt = now;
 
-    await order.save();
+    // Update parent order timestamps if applicable
+    const anyPacked = order.childOrders.some((c) => c.status === "Packed" || c.status === "Shipped" || c.status === "Delivered");
+    if (anyPacked && !order.packedAt) {
+      order.packedAt = now;
+    }
 
-    // After saving, check if all child orders shipped
-    const allShipped = order.childOrders.every((c) => c.status === "Shipped");
-
+    const allShipped = order.childOrders.every((c) => c.status === "Shipped" || c.status === "Delivered");
     if (allShipped) {
       order.status = "Shipped";
-      await order.save();
+      if (!order.shippedAt) order.shippedAt = now;
     }
+
+    const allDelivered = order.childOrders.every((c) => c.status === "Delivered");
+    if (allDelivered) {
+      order.status = "Delivered";
+      if (!order.deliveredAt) order.deliveredAt = now;
+      order.paymentStatus = "completed";
+    }
+
+    await order.save();
 
     res.status(200).json({
       success: true,

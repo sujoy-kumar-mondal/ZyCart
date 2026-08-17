@@ -106,10 +106,10 @@ const UserOrderDetails = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 bg-gray-50 rounded-xl">
                 <p className="text-gray-600 text-sm mb-1 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" /> Order Date
+                  <Calendar className="w-4 h-4" /> Order Date &amp; Time
                 </p>
                 <p className="text-[#1B2A41] font-semibold">
-                  {order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
+                  {order?.createdAt ? new Date(order.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : "N/A"}
                 </p>
               </div>
               <div className="p-4 bg-gray-50 rounded-xl">
@@ -203,54 +203,120 @@ const UserOrderDetails = () => {
 
             {/* Timeline */}
             <div className="mt-8 pt-8 border-t">
-              <h4 className="font-bold text-[#1B2A41] mb-4">Timeline</h4>
-              <div className="space-y-3">
+              <h4 className="font-bold text-[#1B2A41] mb-4">Order Tracking Timeline</h4>
+              <div className="space-y-4">
+                
+                {/* Placed */}
                 <div className="flex gap-3">
                   <CheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
                   <div>
                     <p className="font-semibold text-[#1B2A41] text-sm">Order Placed</p>
                     <p className="text-gray-600 text-xs">
-                      {order?.createdAt ? new Date(order.createdAt).toLocaleString() : "N/A"}
+                      {order?.placedAt
+                        ? new Date(order.placedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                        : order?.createdAt
+                        ? new Date(order.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                        : "N/A"}
                     </p>
                   </div>
                 </div>
 
+                {/* Confirmed */}
                 {order?.status !== "Pending" && (
                   <div className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
                     <div>
                       <p className="font-semibold text-[#1B2A41] text-sm">Confirmed</p>
-                      <p className="text-gray-600 text-xs">Payment received</p>
+                      <p className="text-gray-600 text-xs">
+                        {order?.confirmedAt
+                          ? new Date(order.confirmedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                          : "Payment & Order Confirmed"}
+                      </p>
                     </div>
                   </div>
                 )}
 
-                {["Shipped", "Out for Delivery", "Delivered"].includes(order?.status) && (
+                {/* Packed */}
+                {(order?.packedAt || ["Packed", "Shipped", "Out for Delivery", "Delivered"].includes(order?.status)) && (
                   <div className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-[#1B2A41] text-sm">Items Packed</p>
+                      <p className="text-gray-600 text-xs">
+                        {order?.packedAt
+                          ? new Date(order.packedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                          : "Packed & Verified by Seller"}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Shipped */}
+                {(order?.shippedAt || ["Shipped", "Out for Delivery", "Delivered"].includes(order?.status)) && (
+                  <div className="flex gap-3">
+                    <CheckCircle className="w-5 h-5 text-purple-500 shrink-0 mt-0.5" />
                     <div>
                       <p className="font-semibold text-[#1B2A41] text-sm">Shipped</p>
-                      <p className="text-gray-600 text-xs">On the way to you</p>
+                      <p className="text-gray-600 text-xs">
+                        {order?.shippedAt
+                          ? new Date(order.shippedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                          : "On the way to logistics center"}
+                      </p>
                     </div>
                   </div>
                 )}
 
-                {order?.status === "Delivered" && (
+                {/* Out for Delivery */}
+                {(order?.outForDeliveryAt || ["Out for Delivery", "Delivered"].includes(order?.status)) && (
                   <div className="flex gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                    <CheckCircle className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-[#1B2A41] text-sm">Out for Delivery</p>
+                      <p className="text-gray-600 text-xs">
+                        {order?.outForDeliveryAt
+                          ? new Date(order.outForDeliveryAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                          : "Courier agent out for delivery"}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Delivered */}
+                {(order?.deliveredAt || order?.status === "Delivered") && (
+                  <div className="flex gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
                     <div>
                       <p className="font-semibold text-[#1B2A41] text-sm">Delivered</p>
-                      <p className="text-gray-600 text-xs">Successfully delivered</p>
+                      <p className="text-gray-600 text-xs">
+                        {order?.deliveredAt
+                          ? new Date(order.deliveredAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                          : "Successfully delivered"}
+                      </p>
                     </div>
                   </div>
                 )}
 
-                {!["Delivered"].includes(order?.status) && (
+                {/* Cancelled */}
+                {order?.status === "Cancelled" && (
+                  <div className="flex gap-3">
+                    <CheckCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-red-600 text-sm">Cancelled</p>
+                      <p className="text-gray-600 text-xs">
+                        {order?.cancelledAt
+                          ? new Date(order.cancelledAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                          : "Order cancelled"}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {!["Delivered", "Cancelled"].includes(order?.status) && (
                   <div className="flex gap-3">
                     <Clock className="w-5 h-5 text-gray-400 shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-gray-400 text-sm">Delivery</p>
-                      <p className="text-gray-400 text-xs">Coming soon</p>
+                      <p className="font-semibold text-gray-400 text-sm">Delivery Status</p>
+                      <p className="text-gray-400 text-xs">In transit</p>
                     </div>
                   </div>
                 )}

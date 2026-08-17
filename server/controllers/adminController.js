@@ -232,6 +232,27 @@ export const updateParentOrderStatus = async (req, res) => {
       });
 
     order.status = status;
+    const now = new Date();
+    if (status === "Confirmed" && !order.confirmedAt) order.confirmedAt = now;
+    if (status === "Packed" && !order.packedAt) order.packedAt = now;
+    if (status === "Shipped" && !order.shippedAt) order.shippedAt = now;
+    if (status === "Out for Delivery" && !order.outForDeliveryAt) order.outForDeliveryAt = now;
+    if (status === "Delivered") {
+      if (!order.deliveredAt) order.deliveredAt = now;
+      order.paymentStatus = "completed";
+    }
+    if (status === "Cancelled" && !order.cancelledAt) order.cancelledAt = now;
+
+    // Also update all child orders if parent status changed
+    order.childOrders.forEach((child) => {
+      child.status = status;
+      if (status === "Confirmed" && !child.confirmedAt) child.confirmedAt = now;
+      if (status === "Packed" && !child.packedAt) child.packedAt = now;
+      if (status === "Shipped" && !child.shippedAt) child.shippedAt = now;
+      if (status === "Delivered" && !child.deliveredAt) child.deliveredAt = now;
+      if (status === "Cancelled" && !child.cancelledAt) child.cancelledAt = now;
+    });
+
     await order.save();
 
     res.status(200).json({

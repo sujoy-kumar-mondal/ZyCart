@@ -201,6 +201,36 @@ const SellerOrderDetails = () => {
               </div>
             </div>
 
+            {/* Order Timestamps Card */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
+              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-[#3F51F4]" /> Order Status Timeline
+              </h2>
+
+              <div className="space-y-3 text-xs">
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold text-slate-400 uppercase">Order Placed Date &amp; Time</span>
+                  <p className="font-extrabold text-slate-900">
+                    {order?.placedAt ? new Date(order.placedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : order?.createdAt ? new Date(order.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : "N/A"}
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold text-purple-600 uppercase">Packed Date &amp; Time</span>
+                  <p className="font-extrabold text-slate-900">
+                    {order?.packedAt ? new Date(order.packedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : order?.status === "Packed" || order?.status === "Shipped" ? "Packed by merchant" : "Pending packaging"}
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold text-blue-600 uppercase">Shipped Date &amp; Time</span>
+                  <p className="font-extrabold text-slate-900">
+                    {order?.shippedAt ? new Date(order.shippedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : order?.status === "Shipped" ? "Shipped to customer" : "Pending dispatch"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
           </div>
 
         </div>
