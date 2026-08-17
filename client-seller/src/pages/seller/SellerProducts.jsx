@@ -36,6 +36,41 @@ const SellerProducts = () => {
   });
 
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [draggedIndex, setDraggedIndex] = useState(null);
+
+  const handleRemoveImage = (indexToRemove) => {
+    const newPreviews = imagePreviews.filter((_, idx) => idx !== indexToRemove);
+    const newImages = (form.images || []).filter((_, idx) => idx !== indexToRemove);
+    setImagePreviews(newPreviews);
+    setForm((prev) => ({ ...prev, images: newImages }));
+  };
+
+  const handleDragStart = (e, index) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDrop = (e, dropIndex) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === dropIndex) return;
+
+    const updatedPreviews = [...imagePreviews];
+    const [draggedPreview] = updatedPreviews.splice(draggedIndex, 1);
+    updatedPreviews.splice(dropIndex, 0, draggedPreview);
+    setImagePreviews(updatedPreviews);
+
+    const updatedImages = [...(form.images || [])];
+    const [draggedImage] = updatedImages.splice(draggedIndex, 1);
+    updatedImages.splice(dropIndex, 0, draggedImage);
+    setForm((prev) => ({ ...prev, images: updatedImages }));
+
+    setDraggedIndex(null);
+  };
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
@@ -194,10 +229,13 @@ const SellerProducts = () => {
     const { name, value, files } = e.target;
 
     if (name === "images") {
-      const selectedFiles = Array.from(files).slice(0, 5);
-      setForm((prev) => ({ ...prev, images: selectedFiles }));
+      const selectedFiles = Array.from(files);
+      const currentImages = form.images || [];
+      const combined = [...currentImages, ...selectedFiles].slice(0, 5);
+      setForm((prev) => ({ ...prev, images: combined }));
 
-      const previews = selectedFiles.map((file) => {
+      const previews = combined.map((file) => {
+        if (typeof file === "string") return Promise.resolve(file);
         const reader = new FileReader();
         reader.readAsDataURL(file);
         return new Promise((resolve) => {
@@ -352,7 +390,7 @@ const SellerProducts = () => {
       subCategory: product.subCategory,
       subSubCategory: product.subSubCategory,
       attributes: product.attributes || {},
-      images: [],
+      images: product.images || [],
       discountedPrice: initialDiscountedPrice,
       discount: product.discount || "",
       discountPeriod: discountPeriodValue,
@@ -929,14 +967,50 @@ const SellerProducts = () => {
 
                 {imagePreviews.length > 0 && (
                   <div className="mt-4">
-                    <p className="text-sm font-medium text-gray-700 mb-3">Preview ({imagePreviews.length}/5)</p>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-sm font-medium text-gray-700">
+                        Preview ({imagePreviews.length}/5)
+                      </p>
+                      <p className="text-xs text-blue-600 font-medium flex items-center gap-1">
+                        💡 Drag thumbnails to reorder image priority
+                      </p>
+                    </div>
+
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                       {imagePreviews.map((preview, idx) => (
-                        <div key={idx} className="relative rounded-lg overflow-hidden border-2 border-gray-300 shadow-sm">
-                          <img src={preview} alt={`Preview ${idx + 1}`} className="w-full h-24 object-cover" />
-                          <span className="absolute top-1 right-1 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                        <div
+                          key={idx}
+                          draggable
+                          onDragStart={(e) => handleDragStart(e, idx)}
+                          onDragOver={(e) => handleDragOver(e, idx)}
+                          onDrop={(e) => handleDrop(e, idx)}
+                          onDragEnd={() => setDraggedIndex(null)}
+                          className={`relative rounded-lg overflow-hidden border-2 shadow-sm transition group cursor-grab active:cursor-grabbing ${
+                            draggedIndex === idx
+                              ? "border-blue-500 opacity-40 scale-95"
+                              : "border-gray-300 hover:border-blue-400"
+                          }`}
+                        >
+                          <img
+                            src={preview}
+                            alt={`Preview ${idx + 1}`}
+                            className="w-full h-24 object-cover select-none"
+                          />
+
+                          {/* Index Badge */}
+                          <span className="absolute bottom-1 left-1 bg-blue-600/90 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-xs">
                             {idx + 1}
                           </span>
+
+                          {/* Remove Button */}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveImage(idx)}
+                            className="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full shadow-md transition opacity-90 group-hover:opacity-100"
+                            title="Remove image"
+                          >
+                            <X size={14} />
+                          </button>
                         </div>
                       ))}
                     </div>

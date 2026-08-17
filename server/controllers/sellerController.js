@@ -464,14 +464,27 @@ export const updateProduct = async (req, res) => {
     product.discountedPrice = finalDiscount > 0 ? finalDiscountedPrice : null;
     product.discountPeriod = finalDiscount > 0 ? finalDiscountPeriod : null;
 
-    if (newImages.length > 0) {
-      if (newImages.length < 2 || newImages.length > 5) {
+    let existingImages = req.body.existingImages;
+    if (existingImages !== undefined && existingImages !== null) {
+      if (typeof existingImages === "string") {
+        existingImages = [existingImages];
+      }
+    } else {
+      existingImages = null;
+    }
+
+    const uploadedNewImages = req.fileUrls || [];
+
+    if (existingImages !== null || uploadedNewImages.length > 0) {
+      const finalImages = [...(existingImages || []), ...uploadedNewImages];
+
+      if (finalImages.length < 2 || finalImages.length > 5) {
         return res.status(400).json({
           success: false,
-          message: "Uploaded images must be between 2 and 5 images.",
+          message: "Product must have between 2 and 5 images.",
         });
       }
-      product.images = newImages; // replace all images
+      product.images = finalImages;
     }
 
     await product.save();
