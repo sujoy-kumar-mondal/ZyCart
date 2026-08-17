@@ -273,15 +273,18 @@ const ProductDetailsPage = () => {
     );
   }
 
-  const hasActiveDiscount =
-    product.discount > 0 &&
-    (!product.discountPeriod || new Date(product.discountPeriod) > new Date());
+  const isExpired = product.discountPeriod && new Date(product.discountPeriod) <= new Date();
+  const hasActiveDiscount = !isExpired && (product.discount > 0 || (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price));
 
   const discountedPrice = hasActiveDiscount
-    ? (product.discountedPrice && product.discountedPrice > 0
+    ? (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price
         ? product.discountedPrice
-        : Math.round(product.price * (1 - product.discount / 100)))
+        : Math.round(product.price * (1 - (product.discount || 0) / 100)))
     : product.price;
+
+  const discountPct = product.discount > 0
+    ? product.discount
+    : (product.discountedPrice && product.discountedPrice < product.price ? Math.round(((product.price - product.discountedPrice) / product.price) * 100) : 0);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] py-6 sm:py-10">
@@ -400,7 +403,7 @@ const ProductDetailsPage = () => {
                       ₹{product.price.toLocaleString()}
                     </span>
                     <span className="px-2.5 py-1 text-xs font-extrabold text-green-700 bg-green-100 border border-green-200 rounded-lg">
-                      {product.discount}% OFF
+                      {discountPct}% OFF
                     </span>
                   </>
                 ) : (

@@ -67,10 +67,13 @@ const SellerProductDetails = () => {
 
   if (!product) return null;
 
-  const hasDiscount = product.discount > 0;
-  const effectivePrice = product.discountedPrice && product.discountedPrice > 0
-    ? product.discountedPrice
-    : Math.round(product.price * (1 - (product.discount || 0) / 100));
+  const isExpired = product.discountPeriod && new Date(product.discountPeriod) <= new Date();
+  const hasDiscount = !isExpired && (product.discount > 0 || (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price));
+  const effectivePrice = hasDiscount
+    ? (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price
+        ? product.discountedPrice
+        : Math.round(product.price * (1 - (product.discount || 0) / 100)))
+    : product.price;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] py-8 sm:py-12">

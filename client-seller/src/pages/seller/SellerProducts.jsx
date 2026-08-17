@@ -937,6 +937,7 @@ const SellerProducts = () => {
 
                       <td className="px-6 py-4 whitespace-nowrap">
                         {(() => {
+                          const isExpired = product.discountPeriod && new Date(product.discountPeriod) <= new Date();
                           const sellingPrice = (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price)
                             ? product.discountedPrice
                             : (product.discount > 0 ? Math.round(product.price * (1 - product.discount / 100)) : product.price);
@@ -947,9 +948,9 @@ const SellerProducts = () => {
                               ? Math.round(((product.price - product.discountedPrice) / product.price) * 100)
                               : 0);
 
-                          const isDiscounted = discountPct > 0 && sellingPrice < product.price;
+                          const isDiscountActive = !isExpired && discountPct > 0 && sellingPrice < product.price;
 
-                          if (isDiscounted) {
+                          if (isDiscountActive) {
                             return (
                               <div className="flex items-center gap-2 whitespace-nowrap">
                                 <span className="font-black text-emerald-600 text-sm">

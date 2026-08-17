@@ -75,15 +75,18 @@ const WishlistPage = () => {
               {wishlist.map((item, idx) => {
                 const product = item.product;
 
-                const hasActiveDiscount =
-                  product.discount > 0 &&
-                  (!product.discountPeriod || new Date(product.discountPeriod) > new Date());
+                const isExpired = product.discountPeriod && new Date(product.discountPeriod) <= new Date();
+                const hasActiveDiscount = !isExpired && (product.discount > 0 || (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price));
 
                 const effectiveDiscountedPrice = hasActiveDiscount
-                  ? (product.discountedPrice && product.discountedPrice > 0
+                  ? (product.discountedPrice && product.discountedPrice > 0 && product.discountedPrice < product.price
                       ? product.discountedPrice
-                      : Math.round(product.price * (1 - product.discount / 100)))
+                      : Math.round(product.price * (1 - (product.discount || 0) / 100)))
                   : product.price;
+
+                const discountPct = product.discount > 0
+                  ? product.discount
+                  : (product.discountedPrice && product.discountedPrice < product.price ? Math.round(((product.price - product.discountedPrice) / product.price) * 100) : 0);
 
                 return (
                   <motion.div
@@ -152,7 +155,7 @@ const WishlistPage = () => {
                                 ₹{product.price.toLocaleString()}
                               </span>
                               <span className="text-xs font-bold text-green-600 bg-green-100 px-1.5 py-0.5 rounded">
-                                {product.discount}% OFF
+                                {discountPct}% OFF
                               </span>
                             </div>
                           ) : (
