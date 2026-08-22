@@ -41,6 +41,15 @@ const DATA_TYPES = [
   "Range",
 ];
 
+const getOptionsArray = (options) => {
+  if (!options) return [];
+  if (Array.isArray(options)) return options;
+  if (typeof options === "string") {
+    return options.split(",").map((s) => s.trim()).filter(Boolean);
+  }
+  return [];
+};
+
 const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
   const [mainCategoriesList, setMainCategoriesList] = useState([]);
@@ -187,12 +196,13 @@ const AdminCategories = () => {
   const handleOpenEditField = (index) => {
     const f = attributeFields[index];
     setEditingFieldIndex(index);
+    const opts = getOptionsArray(f.options);
     setFieldForm({
       fieldName: f.fieldName || "",
       dataType: f.dataType || "Text",
       required: Boolean(f.required),
       filterable: Boolean(f.filterable),
-      optionsText: Array.isArray(f.options) ? f.options.join(", ") : f.options || "",
+      optionsText: opts.join(", "),
       placeholder: f.placeholder || "",
       helpText: f.helpText || "",
     });
@@ -859,24 +869,28 @@ const AdminCategories = () => {
                               )}
                             </div>
 
-                            {field.options && field.options.length > 0 && (
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <span className="text-[10px] font-bold text-slate-400">Options:</span>
-                                {field.options.slice(0, 5).map((opt, oIdx) => (
-                                  <span
-                                    key={oIdx}
-                                    className="px-1.5 py-0.2 bg-slate-100 text-slate-700 rounded text-[10px] font-semibold"
-                                  >
-                                    {opt}
-                                  </span>
-                                ))}
-                                {field.options.length > 5 && (
-                                  <span className="text-[10px] text-slate-400 font-bold">
-                                    +{field.options.length - 5} more
-                                  </span>
-                                )}
-                              </div>
-                            )}
+                            {(() => {
+                              const opts = getOptionsArray(field.options);
+                              if (opts.length === 0) return null;
+                              return (
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span className="text-[10px] font-bold text-slate-400">Options:</span>
+                                  {opts.slice(0, 5).map((opt, oIdx) => (
+                                    <span
+                                      key={oIdx}
+                                      className="px-1.5 py-0.2 bg-slate-100 text-slate-700 rounded text-[10px] font-semibold"
+                                    >
+                                      {String(opt)}
+                                    </span>
+                                  ))}
+                                  {opts.length > 5 && (
+                                    <span className="text-[10px] text-slate-400 font-bold">
+                                      +{opts.length - 5} more
+                                    </span>
+                                  )}
+                                </div>
+                              );
+                            })()}
                           </div>
 
                           {/* Reorder and Edit Actions */}

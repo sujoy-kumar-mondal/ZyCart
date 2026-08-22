@@ -868,10 +868,24 @@ export const getAdminCategoryAttributes = async (req, res) => {
       }
     }
 
+    const sanitizedFields = (record?.fields || []).map((f) => {
+      const fieldObj = (f.toObject && f.toObject()) || f;
+      let opts = [];
+      if (Array.isArray(fieldObj.options)) {
+        opts = fieldObj.options.map((o) => String(o));
+      } else if (typeof fieldObj.options === "string" && fieldObj.options.trim()) {
+        opts = fieldObj.options.split(",").map((o) => o.trim()).filter(Boolean);
+      }
+      return {
+        ...fieldObj,
+        options: opts,
+      };
+    });
+
     res.status(200).json({
       success: true,
       category,
-      fields: record?.fields || [],
+      fields: sanitizedFields,
     });
   } catch (error) {
     console.error("Get admin category attributes error:", error);
