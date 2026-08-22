@@ -47,7 +47,7 @@ const Login = () => {
   useEffect(() => {
     document.title = "Customer Sign In | ZyCart Premium Store";
     if (user) {
-      navigate("/profile", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [user, navigate]);
 

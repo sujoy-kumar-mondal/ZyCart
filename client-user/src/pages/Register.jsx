@@ -24,7 +24,7 @@ const Register = () => {
 
   useEffect(() => {
     if (user) {
-      navigate("/profile", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [user, navigate]);
 
