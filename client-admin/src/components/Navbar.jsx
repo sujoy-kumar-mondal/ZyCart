@@ -103,6 +103,12 @@ const Navbar = () => {
                 </NavLink>
               )}
 
+              {hasPerm("system_settings") && (
+                <NavLink to="/admin/settings" className={({ isActive }) => (isActive ? activeClass : linkClass)}>
+                  Settings
+                </NavLink>
+              )}
+
               {/* Profile Avatar Dropdown */}
               <div className="relative ml-3">
                 <button
@@ -250,6 +256,16 @@ const Navbar = () => {
                     className="block px-4 py-2.5 rounded-xl text-xs font-extrabold text-slate-700 hover:bg-slate-50"
                   >
                     Sub-Admins
+                  </NavLink>
+                )}
+
+                {hasPerm("system_settings") && (
+                  <NavLink
+                    to="/admin/settings"
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-4 py-2.5 rounded-xl text-xs font-extrabold text-slate-700 hover:bg-slate-50"
+                  >
+                    System Settings
                   </NavLink>
                 )}
 

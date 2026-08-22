@@ -17,6 +17,7 @@ import AdminProfile from "./pages/admin/AdminProfile.jsx";
 import AdminManagement from "./pages/admin/AdminManagement.jsx";
 import AdminCategories from "./pages/admin/AdminCategories.jsx";
 import AdminProducts from "./pages/admin/AdminProducts.jsx";
+import AdminSettings from "./pages/admin/AdminSettings.jsx";
 
 // Auth Pages
 import Home from "./pages/Home.jsx";
@@ -136,6 +137,15 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <AdminManagement />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/settings"
+            element={
+              <ProtectedRoute>
+                <AdminSettings />
               </ProtectedRoute>
             }
           />

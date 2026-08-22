@@ -32,6 +32,8 @@ import {
   getAdminProductDetails,
   toggleAdminProductAvailability,
   deleteAdminProduct,
+  getSystemSettings,
+  updateSystemSettings,
 } from "../controllers/adminController.js";
 
 const router = express.Router();
@@ -258,6 +260,23 @@ router.put(
   "/profile",
   protectAdmin,
   updateAdminProfile
+);
+
+// -------------------------
+// SYSTEM SETTINGS
+// -------------------------
+router.get(
+  "/settings",
+  protectAdmin,
+  requirePermission("system_settings"),
+  getSystemSettings
+);
+
+router.put(
+  "/settings",
+  protectAdmin,
+  requirePermission("system_settings"),
+  updateSystemSettings
 );
 
 export default router;

@@ -6,6 +6,7 @@ import Admin from "../models/Admin.js";
 import Category from "../models/Category.js";
 import CategoryAttribute from "../models/CategoryAttribute.js";
 import AttributeSchema from "../models/AttributeSchema.js";
+import SystemSetting from "../models/SystemSetting.js";
 
 // ------------------------------------------------------------
 // ADMIN DASHBOARD
@@ -1146,3 +1147,50 @@ export const deleteAdminProduct = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+// ==========================================================
+// SYSTEM SETTINGS (Admin)
+// ==========================================================
+
+// 1. GET SYSTEM SETTINGS (Singleton pattern)
+export const getSystemSettings = async (req, res) => {
+  try {
+    let settings = await SystemSetting.findOne();
+    if (!settings) {
+      settings = await SystemSetting.create({});
+    }
+
+    res.status(200).json({
+      success: true,
+      settings,
+    });
+  } catch (error) {
+    console.error("Get system settings error:", error);
+    res.status(500).json({ success: false, message: "Server error fetching system settings" });
+  }
+};
+
+// 2. UPDATE SYSTEM SETTINGS
+export const updateSystemSettings = async (req, res) => {
+  try {
+    const updateData = req.body;
+
+    let settings = await SystemSetting.findOne();
+    if (!settings) {
+      settings = await SystemSetting.create(updateData);
+    } else {
+      Object.assign(settings, updateData);
+      await settings.save();
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "System settings updated successfully",
+      settings,
+    });
+  } catch (error) {
+    console.error("Update system settings error:", error);
+    res.status(500).json({ success: false, message: "Server error updating system settings" });
+  }
+};
+
