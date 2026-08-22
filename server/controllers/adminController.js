@@ -4,6 +4,8 @@ import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import Admin from "../models/Admin.js";
 import Category from "../models/Category.js";
+import CategoryAttribute from "../models/CategoryAttribute.js";
+import AttributeSchema from "../models/AttributeSchema.js";
 
 // ------------------------------------------------------------
 // ADMIN DASHBOARD
@@ -680,11 +682,20 @@ export const getAdminCategories = async (req, res) => {
       }
     });
 
+    // Attribute counts per category hierarchy
+    const allCategoryAttributes = await CategoryAttribute.find().select("mainCategory subCategory subSubCategory fields");
+    const attrCountMap = {};
+    allCategoryAttributes.forEach((attr) => {
+      const key = `${attr.mainCategory}|${attr.subCategory}|${attr.subSubCategory}`;
+      attrCountMap[key] = (attr.fields && attr.fields.length) || 0;
+    });
+
     const enrichedCategories = categories.map((cat) => {
       const key = `${cat.mainCategory}|${cat.subCategory}|${cat.subSubCategory}`;
       return {
         ...cat.toObject(),
         productCount: countMap[key] || 0,
+        attributeCount: attrCountMap[key] || 0,
       };
     });
 
@@ -821,6 +832,137 @@ export const deleteAdminCategory = async (req, res) => {
   } catch (error) {
     console.error("Delete admin category error:", error);
     res.status(500).json({ success: false, message: "Server error deleting category" });
+  }
+};
+
+// 5. GET ATTRIBUTES FOR A SPECIFIC CATEGORY
+export const getAdminCategoryAttributes = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const category = await Category.findById(id);
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    const { mainCategory, subCategory, subSubCategory } = category;
+
+    let record = await CategoryAttribute.findOne({
+      mainCategory,
+      subCategory,
+      subSubCategory,
+    });
+
+    if (!record) {
+      const schemaRecord = await AttributeSchema.findOne({
+        mainCategory,
+        subCategory,
+        subSubCategory,
+      });
+
+      if (schemaRecord && schemaRecord.fields && schemaRecord.fields.length > 0) {
+        record = { fields: schemaRecord.fields };
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      category,
+      fields: record?.fields || [],
+    });
+  } catch (error) {
+    console.error("Get admin category attributes error:", error);
+    res.status(500).json({ success: false, message: "Server error fetching category attributes" });
+  }
+};
+
+// 6. SAVE / UPDATE ATTRIBUTES FOR A CATEGORY
+export const saveAdminCategoryAttributes = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { fields } = req.body;
+
+    if (!Array.isArray(fields)) {
+      return res.status(400).json({
+        success: false,
+        message: "Fields must be an array of attribute field objects.",
+      });
+    }
+
+    const category = await Category.findById(id);
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    const { mainCategory, subCategory, subSubCategory } = category;
+
+    // Format and sanitize fields
+    const formattedFields = fields
+      .map((f, idx) => {
+        let optionsArray = [];
+        if (Array.isArray(f.options)) {
+          optionsArray = f.options.map((opt) => String(opt).trim()).filter(Boolean);
+        } else if (typeof f.options === "string" && f.options.trim()) {
+          optionsArray = f.options
+            .split(",")
+            .map((opt) => opt.trim())
+            .filter(Boolean);
+        }
+
+        return {
+          fieldName: String(f.fieldName || "").trim(),
+          dataType: f.dataType || "Text",
+          required: Boolean(f.required),
+          filterable: Boolean(f.filterable),
+          options: optionsArray,
+          displayOrder: typeof f.displayOrder === "number" ? f.displayOrder : idx,
+          placeholder: f.placeholder ? String(f.placeholder).trim() : "",
+          helpText: f.helpText ? String(f.helpText).trim() : "",
+        };
+      })
+      .filter((f) => f.fieldName.length > 0);
+
+    // Upsert CategoryAttribute
+    const updatedCategoryAttr = await CategoryAttribute.findOneAndUpdate(
+      { mainCategory, subCategory, subSubCategory },
+      {
+        mainCategory,
+        subCategory,
+        subSubCategory,
+        fields: formattedFields,
+        isActive: true,
+        updatedAt: new Date(),
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+
+    // Sync AttributeSchema
+    await AttributeSchema.findOneAndUpdate(
+      { mainCategory, subCategory, subSubCategory },
+      {
+        mainCategory,
+        subCategory,
+        subSubCategory,
+        fields: formattedFields,
+        isActive: true,
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Category attributes schema updated successfully",
+      fields: updatedCategoryAttr.fields,
+    });
+  } catch (error) {
+    console.error("Save admin category attributes error:", error);
+    res.status(500).json({ success: false, message: "Server error saving category attributes" });
   }
 };
 

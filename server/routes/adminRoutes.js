@@ -26,6 +26,8 @@ import {
   createAdminCategory,
   updateAdminCategory,
   deleteAdminCategory,
+  getAdminCategoryAttributes,
+  saveAdminCategoryAttributes,
   getAdminProducts,
   getAdminProductDetails,
   toggleAdminProductAvailability,
@@ -165,6 +167,20 @@ router.delete(
   protectAdmin,
   requirePermission("manage_categories"),
   deleteAdminCategory
+);
+
+router.get(
+  "/categories/:id/attributes",
+  protectAdmin,
+  requirePermission("manage_categories"),
+  getAdminCategoryAttributes
+);
+
+router.put(
+  "/categories/:id/attributes",
+  protectAdmin,
+  requirePermission("manage_categories"),
+  saveAdminCategoryAttributes
 );
 
 // -------------------------
