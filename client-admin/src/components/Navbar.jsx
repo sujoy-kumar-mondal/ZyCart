@@ -85,6 +85,18 @@ const Navbar = () => {
                 </NavLink>
               )}
 
+              {hasPerm("manage_products") && (
+                <NavLink to="/admin/products" className={({ isActive }) => (isActive ? activeClass : linkClass)}>
+                  Products
+                </NavLink>
+              )}
+
+              {hasPerm("manage_categories") && (
+                <NavLink to="/admin/categories" className={({ isActive }) => (isActive ? activeClass : linkClass)}>
+                  Categories
+                </NavLink>
+              )}
+
               {(isSuperAdmin || hasPerm("manage_admins")) && (
                 <NavLink to="/admin/admins" className={({ isActive }) => (isActive ? activeClass : linkClass)}>
                   Sub-Admins
@@ -208,6 +220,26 @@ const Navbar = () => {
                     className="block px-4 py-2.5 rounded-xl text-xs font-extrabold text-slate-700 hover:bg-slate-50"
                   >
                     Global Orders
+                  </NavLink>
+                )}
+
+                {hasPerm("manage_products") && (
+                  <NavLink
+                    to="/admin/products"
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-4 py-2.5 rounded-xl text-xs font-extrabold text-slate-700 hover:bg-slate-50"
+                  >
+                    Manage Products
+                  </NavLink>
+                )}
+
+                {hasPerm("manage_categories") && (
+                  <NavLink
+                    to="/admin/categories"
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-4 py-2.5 rounded-xl text-xs font-extrabold text-slate-700 hover:bg-slate-50"
+                  >
+                    Manage Categories
                   </NavLink>
                 )}
 

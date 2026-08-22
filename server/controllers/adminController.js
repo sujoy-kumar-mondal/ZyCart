@@ -3,6 +3,7 @@ import Seller from "../models/Seller.js";
 import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import Admin from "../models/Admin.js";
+import Category from "../models/Category.js";
 
 // ------------------------------------------------------------
 // ADMIN DASHBOARD
@@ -618,6 +619,374 @@ export const deleteAdminAccount = async (req, res) => {
     });
   } catch (error) {
     console.error("Delete admin error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// ==========================================================
+// CATEGORIES MANAGEMENT (Admin)
+// ==========================================================
+
+// 1. GET ALL CATEGORIES WITH STATS & PRODUCT COUNTS
+export const getAdminCategories = async (req, res) => {
+  try {
+    const { search, mainCategory, status } = req.query;
+
+    const query = {};
+    if (mainCategory && mainCategory !== "all") {
+      query.mainCategory = mainCategory;
+    }
+    if (status === "active") {
+      query.isActive = true;
+    } else if (status === "inactive") {
+      query.isActive = false;
+    }
+
+    if (search) {
+      const searchRegex = new RegExp(search.trim(), "i");
+      query.$or = [
+        { mainCategory: searchRegex },
+        { subCategory: searchRegex },
+        { subSubCategory: searchRegex },
+      ];
+    }
+
+    const categories = await Category.find(query).sort({ mainCategory: 1, subCategory: 1, subSubCategory: 1 });
+
+    const allMainCategories = await Category.distinct("mainCategory");
+    const totalCategories = await Category.countDocuments();
+    const activeCategories = await Category.countDocuments({ isActive: true });
+    const inactiveCategories = await Category.countDocuments({ isActive: false });
+
+    // Product counts per category hierarchy
+    const productCounts = await Product.aggregate([
+      {
+        $group: {
+          _id: {
+            main: "$mainCategory",
+            sub: "$subCategory",
+            subsub: "$subSubCategory",
+          },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    const countMap = {};
+    productCounts.forEach((item) => {
+      if (item._id && item._id.main && item._id.sub && item._id.subsub) {
+        const key = `${item._id.main}|${item._id.sub}|${item._id.subsub}`;
+        countMap[key] = item.count;
+      }
+    });
+
+    const enrichedCategories = categories.map((cat) => {
+      const key = `${cat.mainCategory}|${cat.subCategory}|${cat.subSubCategory}`;
+      return {
+        ...cat.toObject(),
+        productCount: countMap[key] || 0,
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      categories: enrichedCategories,
+      stats: {
+        total: totalCategories,
+        active: activeCategories,
+        inactive: inactiveCategories,
+        mainCategoriesCount: allMainCategories.length,
+      },
+      mainCategories: allMainCategories,
+    });
+  } catch (error) {
+    console.error("Get admin categories error:", error);
+    res.status(500).json({ success: false, message: "Server error fetching categories" });
+  }
+};
+
+// 2. CREATE CATEGORY
+export const createAdminCategory = async (req, res) => {
+  try {
+    const { mainCategory, subCategory, subSubCategory, isActive } = req.body;
+
+    if (!mainCategory || !subCategory || !subSubCategory) {
+      return res.status(400).json({
+        success: false,
+        message: "Main Category, Sub-Category, and Sub-Sub-Category are all required.",
+      });
+    }
+
+    const trimmedMain = mainCategory.trim();
+    const trimmedSub = subCategory.trim();
+    const trimmedSubSub = subSubCategory.trim();
+
+    const existing = await Category.findOne({
+      mainCategory: { $regex: new RegExp(`^${trimmedMain}$`, "i") },
+      subCategory: { $regex: new RegExp(`^${trimmedSub}$`, "i") },
+      subSubCategory: { $regex: new RegExp(`^${trimmedSubSub}$`, "i") },
+    });
+
+    if (existing) {
+      return res.status(400).json({
+        success: false,
+        message: "This category hierarchy already exists in the system.",
+      });
+    }
+
+    const newCategory = await Category.create({
+      mainCategory: trimmedMain,
+      subCategory: trimmedSub,
+      subSubCategory: trimmedSubSub,
+      isActive: isActive !== undefined ? isActive : true,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Category created successfully",
+      category: newCategory,
+    });
+  } catch (error) {
+    console.error("Create admin category error:", error);
+    res.status(500).json({ success: false, message: "Server error creating category" });
+  }
+};
+
+// 3. UPDATE CATEGORY
+export const updateAdminCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { mainCategory, subCategory, subSubCategory, isActive } = req.body;
+
+    const category = await Category.findById(id);
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    if (mainCategory) category.mainCategory = mainCategory.trim();
+    if (subCategory) category.subCategory = subCategory.trim();
+    if (subSubCategory) category.subSubCategory = subSubCategory.trim();
+    if (isActive !== undefined) category.isActive = isActive;
+
+    await category.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Category updated successfully",
+      category,
+    });
+  } catch (error) {
+    console.error("Update admin category error:", error);
+    res.status(500).json({ success: false, message: "Server error updating category" });
+  }
+};
+
+// 4. DELETE CATEGORY
+export const deleteAdminCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const category = await Category.findById(id);
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: "Category not found",
+      });
+    }
+
+    const productsInCat = await Product.countDocuments({
+      mainCategory: category.mainCategory,
+      subCategory: category.subCategory,
+      subSubCategory: category.subSubCategory,
+    });
+
+    if (productsInCat > 0 && req.query.force !== "true") {
+      return res.status(400).json({
+        success: false,
+        hasProducts: true,
+        productCount: productsInCat,
+        message: `Cannot delete: ${productsInCat} product(s) are currently categorized under this hierarchy. Please re-assign or delete those products first.`,
+      });
+    }
+
+    await Category.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Category deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete admin category error:", error);
+    res.status(500).json({ success: false, message: "Server error deleting category" });
+  }
+};
+
+// ==========================================================
+// PRODUCTS MANAGEMENT (Admin)
+// ==========================================================
+
+// 1. GET ALL PRODUCTS ACROSS ALL SELLERS
+export const getAdminProducts = async (req, res) => {
+  try {
+    const { search, category, availability, stockStatus, page = 1, limit = 100 } = req.query;
+
+    const query = {};
+
+    if (category && category !== "all") {
+      query.mainCategory = category;
+    }
+
+    if (availability === "available") {
+      query.isAvailable = true;
+    } else if (availability === "unavailable") {
+      query.isAvailable = false;
+    }
+
+    if (stockStatus === "out_of_stock") {
+      query.stock = 0;
+    } else if (stockStatus === "low_stock") {
+      query.stock = { $gt: 0, $lte: 5 };
+    } else if (stockStatus === "in_stock") {
+      query.stock = { $gt: 5 };
+    }
+
+    if (search) {
+      const searchRegex = new RegExp(search.trim(), "i");
+      const matchedSellers = await Seller.find({
+        $or: [{ shopName: searchRegex }, { name: searchRegex }, { email: searchRegex }],
+      }).select("_id");
+      const sellerIds = matchedSellers.map((s) => s._id);
+
+      query.$or = [
+        { title: searchRegex },
+        { description: searchRegex },
+        { subCategory: searchRegex },
+        { subSubCategory: searchRegex },
+        { seller: { $in: sellerIds } },
+      ];
+    }
+
+    const totalProducts = await Product.countDocuments(query);
+    const products = await Product.find(query)
+      .populate("seller", "_id shopName name email mobile isApproved isBanned")
+      .sort({ createdAt: -1 })
+      .skip((Number(page) - 1) * Number(limit))
+      .limit(Number(limit));
+
+    const totalCatalog = await Product.countDocuments();
+    const liveAvailable = await Product.countDocuments({ isAvailable: true });
+    const outOfStockCount = await Product.countDocuments({ stock: 0 });
+    const lowStockCount = await Product.countDocuments({ stock: { $gt: 0, $lte: 5 } });
+    const distinctSellers = await Product.distinct("seller");
+    const allMainCategories = await Category.distinct("mainCategory");
+
+    res.status(200).json({
+      success: true,
+      products,
+      total: totalProducts,
+      page: Number(page),
+      totalPages: Math.ceil(totalProducts / Number(limit)) || 1,
+      stats: {
+        total: totalCatalog,
+        live: liveAvailable,
+        outOfStock: outOfStockCount,
+        lowStock: lowStockCount,
+        totalSellers: distinctSellers.length,
+      },
+      categories: allMainCategories,
+    });
+  } catch (error) {
+    console.error("Get admin products error:", error);
+    res.status(500).json({ success: false, message: "Server error fetching products" });
+  }
+};
+
+// 2. GET PRODUCT DETAILS BY ID
+export const getAdminProductDetails = async (req, res) => {
+  try {
+    const { productId } = req.params;
+
+    const product = await Product.findById(productId).populate(
+      "seller",
+      "_id shopName name email mobile address isApproved isBanned createdAt"
+    );
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    const orderCount = await Order.countDocuments({
+      "childOrders.items.productId": productId,
+    });
+
+    res.status(200).json({
+      success: true,
+      product: {
+        ...product.toObject(),
+        orderCount,
+      },
+    });
+  } catch (error) {
+    console.error("Get admin product details error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// 3. TOGGLE PRODUCT AVAILABILITY / RESTRICTION
+export const toggleAdminProductAvailability = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isAvailable } = req.body;
+
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    product.isAvailable = isAvailable !== undefined ? isAvailable : !product.isAvailable;
+    await product.save();
+
+    res.status(200).json({
+      success: true,
+      message: `Product is now ${product.isAvailable ? "Active (Live on Store)" : "Restricted (Hidden from Store)"}`,
+      product,
+    });
+  } catch (error) {
+    console.error("Toggle admin product error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// 4. DELETE PRODUCT BY ADMIN
+export const deleteAdminProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    await Product.findByIdAndDelete(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Product deleted from catalog successfully",
+    });
+  } catch (error) {
+    console.error("Delete admin product error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };

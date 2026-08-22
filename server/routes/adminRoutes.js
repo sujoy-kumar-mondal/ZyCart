@@ -22,6 +22,14 @@ import {
   createAdminAccount,
   updateAdminAccount,
   deleteAdminAccount,
+  getAdminCategories,
+  createAdminCategory,
+  updateAdminCategory,
+  deleteAdminCategory,
+  getAdminProducts,
+  getAdminProductDetails,
+  toggleAdminProductAvailability,
+  deleteAdminProduct,
 } from "../controllers/adminController.js";
 
 const router = express.Router();
@@ -129,33 +137,95 @@ router.patch(
 );
 
 // -------------------------
-// SUPER ADMIN: ADMIN MANAGEMENT
+// CATEGORIES MANAGEMENT
+// -------------------------
+router.get(
+  "/categories",
+  protectAdmin,
+  requirePermission("manage_categories"),
+  getAdminCategories
+);
+
+router.post(
+  "/categories",
+  protectAdmin,
+  requirePermission("manage_categories"),
+  createAdminCategory
+);
+
+router.put(
+  "/categories/:id",
+  protectAdmin,
+  requirePermission("manage_categories"),
+  updateAdminCategory
+);
+
+router.delete(
+  "/categories/:id",
+  protectAdmin,
+  requirePermission("manage_categories"),
+  deleteAdminCategory
+);
+
+// -------------------------
+// PRODUCTS MANAGEMENT
+// -------------------------
+router.get(
+  "/products",
+  protectAdmin,
+  requirePermission("manage_products"),
+  getAdminProducts
+);
+
+router.get(
+  "/products/:productId",
+  protectAdmin,
+  requirePermission("manage_products"),
+  getAdminProductDetails
+);
+
+router.patch(
+  "/products/status/:id",
+  protectAdmin,
+  requirePermission("manage_products"),
+  toggleAdminProductAvailability
+);
+
+router.delete(
+  "/products/:id",
+  protectAdmin,
+  requirePermission("manage_products"),
+  deleteAdminProduct
+);
+
+// -------------------------
+// ADMIN / SUB-ADMIN MANAGEMENT
 // -------------------------
 router.get(
   "/admins",
   protectAdmin,
-  requireSuperAdmin,
+  requirePermission("manage_admins"),
   getAllAdmins
 );
 
 router.post(
   "/admins",
   protectAdmin,
-  requireSuperAdmin,
+  requirePermission("manage_admins"),
   createAdminAccount
 );
 
 router.put(
   "/admins/:id",
   protectAdmin,
-  requireSuperAdmin,
+  requirePermission("manage_admins"),
   updateAdminAccount
 );
 
 router.delete(
   "/admins/:id",
   protectAdmin,
-  requireSuperAdmin,
+  requirePermission("manage_admins"),
   deleteAdminAccount
 );
 

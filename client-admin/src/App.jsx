@@ -15,6 +15,8 @@ import AdminOrders from "./pages/admin/AdminOrders.jsx";
 import AdminOrderDetails from "./pages/admin/AdminOrderDetails.jsx";
 import AdminProfile from "./pages/admin/AdminProfile.jsx";
 import AdminManagement from "./pages/admin/AdminManagement.jsx";
+import AdminCategories from "./pages/admin/AdminCategories.jsx";
+import AdminProducts from "./pages/admin/AdminProducts.jsx";
 
 // Auth Pages
 import Home from "./pages/Home.jsx";
@@ -112,10 +114,19 @@ const App = () => {
           />
 
           <Route
-            path="/admin/profile"
+            path="/admin/products"
             element={
               <ProtectedRoute>
-                <AdminProfile />
+                <AdminProducts />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/categories"
+            element={
+              <ProtectedRoute>
+                <AdminCategories />
               </ProtectedRoute>
             }
           />
@@ -125,6 +136,15 @@ const App = () => {
             element={
               <ProtectedRoute>
                 <AdminManagement />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/profile"
+            element={
+              <ProtectedRoute>
+                <AdminProfile />
               </ProtectedRoute>
             }
           />
