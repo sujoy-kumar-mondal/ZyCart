@@ -707,6 +707,9 @@ export const getSellerOrders = async (req, res) => {
             packedAt: child.packedAt || order.packedAt,
             shippedAt: child.shippedAt || order.shippedAt,
             deliveredAt: child.deliveredAt || order.deliveredAt,
+            cancelledAt: child.cancelledAt || order.cancelledAt,
+            cancelledBy: child.cancelledBy || order.cancelledBy,
+            cancellationReason: child.cancellationReason || order.cancellationReason,
           });
         }
       });
@@ -867,6 +870,8 @@ export const getSellerOrderDetails = async (req, res) => {
         shippedAt: childOrder.shippedAt || order.shippedAt,
         deliveredAt: childOrder.deliveredAt || order.deliveredAt,
         cancelledAt: childOrder.cancelledAt || order.cancelledAt,
+        cancelledBy: childOrder.cancelledBy || order.cancelledBy,
+        cancellationReason: childOrder.cancellationReason || order.cancellationReason,
         createdAt: childOrder.createdAt || order.createdAt,
         seller: seller,
         userId: userData,
@@ -931,6 +936,88 @@ export const updateSellerProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Update seller profile error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// ----------------------------------------------------------
+// CANCEL SELLER CHILD ORDER (Merchant)
+// ----------------------------------------------------------
+export const cancelSellerChildOrder = async (req, res) => {
+  try {
+    const { id } = req.params; // child order ID
+    const { reason } = req.body;
+    const sellerId = req.user.userId;
+
+    if (!reason || !reason.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Cancellation reason is required.",
+      });
+    }
+
+    const order = await Order.findOne({
+      "childOrders._id": id,
+      "childOrders.seller": sellerId,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found or unauthorized.",
+      });
+    }
+
+    const child = order.childOrders.id(id);
+    if (!child) {
+      return res.status(404).json({
+        success: false,
+        message: "Package not found.",
+      });
+    }
+
+    if (["Shipped", "Delivered", "Cancelled"].includes(child.status)) {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot cancel a package that is already ${child.status}.`,
+      });
+    }
+
+    const now = new Date();
+    const cleanReason = reason.trim();
+
+    child.status = "Cancelled";
+    child.cancelledAt = now;
+    child.cancelledBy = "Seller";
+    child.cancellationReason = cleanReason;
+
+    // Restore inventory stock for this merchant package
+    for (const item of child.items) {
+      if (item.productId) {
+        await Product.findByIdAndUpdate(item.productId, {
+          $inc: { stock: item.qty },
+        });
+      }
+    }
+
+    // Check if ALL child orders are now cancelled
+    const allCancelled = order.childOrders.every((c) => c.status === "Cancelled");
+    if (allCancelled) {
+      order.status = "Cancelled";
+      if (!order.cancelledAt) order.cancelledAt = now;
+      if (!order.cancelledBy) order.cancelledBy = "Seller";
+      if (!order.cancellationReason) order.cancellationReason = cleanReason;
+    }
+
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Package cancelled successfully.",
+      order,
+    });
+  } catch (error) {
+    console.error("Cancel seller child order error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };

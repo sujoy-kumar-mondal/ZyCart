@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "../../utils/axiosInstance";
 import Loader from "../../components/Loader";
 import { useSettings } from "../../context/SettingsProvider";
-import { ArrowLeft, Calendar, MapPin, CheckCircle2, User, Phone, Mail, DollarSign } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, CheckCircle2, User, Phone, Mail, DollarSign, XCircle, AlertTriangle, X } from "lucide-react";
 import toast from "react-hot-toast";
 
 const SellerOrderDetails = () => {
@@ -16,6 +16,12 @@ const SellerOrderDetails = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+
+  // Cancellation State
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReasonPreset, setCancelReasonPreset] = useState("Item out of stock / damaged");
+  const [cancelReasonDetails, setCancelReasonDetails] = useState("");
+  const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
     fetchOrderDetails();
@@ -45,6 +51,34 @@ const SellerOrderDetails = () => {
       toast.error(error.response?.data?.message || "Failed to update order");
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const canCancel = order && !["Shipped", "Delivered", "Cancelled"].includes(order.status);
+
+  const handleCancelOrder = async (e) => {
+    e.preventDefault();
+    const finalReason = cancelReasonPreset === "Other"
+      ? cancelReasonDetails.trim()
+      : cancelReasonDetails.trim()
+      ? `${cancelReasonPreset}: ${cancelReasonDetails.trim()}`
+      : cancelReasonPreset;
+
+    if (!finalReason) {
+      toast.error("Please provide a reason for cancellation.");
+      return;
+    }
+
+    try {
+      setCancelling(true);
+      const res = await axios.post(`/seller/orders/cancel/${orderId}`, { reason: finalReason });
+      toast.success(res.data.message || "Package cancelled successfully!");
+      setShowCancelModal(false);
+      fetchOrderDetails();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to cancel package.");
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -80,11 +114,38 @@ const SellerOrderDetails = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="px-4 py-2 rounded-full text-xs font-black uppercase bg-blue-100 text-blue-800 border border-blue-200">
+            <span className={`px-4 py-2 rounded-full text-xs font-black uppercase border ${order?.status === "Cancelled" ? "bg-red-100 text-red-800 border-red-200" : "bg-blue-100 text-blue-800 border-blue-200"}`}>
               Status: {order?.status}
             </span>
           </div>
         </div>
+
+        {/* Cancellation Notice Banner */}
+        {order?.status === "Cancelled" && (
+          <div className="bg-red-50 border-2 border-red-200 rounded-3xl p-6 sm:p-8 space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-red-600 text-white flex items-center justify-center font-bold shrink-0">
+                <XCircle className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-red-950 text-base">
+                  Package Cancelled {order.cancelledBy ? `by ${order.cancelledBy === "User" ? "Customer" : order.cancelledBy === "Seller" ? "Merchant (You)" : "Platform Administration"}` : ""}
+                </h3>
+                <p className="text-xs text-red-600 font-semibold">
+                  Cancelled on {order.cancelledAt ? new Date(order.cancelledAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "N/A"}
+                </p>
+              </div>
+            </div>
+            {order.cancellationReason && (
+              <div className="pt-2 border-t border-red-200/60">
+                <p className="text-xs font-bold uppercase tracking-wider text-red-700">Reason for Cancellation:</p>
+                <p className="text-sm font-semibold text-red-950 mt-1 bg-white/80 p-3.5 rounded-2xl border border-red-200">
+                  "{order.cancellationReason}"
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* 2-Column Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -153,7 +214,15 @@ const SellerOrderDetails = () => {
               </h2>
 
               <div className="space-y-3">
-                {order?.status !== "Shipped" && order?.status !== "Delivered" ? (
+                {order?.status === "Cancelled" ? (
+                  <div className="p-4 rounded-2xl bg-red-50 border border-red-100 flex items-center gap-3">
+                    <XCircle className="w-6 h-6 text-red-600 shrink-0" />
+                    <div>
+                      <p className="font-black text-red-900 text-xs">Package Cancelled</p>
+                      <p className="text-[10px] text-red-700 font-semibold">No further fulfillment actions required.</p>
+                    </div>
+                  </div>
+                ) : order?.status !== "Shipped" && order?.status !== "Delivered" ? (
                   <>
                     {order?.status === "Confirmed" && (
                       <button
@@ -172,6 +241,15 @@ const SellerOrderDetails = () => {
                     >
                       {updating ? "Updating..." : "Mark as Shipped"}
                     </button>
+
+                    {canCancel && (
+                      <button
+                        onClick={() => setShowCancelModal(true)}
+                        className="w-full py-3 rounded-2xl font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 text-xs transition"
+                      >
+                        Cancel Package
+                      </button>
+                    )}
                   </>
                 ) : (
                   <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center gap-3">
@@ -272,8 +350,88 @@ const SellerOrderDetails = () => {
           </div>
 
         </div>
-
       </div>
+
+      {/* CANCEL PACKAGE MODAL */}
+      {showCancelModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 relative animate-in fade-in zoom-in duration-150">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center font-bold">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold text-[#1B2A41]">Cancel Merchant Package</h3>
+                  <p className="text-xs text-slate-500">Provide reason for cancelling #{order?.parentOrderId?.parentOrderNumber}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCancelOrder} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                  Select Cancellation Reason <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={cancelReasonPreset}
+                  onChange={(e) => setCancelReasonPreset(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                >
+                  <option value="Item out of stock / damaged">Item out of stock / damaged</option>
+                  <option value="Pricing or inventory discrepancy">Pricing or inventory discrepancy</option>
+                  <option value="Cannot fulfill delivery to recipient area">Cannot fulfill delivery to recipient area</option>
+                  <option value="Customer requested cancellation via seller chat">Customer requested cancellation via seller chat</option>
+                  <option value="Other">Other reason (specify below)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                  Merchant Note / Reason Details {cancelReasonPreset === "Other" ? <span className="text-red-500">*</span> : "(Optional)"}
+                </label>
+                <textarea
+                  rows={3}
+                  value={cancelReasonDetails}
+                  onChange={(e) => setCancelReasonDetails(e.target.value)}
+                  placeholder="Provide additional details regarding this package cancellation..."
+                  required={cancelReasonPreset === "Other"}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                />
+              </div>
+
+              <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-900 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <span>Cancelling this package will restore product inventory and notify both customer and platform administration.</span>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCancelModal(false)}
+                  disabled={cancelling}
+                  className="px-5 py-3 rounded-2xl font-bold text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition"
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  disabled={cancelling}
+                  className="px-6 py-3 rounded-2xl font-extrabold text-sm text-white bg-red-600 hover:bg-red-700 shadow-md shadow-red-500/20 transition flex items-center gap-2 disabled:opacity-50"
+                >
+                  {cancelling ? "Cancelling..." : "Confirm Package Cancellation"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

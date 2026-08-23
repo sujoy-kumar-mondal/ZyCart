@@ -66,6 +66,15 @@ const childOrderSchema = new mongoose.Schema(
     outForDeliveryAt: { type: Date, default: null },
     deliveredAt: { type: Date, default: null },
     cancelledAt: { type: Date, default: null },
+    cancelledBy: {
+      type: String,
+      enum: ["User", "Seller", "Admin", null],
+      default: null,
+    },
+    cancellationReason: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true }
 );
@@ -133,6 +142,15 @@ const parentOrderSchema = new mongoose.Schema(
     outForDeliveryAt: { type: Date, default: null },
     deliveredAt: { type: Date, default: null },
     cancelledAt: { type: Date, default: null },
+    cancelledBy: {
+      type: String,
+      enum: ["User", "Seller", "Admin", null],
+      default: null,
+    },
+    cancellationReason: {
+      type: String,
+      default: null,
+    },
 
     // Payment Information
     paymentMethod: {

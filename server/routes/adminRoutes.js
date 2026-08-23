@@ -16,6 +16,7 @@ import {
   getAdminUserDetails,
   getAdminSellerDetails,
   updateParentOrderStatus,
+  cancelAdminOrder,
   getAdminProfile,
   updateAdminProfile,
   getAllAdmins,
@@ -138,6 +139,13 @@ router.patch(
   protectAdmin,
   requirePermission("manage_orders"),
   updateParentOrderStatus
+);
+
+router.post(
+  "/orders/cancel/:orderId",
+  protectAdmin,
+  requirePermission("manage_orders"),
+  cancelAdminOrder
 );
 
 // -------------------------

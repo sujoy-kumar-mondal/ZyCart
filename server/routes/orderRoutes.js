@@ -5,6 +5,7 @@ import {
   getUserOrders,
   updateOrder,
   getOrderDetails,
+  cancelUserOrder,
 } from "../controllers/orderController.js";
 
 const router = express.Router();
@@ -23,5 +24,8 @@ router.get("/:orderId", protectUser, getOrderDetails);
 
 // UPDATE ORDER (User only - Payment Info)
 router.patch("/:orderId", protectUser, updateOrder);
+
+// CANCEL ORDER (User only)
+router.post("/:orderId/cancel", protectUser, cancelUserOrder);
 
 export default router;

@@ -81,6 +81,8 @@ const SellerOrders = () => {
         return <span className="px-3 py-1 rounded-full text-xs font-black bg-purple-100 text-purple-800">📦 Packed</span>;
       case "Delivered":
         return <span className="px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800">✓ Delivered</span>;
+      case "Cancelled":
+        return <span className="px-3 py-1 rounded-full text-xs font-black bg-red-100 text-red-800 border border-red-200">✕ Cancelled</span>;
       default:
         return <span className="px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-800">⏳ Confirmed</span>;
     }
@@ -149,6 +151,21 @@ const SellerOrders = () => {
                 ))}
               </div>
 
+              {/* Cancelled Notice */}
+              {order.status === "Cancelled" && (
+                <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <span className="font-bold text-red-800">
+                    Package Cancelled by {order.cancelledBy === "User" ? "Customer" : order.cancelledBy === "Seller" ? "Merchant (You)" : "Platform Admin"}:
+                    {order.cancellationReason && <span className="font-normal italic text-red-700 ml-1">"{order.cancellationReason}"</span>}
+                  </span>
+                  {order.cancelledAt && (
+                    <span className="text-[11px] text-red-500 font-semibold shrink-0">
+                      {new Date(order.cancelledAt).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
+                    </span>
+                  )}
+                </div>
+              )}
+
               {/* Order Total & Seller Cut */}
               <div className="pt-2 flex flex-wrap items-center justify-between gap-4">
                 <div>
@@ -160,7 +177,7 @@ const SellerOrders = () => {
                 </div>
 
                 {/* Status Action Buttons */}
-                {order.status !== "Shipped" && order.status !== "Delivered" && (
+                {order.status !== "Shipped" && order.status !== "Delivered" && order.status !== "Cancelled" && (
                   <div className="flex items-center gap-3">
                     {order.status === "Confirmed" && (
                       <button

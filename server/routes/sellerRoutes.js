@@ -13,6 +13,7 @@ import {
   getSellerOrders,
   getSellerOrderDetails,
   updateChildOrderStatus,
+  cancelSellerChildOrder,
   getSeller,
   getSellerProfile,
   updateSellerProfile,
@@ -108,6 +109,15 @@ router.patch(
   "/orders/status/:id",
   protectSeller,
   updateChildOrderStatus
+);
+
+// ----------------------------------------------
+// CANCEL CHILD ORDER (Merchant)
+// ----------------------------------------------
+router.post(
+  "/orders/cancel/:id",
+  protectSeller,
+  cancelSellerChildOrder
 );
 
 // ----------------------------------------------

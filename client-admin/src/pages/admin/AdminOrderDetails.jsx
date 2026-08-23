@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "../../utils/axiosInstance";
 import Loader from "../../components/Loader";
 import { useSettings } from "../../context/SettingsProvider";
-import { ArrowLeft, Calendar, MapPin, CreditCard, CheckCircle, TrendingUp, ShoppingBag, Package } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, CreditCard, CheckCircle, TrendingUp, ShoppingBag, Package, XCircle, AlertTriangle, X } from "lucide-react";
 import toast from "react-hot-toast";
 
 const AdminOrderDetails = () => {
@@ -16,6 +16,12 @@ const AdminOrderDetails = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+
+  // Cancellation State
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReasonPreset, setCancelReasonPreset] = useState("Fraudulent order or suspicious transaction");
+  const [cancelReasonDetails, setCancelReasonDetails] = useState("");
+  const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
     fetchOrderDetails();
@@ -45,6 +51,34 @@ const AdminOrderDetails = () => {
       toast.error(error.response?.data?.message || "Failed to update order");
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const canCancel = order && !["Delivered", "Cancelled"].includes(order.status);
+
+  const handleCancelOrder = async (e) => {
+    e.preventDefault();
+    const finalReason = cancelReasonPreset === "Other"
+      ? cancelReasonDetails.trim()
+      : cancelReasonDetails.trim()
+      ? `${cancelReasonPreset}: ${cancelReasonDetails.trim()}`
+      : cancelReasonPreset;
+
+    if (!finalReason) {
+      toast.error("Please provide an executive cancellation reason.");
+      return;
+    }
+
+    try {
+      setCancelling(true);
+      const res = await axios.post(`/admin/orders/cancel/${orderId}`, { reason: finalReason });
+      toast.success(res.data.message || "Order cancelled by Admin successfully!");
+      setShowCancelModal(false);
+      fetchOrderDetails();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to cancel order.");
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -81,7 +115,7 @@ const AdminOrderDetails = () => {
                   Order #{order.parentOrderNumber}
                 </h1>
                 <span className={`px-3 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                  order.status === "Delivered" ? "bg-emerald-100 text-emerald-800" : "bg-blue-100 text-blue-800"
+                  order.status === "Delivered" ? "bg-emerald-100 text-emerald-800" : order.status === "Cancelled" ? "bg-red-100 text-red-800 border border-red-200" : "bg-blue-100 text-blue-800"
                 }`}>
                   {order.status}
                 </span>
@@ -91,7 +125,43 @@ const AdminOrderDetails = () => {
               </p>
             </div>
           </div>
+
+          {canCancel && (
+            <button
+              onClick={() => setShowCancelModal(true)}
+              className="px-5 py-2.5 rounded-2xl bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 font-extrabold text-xs transition flex items-center gap-2"
+            >
+              <XCircle className="w-4 h-4" /> Cancel Order (Admin Override)
+            </button>
+          )}
         </div>
+
+        {/* Cancellation Notice Banner */}
+        {order.status === "Cancelled" && (
+          <div className="bg-red-50 border-2 border-red-200 rounded-3xl p-6 sm:p-8 space-y-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-red-600 text-white flex items-center justify-center font-bold shrink-0">
+                <XCircle className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-red-950 text-base">
+                  Order Cancelled {order.cancelledBy ? `by ${order.cancelledBy === "Admin" ? "Platform Administrator" : order.cancelledBy === "User" ? "Customer" : "Merchant / Seller"}` : ""}
+                </h3>
+                <p className="text-xs text-red-600 font-semibold">
+                  Cancelled on {order.cancelledAt ? new Date(order.cancelledAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "N/A"}
+                </p>
+              </div>
+            </div>
+            {order.cancellationReason && (
+              <div className="pt-2 border-t border-red-200/60">
+                <p className="text-xs font-bold uppercase tracking-wider text-red-700">Reason for Cancellation:</p>
+                <p className="text-sm font-semibold text-red-950 mt-1 bg-white/80 p-3.5 rounded-2xl border border-red-200">
+                  "{order.cancellationReason}"
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* 2-Column Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -211,24 +281,45 @@ const AdminOrderDetails = () => {
               </h2>
 
               <div className="space-y-3">
-                {order.status === "Shipped" && (
-                  <button
-                    onClick={() => updateOrderStatus("Out for Delivery")}
-                    disabled={updating}
-                    className="w-full py-4 rounded-2xl font-extrabold text-xs text-white bg-amber-500 hover:bg-amber-600 shadow-md transition disabled:opacity-50"
-                  >
-                    {updating ? "Updating..." : "Mark Out for Delivery"}
-                  </button>
-                )}
+                {order.status === "Cancelled" ? (
+                  <div className="p-4 rounded-2xl bg-red-50 border border-red-100 flex items-center gap-3">
+                    <XCircle className="w-6 h-6 text-red-600 shrink-0" />
+                    <div>
+                      <p className="font-black text-red-900 text-xs">Order Cancelled</p>
+                      <p className="text-[10px] text-red-700 font-semibold">Inventory restored to merchant stocks.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {order.status === "Shipped" && (
+                      <button
+                        onClick={() => updateOrderStatus("Out for Delivery")}
+                        disabled={updating}
+                        className="w-full py-4 rounded-2xl font-extrabold text-xs text-white bg-amber-500 hover:bg-amber-600 shadow-md transition disabled:opacity-50"
+                      >
+                        {updating ? "Updating..." : "Mark Out for Delivery"}
+                      </button>
+                    )}
 
-                {order.status === "Out for Delivery" && (
-                  <button
-                    onClick={() => updateOrderStatus("Delivered")}
-                    disabled={updating}
-                    className="w-full py-4 rounded-2xl font-extrabold text-xs text-white bg-emerald-600 hover:bg-emerald-700 shadow-md transition disabled:opacity-50"
-                  >
-                    {updating ? "Updating..." : "Mark as Delivered"}
-                  </button>
+                    {order.status === "Out for Delivery" && (
+                      <button
+                        onClick={() => updateOrderStatus("Delivered")}
+                        disabled={updating}
+                        className="w-full py-4 rounded-2xl font-extrabold text-xs text-white bg-emerald-600 hover:bg-emerald-700 shadow-md transition disabled:opacity-50"
+                      >
+                        {updating ? "Updating..." : "Mark as Delivered"}
+                      </button>
+                    )}
+
+                    {canCancel && (
+                      <button
+                        onClick={() => setShowCancelModal(true)}
+                        className="w-full py-3.5 rounded-2xl font-extrabold text-xs text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 transition"
+                      >
+                        Cancel Order (Override)
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -273,8 +364,89 @@ const AdminOrderDetails = () => {
           </div>
 
         </div>
-
       </div>
+
+      {/* CANCEL ORDER ADMIN MODAL */}
+      {showCancelModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 relative animate-in fade-in zoom-in duration-150">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center font-bold">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold text-[#1B2A41]">Admin Order Cancellation</h3>
+                  <p className="text-xs text-slate-500">Provide executive audit reason to cancel #{order.parentOrderNumber}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCancelOrder} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                  Select Administrative Reason <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={cancelReasonPreset}
+                  onChange={(e) => setCancelReasonPreset(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                >
+                  <option value="Fraudulent order or suspicious transaction">Fraudulent order or suspicious transaction</option>
+                  <option value="Customer requested cancellation via executive support">Customer requested cancellation via executive support</option>
+                  <option value="Merchant unable to fulfill inventory policy">Merchant unable to fulfill inventory policy</option>
+                  <option value="Unserviceable delivery geography">Unserviceable delivery geography</option>
+                  <option value="Payment gateway dispute / chargeback risk">Payment gateway dispute / chargeback risk</option>
+                  <option value="Other">Other executive reason (specify below)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                  Audit Notes / Reason Details {cancelReasonPreset === "Other" ? <span className="text-red-500">*</span> : "(Optional)"}
+                </label>
+                <textarea
+                  rows={3}
+                  value={cancelReasonDetails}
+                  onChange={(e) => setCancelReasonDetails(e.target.value)}
+                  placeholder="Provide audit explanation for this cancellation override..."
+                  required={cancelReasonPreset === "Other"}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                />
+              </div>
+
+              <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-900 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <span>This will cancel all merchant sub-packages, restore catalog stock, and record an immutable audit log.</span>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCancelModal(false)}
+                  disabled={cancelling}
+                  className="px-5 py-3 rounded-2xl font-bold text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition"
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  disabled={cancelling}
+                  className="px-6 py-3 rounded-2xl font-extrabold text-sm text-white bg-red-600 hover:bg-red-700 shadow-md shadow-red-500/20 transition flex items-center gap-2 disabled:opacity-50"
+                >
+                  {cancelling ? "Cancelling..." : "Confirm Executive Cancellation"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

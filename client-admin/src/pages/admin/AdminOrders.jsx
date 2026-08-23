@@ -112,6 +112,8 @@ const AdminOrders = () => {
                           ? "bg-emerald-100 text-emerald-800"
                           : order.status === "Out for Delivery"
                           ? "bg-amber-100 text-amber-800"
+                          : order.status === "Cancelled"
+                          ? "bg-red-100 text-red-800 border border-red-200"
                           : "bg-blue-100 text-blue-800"
                       }`}>
                         {order.status}
@@ -131,6 +133,21 @@ const AdminOrders = () => {
                     </button>
                   </div>
                 </div>
+
+                {/* Cancelled Notice */}
+                {order.status === "Cancelled" && (
+                  <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <span className="font-bold text-red-800">
+                      Order Cancelled by {order.cancelledBy === "Admin" ? "Platform Administrator" : order.cancelledBy === "User" ? "Customer" : "Merchant / Seller"}:
+                      {order.cancellationReason && <span className="font-normal italic text-red-700 ml-1">"{order.cancellationReason}"</span>}
+                    </span>
+                    {order.cancelledAt && (
+                      <span className="text-[11px] text-red-500 font-semibold shrink-0">
+                        {new Date(order.cancelledAt).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
+                      </span>
+                    )}
+                  </div>
+                )}
 
                 {/* Sub Packages */}
                 <div className="space-y-3">

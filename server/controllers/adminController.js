@@ -271,6 +271,70 @@ export const updateParentOrderStatus = async (req, res) => {
 };
 
 // ----------------------------------------------------------
+// CANCEL ORDER (Admin Override)
+// ----------------------------------------------------------
+export const cancelAdminOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { reason } = req.body;
+
+    if (!reason || !reason.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Cancellation reason is required.",
+      });
+    }
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found.",
+      });
+    }
+
+    const now = new Date();
+    const cleanReason = reason.trim();
+
+    order.status = "Cancelled";
+    order.cancelledAt = now;
+    order.cancelledBy = "Admin";
+    order.cancellationReason = cleanReason;
+
+    // Cancel all child orders and restore inventory stock
+    for (const child of order.childOrders) {
+      if (child.status !== "Cancelled") {
+        child.status = "Cancelled";
+        child.cancelledAt = now;
+        child.cancelledBy = "Admin";
+        child.cancellationReason = cleanReason;
+
+        // Restore stock
+        for (const item of child.items) {
+          if (item.productId) {
+            await Product.findByIdAndUpdate(item.productId, {
+              $inc: { stock: item.qty },
+            });
+          }
+        }
+      }
+    }
+
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Order cancelled by Admin successfully.",
+      order,
+    });
+  } catch (error) {
+    console.error("Cancel admin order error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// ----------------------------------------------------------
 // GET ADMIN PROFILE
 // ----------------------------------------------------------
 export const getAdminProfile = async (req, res) => {

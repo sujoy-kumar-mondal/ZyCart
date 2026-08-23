@@ -291,3 +291,83 @@ export const getOrderDetails = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+// ------------------------------------------------------------
+// CANCEL USER ORDER (Customer)
+// ------------------------------------------------------------
+export const cancelUserOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { reason } = req.body;
+
+    if (!reason || !reason.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Cancellation reason is required.",
+      });
+    }
+
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found.",
+      });
+    }
+
+    // Verify user owns this order
+    if (order.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized to cancel this order.",
+      });
+    }
+
+    // Check if order can be cancelled
+    if (["Shipped", "Out for Delivery", "Delivered", "Cancelled"].includes(order.status)) {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot cancel an order that is already ${order.status}.`,
+      });
+    }
+
+    const now = new Date();
+    const cleanReason = reason.trim();
+
+    order.status = "Cancelled";
+    order.cancelledAt = now;
+    order.cancelledBy = "User";
+    order.cancellationReason = cleanReason;
+
+    // Cancel all child orders and restore inventory
+    for (const child of order.childOrders) {
+      if (child.status !== "Cancelled") {
+        child.status = "Cancelled";
+        child.cancelledAt = now;
+        child.cancelledBy = "User";
+        child.cancellationReason = cleanReason;
+
+        // Restore stock
+        for (const item of child.items) {
+          if (item.productId) {
+            await Product.findByIdAndUpdate(item.productId, {
+              $inc: { stock: item.qty },
+            });
+          }
+        }
+      }
+    }
+
+    await order.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Order cancelled successfully.",
+      order,
+    });
+  } catch (error) {
+    console.error("Cancel user order error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};

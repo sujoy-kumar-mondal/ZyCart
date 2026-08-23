@@ -68,6 +68,8 @@ const UserOrders = () => {
         return <span className="px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-800">🚚 Out for Delivery</span>;
       case "Shipped":
         return <span className="px-3 py-1 rounded-full text-xs font-black bg-blue-100 text-blue-800">✈️ Shipped</span>;
+      case "Cancelled":
+        return <span className="px-3 py-1 rounded-full text-xs font-black bg-red-100 text-red-800">✕ Cancelled</span>;
       default:
         return <span className="px-3 py-1 rounded-full text-xs font-black bg-slate-100 text-slate-800">⏳ Processing</span>;
     }
@@ -94,6 +96,21 @@ const UserOrders = () => {
               key={order._id}
               className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6"
             >
+              {/* Cancelled notice banner */}
+              {order.status === "Cancelled" && (
+                <div className="p-3.5 rounded-2xl bg-red-50/80 border border-red-200 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <span className="font-bold text-red-800">
+                    Cancelled by {order.cancelledBy === "User" ? "Customer (You)" : order.cancelledBy === "Seller" ? "Seller / Merchant" : "Platform Admin"}:
+                    {order.cancellationReason && <span className="font-normal italic text-red-700 ml-1">"{order.cancellationReason}"</span>}
+                  </span>
+                  {order.cancelledAt && (
+                    <span className="text-[11px] text-red-500 font-semibold shrink-0">
+                      {new Date(order.cancelledAt).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
+                    </span>
+                  )}
+                </div>
+              )}
+
               {/* Order Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                 <div className="space-y-1">

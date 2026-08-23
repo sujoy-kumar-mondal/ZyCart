@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "../utils/axiosInstance";
 import Loader from "../components/Loader";
 import { useSettings } from "../context/SettingsProvider";
-import { ArrowLeft, Calendar, MapPin, CreditCard, CheckCircle, Clock } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, CreditCard, CheckCircle, Clock, XCircle, AlertTriangle, X } from "lucide-react";
 import toast from "react-hot-toast";
 
 const UserOrderDetails = () => {
@@ -14,6 +14,12 @@ const UserOrderDetails = () => {
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Cancellation State
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReasonPreset, setCancelReasonPreset] = useState("Order placed by mistake");
+  const [cancelReasonDetails, setCancelReasonDetails] = useState("");
+  const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
     fetchOrderDetails();
@@ -30,6 +36,34 @@ const UserOrderDetails = () => {
       navigate("/my-orders");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const canCancel = order && !["Shipped", "Out for Delivery", "Delivered", "Cancelled"].includes(order.status);
+
+  const handleCancelOrder = async (e) => {
+    e.preventDefault();
+    const finalReason = cancelReasonPreset === "Other"
+      ? cancelReasonDetails.trim()
+      : cancelReasonDetails.trim()
+      ? `${cancelReasonPreset}: ${cancelReasonDetails.trim()}`
+      : cancelReasonPreset;
+
+    if (!finalReason) {
+      toast.error("Please provide a reason for cancellation.");
+      return;
+    }
+
+    try {
+      setCancelling(true);
+      const res = await axios.post(`/orders/${orderId}/cancel`, { reason: finalReason });
+      toast.success(res.data.message || "Order cancelled successfully!");
+      setShowCancelModal(false);
+      fetchOrderDetails();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to cancel order.");
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -56,6 +90,7 @@ const UserOrderDetails = () => {
       Shipped: "bg-purple-100 text-purple-800",
       "Out for Delivery": "bg-orange-100 text-orange-800",
       Delivered: "bg-green-100 text-green-800",
+      Cancelled: "bg-red-100 text-red-800",
     };
     return colors[status] || "bg-gray-100 text-gray-800";
   };
@@ -72,18 +107,57 @@ const UserOrderDetails = () => {
   return (
     <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 py-16">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <button
-          onClick={() => navigate("/my-orders")}
-          className="p-2 hover:bg-gray-100 rounded-lg transition"
-        >
-          <ArrowLeft className="w-6 h-6 text-gray-600" />
-        </button>
-        <div>
-          <h1 className="text-3xl font-bold text-[#1B2A41]">Order Details</h1>
-          <p className="text-gray-600">Order #{order?.parentOrderNumber}</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate("/my-orders")}
+            className="p-2 hover:bg-gray-100 rounded-lg transition"
+          >
+            <ArrowLeft className="w-6 h-6 text-gray-600" />
+          </button>
+          <div>
+            <h1 className="text-3xl font-bold text-[#1B2A41]">Order Details</h1>
+            <p className="text-gray-600">Order #{order?.parentOrderNumber}</p>
+          </div>
         </div>
+
+        {canCancel && (
+          <button
+            onClick={() => setShowCancelModal(true)}
+            className="px-5 py-2.5 rounded-2xl bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 font-extrabold text-sm transition flex items-center gap-2"
+          >
+            <XCircle className="w-4 h-4" /> Cancel Order
+          </button>
+        )}
       </div>
+
+      {/* Cancellation Notice Banner */}
+      {order?.status === "Cancelled" && (
+        <div className="p-6 mb-8 bg-red-50 border-2 border-red-200 rounded-3xl space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-red-500 text-white flex items-center justify-center font-bold shrink-0">
+              <XCircle className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-extrabold text-red-950 text-base">
+                Order Cancelled {order.cancelledBy ? `by ${order.cancelledBy === "User" ? "Customer (You)" : order.cancelledBy === "Seller" ? "Merchant / Seller" : "Platform Administration"}` : ""}
+              </h3>
+              <p className="text-xs text-red-600 font-semibold">
+                Cancelled on {order.cancelledAt ? new Date(order.cancelledAt).toLocaleString([], { dateStyle: "medium", timeStyle: "short" }) : "N/A"}
+              </p>
+            </div>
+          </div>
+
+          {order.cancellationReason && (
+            <div className="pt-2 border-t border-red-200/60">
+              <p className="text-xs font-bold uppercase tracking-wider text-red-700">Reason for Cancellation:</p>
+              <p className="text-sm font-semibold text-red-950 mt-1 bg-white/80 p-3.5 rounded-2xl border border-red-200">
+                "{order.cancellationReason}"
+              </p>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content */}
@@ -329,6 +403,88 @@ const UserOrderDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* CANCEL ORDER MODAL */}
+      {showCancelModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 relative animate-in fade-in zoom-in duration-150">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center font-bold">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-extrabold text-[#1B2A41]">Cancel Order</h3>
+                  <p className="text-xs text-slate-500">Please provide a reason to cancel #{order?.parentOrderNumber}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCancelOrder} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                  Select Reason <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={cancelReasonPreset}
+                  onChange={(e) => setCancelReasonPreset(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                >
+                  <option value="Order placed by mistake">Order placed by mistake</option>
+                  <option value="Found a better price elsewhere">Found a better price elsewhere</option>
+                  <option value="Need to change shipping address">Need to change shipping address</option>
+                  <option value="Delivery timeline is too long">Delivery timeline is too long</option>
+                  <option value="Purchased alternative product">Purchased alternative product</option>
+                  <option value="Other">Other reason (specify below)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+                  Additional Details {cancelReasonPreset === "Other" ? <span className="text-red-500">*</span> : "(Optional)"}
+                </label>
+                <textarea
+                  rows={3}
+                  value={cancelReasonDetails}
+                  onChange={(e) => setCancelReasonDetails(e.target.value)}
+                  placeholder="Explain why you wish to cancel this order..."
+                  required={cancelReasonPreset === "Other"}
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                />
+              </div>
+
+              <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-900 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <span>Cancelling will stop package processing immediately and restore merchant inventory.</span>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCancelModal(false)}
+                  disabled={cancelling}
+                  className="px-5 py-3 rounded-2xl font-bold text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition"
+                >
+                  Keep Order
+                </button>
+                <button
+                  type="submit"
+                  disabled={cancelling}
+                  className="px-6 py-3 rounded-2xl font-extrabold text-sm text-white bg-red-600 hover:bg-red-700 shadow-md shadow-red-500/20 transition flex items-center gap-2 disabled:opacity-50"
+                >
+                  {cancelling ? "Cancelling..." : "Confirm Cancellation"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
