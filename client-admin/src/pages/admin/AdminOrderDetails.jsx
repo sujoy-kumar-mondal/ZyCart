@@ -59,7 +59,7 @@ const AdminOrderDetails = () => {
   if (!order) return null;
 
   const totalRevenue = order.totalAmount || 0;
-  const platformFee = totalRevenue * (commissionRate / 100);
+  const platformFee = order.childOrders?.reduce((sum, c) => sum + (c.commissionAmount !== undefined && c.commissionAmount !== null ? c.commissionAmount : Math.round((c.amount * (c.commissionRate ?? commissionRate)) / 100)), 0) || Math.round((totalRevenue * commissionRate) / 100);
   const sellerRevenue = totalRevenue - platformFee;
 
   return (
@@ -134,9 +134,19 @@ const AdminOrderDetails = () => {
                       ))}
                     </div>
 
-                    <div className="border-t border-slate-200/60 pt-2 flex justify-between font-black text-xs text-slate-900">
-                      <span>Package Amount:</span>
-                      <span>{currency}{child.amount?.toLocaleString()}</span>
+                    <div className="border-t border-slate-200/60 pt-2 flex flex-col gap-1 text-xs">
+                      <div className="flex justify-between font-black text-slate-900">
+                        <span>Package Amount:</span>
+                        <span>{currency}{child.amount?.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between font-bold text-emerald-600 text-[11px]">
+                        <span>Platform Commission ({child.commissionRate ?? commissionRate}%):</span>
+                        <span>{currency}{(child.commissionAmount !== undefined && child.commissionAmount !== null ? child.commissionAmount : Math.round((child.amount * (child.commissionRate ?? commissionRate)) / 100))?.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between font-bold text-purple-600 text-[11px]">
+                        <span>Net Merchant Payout:</span>
+                        <span>{currency}{(child.sellerEarnings !== undefined && child.sellerEarnings !== null ? child.sellerEarnings : (child.amount - (child.commissionAmount !== undefined && child.commissionAmount !== null ? child.commissionAmount : Math.round((child.amount * (child.commissionRate ?? commissionRate)) / 100))))?.toLocaleString()}</span>
+                      </div>
                     </div>
                   </div>
                 ))}

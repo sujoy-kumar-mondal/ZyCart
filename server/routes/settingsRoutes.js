@@ -19,6 +19,8 @@ router.get(["/", "/public"], async (req, res) => {
         supportEmail: settings.supportEmail || "support@zycart.com",
         supportPhone: settings.supportPhone || "+91 98765 43210",
         currencySymbol: settings.currencySymbol || "₹",
+        address: settings.address || "123 Tech Street, Innovation Hub\nNew Delhi, Delhi 110001\nIndia",
+        businessHours: settings.businessHours || "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed",
         announcementBanner: settings.announcementBanner || {
           enabled: false,
           message: "Welcome to ZyCart! Enjoy free shipping on orders above ₹499.",

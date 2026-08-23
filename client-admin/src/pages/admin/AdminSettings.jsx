@@ -31,6 +31,8 @@ const DEFAULT_SETTINGS = {
   supportEmail: "support@zycart.com",
   supportPhone: "+91 98765 43210",
   currencySymbol: "₹",
+  address: "123 Tech Street, Innovation Hub\nNew Delhi, Delhi 110001\nIndia",
+  businessHours: "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed",
   announcementBanner: {
     enabled: false,
     message: "Welcome to ZyCart! Enjoy free shipping on orders above ₹499.",
@@ -299,6 +301,32 @@ const AdminSettings = () => {
                     value={settings.currencySymbol}
                     onChange={(e) => setSettings({ ...settings, currencySymbol: e.target.value })}
                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                    Headquarters / Physical Address
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={settings.address}
+                    onChange={(e) => setSettings({ ...settings, address: e.target.value })}
+                    placeholder="Enter platform address (displayed on Contact Us & Footer)..."
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition resize-none"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+                    Customer Support &amp; Business Operating Hours
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={settings.businessHours}
+                    onChange={(e) => setSettings({ ...settings, businessHours: e.target.value })}
+                    placeholder="Enter operating hours (e.g. Monday - Friday: 9:00 AM - 6:00 PM)..."
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition resize-none"
                   />
                 </div>
               </div>

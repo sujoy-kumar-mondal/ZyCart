@@ -15,11 +15,16 @@ import {
   TrendingUp
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useSettings } from "../context/SettingsProvider";
 
 const Home = () => {
+  const { settings } = useSettings();
+  const brandName = settings?.platformName || "ZyCart";
+  const tagline = settings?.tagline || "Easy Shop, Easy Life";
+
   useEffect(() => {
-    document.title = "ZyCart — Easy Shop, Easy Life";
-  }, []);
+    document.title = `${brandName} — ${tagline}`;
+  }, [brandName, tagline]);
 
   const features = [
     {
@@ -88,15 +93,20 @@ const Home = () => {
               transition={{ duration: 0.7 }}
               className="lg:col-span-7 space-y-6"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/80 border border-blue-200/80 text-blue-900 text-xs font-bold uppercase tracking-wider">
-                <Sparkles className="w-4 h-4 text-blue-600 animate-spin" /> Next-Gen Multi-Vendor Shopping
-              </div>
 
               <h1 className="text-4xl sm:text-6xl font-black text-[#1B2A41] leading-tight">
-                Easy Shop,{" "}
-                <span className="bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
-                  Easy Life
-                </span>
+                {tagline.includes(",") ? (
+                  <>
+                    {tagline.split(",")[0]},{" "}
+                    <span className="bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
+                      {tagline.split(",").slice(1).join(",")}
+                    </span>
+                  </>
+                ) : (
+                  <span className="bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
+                    {tagline}
+                  </span>
+                )}
               </h1>
 
               <p className="text-lg sm:text-xl text-slate-600 font-normal leading-relaxed max-w-2xl">
@@ -206,7 +216,7 @@ const Home = () => {
       {/* WHY SHOP WITH US */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="text-center space-y-3 max-w-2xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1B2A41]">Why Shop With ZyCart?</h2>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1B2A41]">Why Shop With {brandName}?</h2>
           <p className="text-slate-600 text-sm sm:text-base">
             Designed for buyers who value transparent pricing, verified merchants, and quick delivery.
           </p>

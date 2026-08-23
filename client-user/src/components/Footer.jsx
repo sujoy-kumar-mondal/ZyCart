@@ -20,7 +20,7 @@ const Footer = () => {
             </div>
             <div>
               <h4 className="font-extrabold text-white text-sm">Free Delivery</h4>
-              <p className="text-xs text-slate-400">On orders above ₹{settings.freeDeliveryThreshold ?? 499}</p>
+              <p className="text-xs text-slate-400">On orders above {settings.currencySymbol || "₹"}{settings.freeDeliveryThreshold ?? 499}</p>
             </div>
           </div>
 
@@ -124,7 +124,7 @@ const Footer = () => {
                 <Link to="/contact" className="hover:text-blue-400 transition">Help &amp; Support</Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-blue-400 transition">About ZyCart</Link>
+                <Link to="/about" className="hover:text-blue-400 transition">About {settings.platformName || "ZyCart"}</Link>
               </li>
             </ul>
           </div>

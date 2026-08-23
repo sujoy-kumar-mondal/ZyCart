@@ -57,8 +57,8 @@ const Navbar = () => {
               <Store className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-xl font-black text-[#1B2A41] tracking-tight">ZyCart</span>
-              <span className="text-xs font-extrabold text-[#3F51F4] block -mt-1 uppercase tracking-wider">Merchant Central</span>
+              <span className="text-xl font-black text-[#1B2A41] tracking-tight">{settings.platformName || "ZyCart"}</span>
+              <span className="text-[10px] font-black text-[#3F51F4] uppercase tracking-wider block -mt-1">Merchant Portal</span>
             </div>
           </Link>
 

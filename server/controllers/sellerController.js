@@ -683,14 +683,24 @@ export const getSellerOrders = async (req, res) => {
     // Filter only this seller's child orders
     const filtered = [];
 
+    const settings = await SystemSetting.findOne();
+    const defaultCommissionRate = settings?.platformCommissionRate ?? 5;
+
     orders.forEach((order) => {
       order.childOrders.forEach((child) => {
         if (child.seller.toString() === sellerId.toString()) {
+          const rate = child.commissionRate !== undefined && child.commissionRate !== null ? child.commissionRate : defaultCommissionRate;
+          const commAmt = child.commissionAmount !== undefined && child.commissionAmount !== null ? child.commissionAmount : Math.round((child.amount * rate) / 100);
+          const earnings = child.sellerEarnings !== undefined && child.sellerEarnings !== null ? child.sellerEarnings : (child.amount - commAmt);
+
           filtered.push({
             _id: child._id,
             parentOrderId: order,
             items: child.items,
             amount: child.amount,
+            commissionRate: rate,
+            commissionAmount: commAmt,
+            sellerEarnings: earnings,
             status: child.status,
             createdAt: child.createdAt || order.createdAt,
             placedAt: child.placedAt || order.placedAt || order.createdAt,
@@ -819,6 +829,12 @@ export const getSellerOrderDetails = async (req, res) => {
 
     console.log("Sending userData:", userData);
 
+    const settings = await SystemSetting.findOne();
+    const defaultCommissionRate = settings?.platformCommissionRate ?? 5;
+    const rate = childOrder.commissionRate !== undefined && childOrder.commissionRate !== null ? childOrder.commissionRate : defaultCommissionRate;
+    const commAmt = childOrder.commissionAmount !== undefined && childOrder.commissionAmount !== null ? childOrder.commissionAmount : Math.round((childOrder.amount * rate) / 100);
+    const earnings = childOrder.sellerEarnings !== undefined && childOrder.sellerEarnings !== null ? childOrder.sellerEarnings : (childOrder.amount - commAmt);
+
     res.status(200).json({
       success: true,
       order: {
@@ -841,6 +857,9 @@ export const getSellerOrderDetails = async (req, res) => {
         },
         items: childOrder.items,
         amount: childOrder.amount,
+        commissionRate: rate,
+        commissionAmount: commAmt,
+        sellerEarnings: earnings,
         status: childOrder.status,
         placedAt: childOrder.placedAt || order.placedAt || order.createdAt,
         confirmedAt: childOrder.confirmedAt || order.confirmedAt || order.createdAt,

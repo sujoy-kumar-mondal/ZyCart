@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../../utils/axiosInstance";
 import Loader from "../../components/Loader";
+import { useSettings } from "../../context/SettingsProvider";
 import { ArrowLeft, Calendar, MapPin, CheckCircle2, User, Phone, Mail, DollarSign } from "lucide-react";
 import toast from "react-hot-toast";
 
 const SellerOrderDetails = () => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
+  const brandName = settings?.platformName || "ZyCart";
+  const globalCommissionRate = settings?.platformCommissionRate ?? 5;
   const { orderId } = useParams();
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
@@ -21,7 +26,7 @@ const SellerOrderDetails = () => {
       setLoading(true);
       const res = await axios.get(`/seller/orders/${orderId}`);
       setOrder(res.data.order);
-      document.title = `Order Details #${res.data.order?.parentOrderId?.parentOrderNumber || ""} | ZyCart`;
+      document.title = `Order Details #${res.data.order?.parentOrderId?.parentOrderNumber || ""} | ${brandName} Merchant`;
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to load order");
       navigate("/seller/orders");
@@ -99,7 +104,7 @@ const SellerOrderDetails = () => {
                     <div className="space-y-1">
                       <h3 className="font-extrabold text-slate-900">{item.title}</h3>
                       <div className="flex items-center gap-3 text-xs text-slate-500 font-semibold">
-                        <span>Per Item Price: <span className="font-bold text-slate-800">₹{item.price?.toLocaleString()}</span></span>
+                        <span>Per Item Price: <span className="font-bold text-slate-800">{currency}{item.price?.toLocaleString()}</span></span>
                         <span>•</span>
                         <span>Quantity: <span className="font-bold text-slate-800">{item.qty} unit(s)</span></span>
                       </div>
@@ -107,7 +112,7 @@ const SellerOrderDetails = () => {
                     <div className="text-right shrink-0">
                       <span className="text-[10px] font-extrabold uppercase text-slate-400 block">Subtotal</span>
                       <span className="font-black text-slate-900 text-base">
-                        ₹{item.subtotal?.toLocaleString()}
+                        {currency}{item.subtotal?.toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -181,30 +186,38 @@ const SellerOrderDetails = () => {
             </div>
 
             {/* Financial Cut Summary */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
-                Earnings Breakdown
-              </h2>
+            {(() => {
+              const commRate = order?.commissionRate !== undefined && order?.commissionRate !== null ? order.commissionRate : globalCommissionRate;
+              const commAmt = order?.commissionAmount !== undefined && order?.commissionAmount !== null ? order.commissionAmount : Math.round(((order?.amount || 0) * commRate) / 100);
+              const earnings = order?.sellerEarnings !== undefined && order?.sellerEarnings !== null ? order.sellerEarnings : ((order?.amount || 0) - commAmt);
 
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between text-slate-600 font-semibold">
-                  <span>Gross Order Value</span>
-                  <span className="font-bold text-slate-900">₹{order?.amount?.toLocaleString()}</span>
-                </div>
+              return (
+                <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
+                  <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                    Earnings Breakdown
+                  </h2>
 
-                <div className="flex justify-between text-slate-600 font-semibold">
-                  <span>Platform Fee (20%)</span>
-                  <span className="text-slate-400 font-bold">- ₹{(order?.amount * 0.2)?.toLocaleString()}</span>
-                </div>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between text-slate-600 font-semibold">
+                      <span>Gross Package Value</span>
+                      <span className="font-bold text-slate-900">{currency}{order?.amount?.toLocaleString()}</span>
+                    </div>
 
-                <div className="pt-3 border-t border-slate-100 flex justify-between items-baseline">
-                  <span className="font-extrabold text-slate-900 text-sm">Net Seller Payout (80%)</span>
-                  <span className="text-2xl font-black text-emerald-600">
-                    ₹{(order?.amount * 0.8)?.toLocaleString()}
-                  </span>
+                    <div className="flex justify-between text-slate-600 font-semibold">
+                      <span>Platform Commission ({commRate}%)</span>
+                      <span className="text-red-500 font-bold">- {currency}{commAmt?.toLocaleString()}</span>
+                    </div>
+
+                    <div className="pt-3 border-t border-slate-100 flex justify-between items-baseline">
+                      <span className="font-extrabold text-slate-900 text-sm">Net Seller Payout ({100 - commRate}%)</span>
+                      <span className="text-2xl font-black text-emerald-600">
+                        {currency}{earnings?.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              );
+            })()}
 
             {/* Order Timestamps Card */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">

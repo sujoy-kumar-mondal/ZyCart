@@ -70,10 +70,10 @@ const Navbar = () => {
             </div>
             <div className="flex flex-col">
               <span className="text-2xl font-black tracking-tight text-[#1B2A41] leading-none">
-                Zy<span className="bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">Cart</span>
+                {settings.platformName || "ZyCart"}
               </span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
-                Premium Store
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 truncate max-w-[150px]">
+                {settings.tagline || "Premium Store"}
               </span>
             </div>
           </Link>

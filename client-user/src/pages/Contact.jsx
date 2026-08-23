@@ -117,13 +117,9 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-[#1B2A41]">Address</h4>
-                  <p className="text-gray-600">
-                    123 Tech Street, Innovation Hub
-                    <br />
-                    New Delhi, Delhi 110001
-                    <br />
-                    India
-                  </p>
+                  <div className="text-gray-600 whitespace-pre-line text-sm leading-relaxed">
+                    {settings?.address || "123 Tech Street, Innovation Hub\nNew Delhi, Delhi 110001\nIndia"}
+                  </div>
                 </div>
               </div>
 
@@ -134,9 +130,9 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-[#1B2A41]">Business Hours</h4>
-                  <p className="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
-                  <p className="text-gray-600">Saturday: 10:00 AM - 4:00 PM</p>
-                  <p className="text-gray-600">Sunday: Closed</p>
+                  <div className="text-gray-600 whitespace-pre-line text-sm leading-relaxed">
+                    {settings?.businessHours || "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed"}
+                  </div>
                 </div>
               </div>
             </div>

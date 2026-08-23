@@ -27,6 +27,16 @@ const systemSettingSchema = new mongoose.Schema(
       type: String,
       default: "₹",
     },
+    address: {
+      type: String,
+      default: "123 Tech Street, Innovation Hub\nNew Delhi, Delhi 110001\nIndia",
+      trim: true,
+    },
+    businessHours: {
+      type: String,
+      default: "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 4:00 PM\nSunday: Closed",
+      trim: true,
+    },
     announcementBanner: {
       enabled: {
         type: Boolean,
