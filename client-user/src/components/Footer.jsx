@@ -65,7 +65,7 @@ const Footer = () => {
                 <img src="/logo_cart.svg" alt="ZyCart Logo" className="w-full h-full object-contain filter brightness-0 invert" />
               </div>
               <span className="text-2xl font-black text-white">
-                Zy<span className="text-blue-400">Cart</span>
+                {settings.platformName || "ZyCart"}
               </span>
             </Link>
 
