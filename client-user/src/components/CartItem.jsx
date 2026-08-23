@@ -1,9 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartProvider";
+import { useSettings } from "../context/SettingsProvider";
 import toast from "react-hot-toast";
 
 const CartItem = ({ item }) => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
   const { removeFromCart, updateQty } = useCart();
   const navigate = useNavigate();
 
@@ -45,7 +48,7 @@ const CartItem = ({ item }) => {
       >
         <h3 className="font-semibold text-lg text-[#1B2A41] hover:text-[#6A8EF0] transition">{item.title}</h3>
 
-        <p className="text-[#3F51F4] font-bold text-lg">₹{item.price}</p>
+        <p className="text-[#3F51F4] font-bold text-lg">{currency}{item.price?.toLocaleString ? item.price.toLocaleString() : item.price}</p>
 
         {item.stock < 10 && (
           <p className="text-xs font-semibold text-amber-600 mt-0.5">

@@ -3,9 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "../../utils/axiosInstance.js";
 import Loader from "../../components/Loader";
 import toast from "react-hot-toast";
+import { useSettings } from "../../context/SettingsProvider";
 import { ArrowLeft, Edit, Eye, EyeOff, Tag, Package, Calendar, ShieldCheck, CheckCircle2, Clock } from "lucide-react";
 
 const SellerProductDetails = () => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
+  const brandName = settings?.platformName || "ZyCart";
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -21,7 +25,7 @@ const SellerProductDetails = () => {
         const res = await axios.get(`/products/${id}`);
         if (res.data.success) {
           setProduct(res.data.product);
-          document.title = `${res.data.product.title} — Merchant Inventory | ZyCart`;
+          document.title = `${res.data.product.title} — Merchant Inventory | ${brandName}`;
         } else {
           toast.error("Product not found");
           navigate("/seller/products");
@@ -177,14 +181,14 @@ const SellerProductDetails = () => {
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
                   <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Original MRP</p>
                   <p className="text-2xl font-black text-slate-900 mt-1">
-                    ₹{product.price?.toLocaleString()}
+                    {currency}{product.price?.toLocaleString()}
                   </p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-100">
                   <p className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-600">Discounted Selling Price</p>
                   <p className="text-2xl font-black text-emerald-700 mt-1">
-                    {hasDiscount ? `₹${effectivePrice.toLocaleString()}` : "—"}
+                    {hasDiscount ? `${currency}${effectivePrice.toLocaleString()}` : "—"}
                   </p>
                 </div>
 

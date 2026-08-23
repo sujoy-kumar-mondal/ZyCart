@@ -8,6 +8,7 @@ import { ChevronDown, Search, Filter, X, PlusCircle, Edit, Trash2, Eye, EyeOff, 
 
 const SellerProducts = () => {
   const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -879,7 +880,7 @@ const SellerProducts = () => {
 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Original MRP (₹) *
+                    Original MRP ({currency}) *
                   </label>
                   <input
                     type="number"
@@ -923,7 +924,7 @@ const SellerProducts = () => {
 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Discounted Selling Price (₹)
+                    Discounted Selling Price ({currency})
                   </label>
                   <input
                     type="number"
@@ -1426,7 +1427,7 @@ const SellerProducts = () => {
                       </td>
 
                       <td className="px-6 py-4 font-black whitespace-nowrap">
-                        ₹{product.price?.toLocaleString()}
+                        {currency}{product.price?.toLocaleString()}
                       </td>
 
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -1448,7 +1449,7 @@ const SellerProducts = () => {
                             return (
                               <div className="flex items-center gap-2 whitespace-nowrap">
                                 <span className="font-black text-emerald-600 text-sm">
-                                  ₹{sellingPrice.toLocaleString()}
+                                  {currency}{sellingPrice.toLocaleString()}
                                 </span>
                                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 whitespace-nowrap shrink-0">
                                   {discountPct}% OFF
@@ -1458,7 +1459,7 @@ const SellerProducts = () => {
                           }
                           return (
                             <span className="font-black text-slate-900 text-sm">
-                              ₹{product.price?.toLocaleString()}
+                              {currency}{product.price?.toLocaleString()}
                             </span>
                           );
                         })()}

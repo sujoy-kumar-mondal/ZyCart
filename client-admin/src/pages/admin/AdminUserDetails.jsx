@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../../utils/axiosInstance";
 import Loader from "../../components/Loader";
+import { useSettings } from "../../context/SettingsProvider";
 import { ArrowLeft, Mail, Phone, MapPin, Calendar, ShoppingCart, AlertCircle, User, ShieldAlert, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 
 const AdminUserDetails = () => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
+  const brandName = settings?.platformName || "ZyCart";
   const { userId } = useParams();
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -15,8 +19,8 @@ const AdminUserDetails = () => {
 
   useEffect(() => {
     fetchUserDetails();
-    document.title = "Customer Details | ZyCart Admin";
-  }, [userId]);
+    document.title = `Customer Details | ${brandName} Admin`;
+  }, [userId, brandName]);
 
   const fetchUserDetails = async () => {
     try {
@@ -178,7 +182,7 @@ const AdminUserDetails = () => {
                       </div>
 
                       <div className="text-right">
-                        <p className="font-black text-slate-900">₹{order.totalAmount?.toLocaleString()}</p>
+                        <p className="font-black text-slate-900">{currency}{order.totalAmount?.toLocaleString()}</p>
                         <span className="text-[10px] font-black uppercase text-[#3F51F4]">{order.status}</span>
                       </div>
                     </div>

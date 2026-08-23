@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "../../utils/axiosInstance";
 import Loader from "../../components/Loader";
+import { useSettings } from "../../context/SettingsProvider";
 import { ArrowLeft, Mail, Phone, MapPin, Calendar, ShoppingBag, TrendingUp, AlertCircle, CheckCircle, Store, ShieldCheck, Ban, X, Eye, Package, Tag, Layers, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
 
 const AdminSellerDetails = () => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
+  const brandName = settings?.platformName || "ZyCart";
   const { sellerId } = useParams();
   const navigate = useNavigate();
   const [seller, setSeller] = useState(null);
@@ -18,8 +22,8 @@ const AdminSellerDetails = () => {
 
   useEffect(() => {
     fetchSellerDetails();
-    document.title = "Merchant Verification | ZyCart Admin";
-  }, [sellerId]);
+    document.title = `Merchant Verification | ${brandName} Admin`;
+  }, [sellerId, brandName]);
 
   const fetchSellerDetails = async () => {
     try {
@@ -231,7 +235,7 @@ const AdminSellerDetails = () => {
                               </div>
                             </button>
                           </td>
-                          <td className="px-4 py-3 font-black">₹{product.price?.toLocaleString()}</td>
+                          <td className="px-4 py-3 font-black">{currency}{product.price?.toLocaleString()}</td>
                           <td className="px-4 py-3 whitespace-nowrap">
                             {(() => {
                               const isExpired = product.discountPeriod && new Date(product.discountPeriod) <= new Date();
@@ -251,7 +255,7 @@ const AdminSellerDetails = () => {
                                 return (
                                   <div className="flex items-center gap-1.5 whitespace-nowrap">
                                     <span className="font-black text-emerald-600">
-                                      ₹{sellingPrice.toLocaleString()}
+                                      {currency}{sellingPrice.toLocaleString()}
                                     </span>
                                     <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800">
                                       {discountPct}% OFF
@@ -261,7 +265,7 @@ const AdminSellerDetails = () => {
                               }
                               return (
                                 <span className="font-black text-slate-900">
-                                  ₹{product.price?.toLocaleString()}
+                                  {currency}{product.price?.toLocaleString()}
                                 </span>
                               );
                             })()}
@@ -386,12 +390,12 @@ const AdminSellerDetails = () => {
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Original MRP</p>
-                    <p className="text-lg font-black text-slate-900">₹{selectedProduct.price?.toLocaleString()}</p>
+                    <p className="text-lg font-black text-slate-900">{currency}{selectedProduct.price?.toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-[10px] font-extrabold text-emerald-600 uppercase tracking-wider">Selling Price</p>
                     <p className="text-lg font-black text-emerald-600 flex items-center gap-1.5">
-                      ₹{(() => {
+                      {currency}{(() => {
                         const isExpired = selectedProduct.discountPeriod && new Date(selectedProduct.discountPeriod) <= new Date();
                         const sellingPrice = (selectedProduct.discountedPrice && selectedProduct.discountedPrice > 0 && selectedProduct.discountedPrice < selectedProduct.price)
                           ? selectedProduct.discountedPrice

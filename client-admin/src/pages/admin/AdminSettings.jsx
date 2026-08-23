@@ -406,7 +406,7 @@ const AdminSettings = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Standard Delivery Charge (₹)
+                    Standard Delivery Charge ({settings.currencySymbol || "₹"})
                   </label>
                   <input
                     type="number"
@@ -420,7 +420,7 @@ const AdminSettings = () => {
 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Free Delivery Threshold (₹)
+                    Free Delivery Threshold ({settings.currencySymbol || "₹"})
                   </label>
                   <input
                     type="number"
@@ -434,7 +434,7 @@ const AdminSettings = () => {
 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                    Minimum Cart Checkout Value (₹)
+                    Minimum Cart Checkout Value ({settings.currencySymbol || "₹"})
                   </label>
                   <input
                     type="number"

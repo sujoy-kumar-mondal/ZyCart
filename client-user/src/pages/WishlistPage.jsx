@@ -3,17 +3,21 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useWishlist } from "../context/WishlistProvider";
 import { useCart } from "../context/CartProvider";
+import { useSettings } from "../context/SettingsProvider";
 import { toast } from "react-hot-toast";
 import Loader from "../components/Loader";
 
 const WishlistPage = () => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
+  const brandName = settings?.platformName || "ZyCart";
   const { wishlist, loading, removeFromWishlist, fetchWishlist } = useWishlist();
   const { addToCart } = useCart();
 
   useEffect(() => {
-    document.title = "My Wishlist | ZyCart";
+    document.title = `My Wishlist | ${brandName}`;
     fetchWishlist();
-  }, []);
+  }, [brandName]);
 
   const handleMoveToCart = (product) => {
     addToCart(product);
@@ -149,10 +153,10 @@ const WishlistPage = () => {
                           {hasActiveDiscount ? (
                             <div className="flex items-baseline gap-2 flex-wrap">
                               <span className="text-2xl font-black bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] bg-clip-text text-transparent">
-                                ₹{effectiveDiscountedPrice.toLocaleString()}
+                                {currency}{effectiveDiscountedPrice.toLocaleString()}
                               </span>
                               <span className="text-sm text-gray-400 line-through">
-                                ₹{product.price.toLocaleString()}
+                                {currency}{product.price.toLocaleString()}
                               </span>
                               <span className="text-xs font-bold text-green-600 bg-green-100 px-1.5 py-0.5 rounded">
                                 {discountPct}% OFF
@@ -160,7 +164,7 @@ const WishlistPage = () => {
                             </div>
                           ) : (
                             <p className="text-2xl font-bold text-[#3F51F4]">
-                              ₹{product.price.toLocaleString()}
+                              {currency}{product.price.toLocaleString()}
                             </p>
                           )}
                         </div>

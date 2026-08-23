@@ -18,6 +18,7 @@ const ProductDetailsPage = () => {
   const { addToCart } = useCart();
   const { wishlist, addToWishlist, removeFromWishlist, isInWishlist: checkIsInWishlist } = useWishlist();
   const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
   
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -400,10 +401,10 @@ const ProductDetailsPage = () => {
                 {hasActiveDiscount ? (
                   <>
                     <span className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
-                      ₹{discountedPrice.toLocaleString()}
+                      {currency}{discountedPrice.toLocaleString()}
                     </span>
                     <span className="text-lg text-slate-400 line-through font-semibold">
-                      ₹{product.price.toLocaleString()}
+                      {currency}{product.price.toLocaleString()}
                     </span>
                     <span className="px-2.5 py-1 text-xs font-extrabold text-green-700 bg-green-100 border border-green-200 rounded-lg">
                       {discountPct}% OFF
@@ -411,7 +412,7 @@ const ProductDetailsPage = () => {
                   </>
                 ) : (
                   <span className="text-3xl sm:text-4xl font-black text-[#1B2A41]">
-                    ₹{product.price.toLocaleString()}
+                    {currency}{product.price.toLocaleString()}
                   </span>
                 )}
               </div>
