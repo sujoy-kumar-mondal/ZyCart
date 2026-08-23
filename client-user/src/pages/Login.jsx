@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "../utils/axiosInstance.js";
 import { useAuth } from "../context/AuthProvider";
+import { useSettings } from "../context/SettingsProvider";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -26,6 +27,7 @@ import {
 
 const Login = () => {
   const { user, login } = useAuth();
+  const { settings, stats } = useSettings();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -303,7 +305,7 @@ const Login = () => {
                   <div className="inline-block h-6 w-6 rounded-full ring-2 ring-slate-900 bg-gradient-to-tr from-purple-400 to-pink-500"></div>
                   <div className="inline-block h-6 w-6 rounded-full ring-2 ring-slate-900 bg-gradient-to-tr from-emerald-400 to-teal-500"></div>
                 </div>
-                <span>50,000+ Active Shoppers</span>
+                <span>{stats?.happyShoppers ? `${stats.happyShoppers.toLocaleString()} Registered Shoppers` : "Verified Shopper Community"}</span>
               </div>
 
               <Link to="/" className="text-[#8FD6F6] hover:text-white transition flex items-center gap-1">

@@ -31,14 +31,29 @@ const DEFAULT_SETTINGS = {
   },
 };
 
+const DEFAULT_STATS = {
+  activeProducts: 0,
+  verifiedSellers: 0,
+  ordersShipped: 0,
+  ordersFulfilled: 0,
+  totalOrders: 0,
+  happyShoppers: 0,
+  reviewCount: 0,
+  buyerSatisfactionScore: "5.0 / 5.0",
+  deliverySuccessRate: "100%",
+  systemUptime: "99.99%",
+};
+
 const SettingsContext = createContext({
   settings: DEFAULT_SETTINGS,
+  stats: DEFAULT_STATS,
   loading: true,
   refreshSettings: () => {},
 });
 
 export const SettingsProvider = ({ children }) => {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+  const [stats, setStats] = useState(DEFAULT_STATS);
   const [loading, setLoading] = useState(true);
 
   const fetchSettings = async () => {
@@ -58,8 +73,14 @@ export const SettingsProvider = ({ children }) => {
           },
         });
       }
+      if (res.data.success && res.data.stats) {
+        setStats({
+          ...DEFAULT_STATS,
+          ...res.data.stats,
+        });
+      }
     } catch (error) {
-      console.error("Failed to load seller platform settings:", error);
+      console.error("Failed to load platform settings:", error);
     } finally {
       setLoading(false);
     }
@@ -70,7 +91,7 @@ export const SettingsProvider = ({ children }) => {
   }, []);
 
   return (
-    <SettingsContext.Provider value={{ settings, loading, refreshSettings: fetchSettings }}>
+    <SettingsContext.Provider value={{ settings, stats, loading, refreshSettings: fetchSettings }}>
       {children}
     </SettingsContext.Provider>
   );

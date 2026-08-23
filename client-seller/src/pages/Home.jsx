@@ -19,49 +19,49 @@ import { useSettings } from "../context/SettingsProvider";
 
 const Home = () => {
   const { user } = useAuth();
-  const { settings } = useSettings();
+  const { settings, stats } = useSettings();
   const brandName = settings?.platformName || "ZyCart";
   const commissionRate = settings?.platformCommissionRate ?? 5;
-  const sellerCut = Math.max(0, 100 - commissionRate);
+  const sellerCut = 100 - commissionRate;
 
   useEffect(() => {
-    document.title = `${brandName} Merchant Central — Grow Your E-Commerce Business`;
+    document.title = `Become a Seller | ${brandName} Merchant Network`;
   }, [brandName]);
 
   const features = [
     {
       id: 1,
-      title: "Fast Store Onboarding",
-      description: "Submit shop GST & credentials to start listing catalog items in under 24 hours.",
-      icon: Zap,
-      color: "from-amber-500 to-orange-600",
-    },
-    {
-      id: 2,
-      title: "Real-time Sales Dashboard",
-      description: "Monitor daily revenues, pending shipments, and inventory scarcity warnings live.",
-      icon: BarChart3,
+      title: "Doorstep Courier Pickup",
+      description: "Automated logistics integration with verified courier partners directly from your warehouse.",
+      icon: Truck,
       color: "from-blue-500 to-indigo-600",
     },
     {
-      id: 3,
-      title: "Weekly Payout Settlements",
-      description: `Direct bank account transfers every week with transparent ${sellerCut}% merchant payouts.`,
-      icon: Shield,
+      id: 2,
+      title: "Fast Weekly Settlements",
+      description: `Guaranteed payouts directly to your bank account with transparent ${commissionRate}% platform cuts and ${sellerCut}% seller payouts.`,
+      icon: DollarSign,
       color: "from-emerald-500 to-teal-600",
     },
     {
-      id: 4,
-      title: "Doorstep Courier Network",
-      description: "Automated logistics pick-ups straight from your warehouse to customer doorsteps.",
-      icon: Globe,
+      id: 3,
+      title: "Category Attribute Mapping",
+      description: "Rich dynamic technical specifications tailored specifically for electronics, clothing, and home essentials.",
+      icon: Layers,
       color: "from-purple-500 to-pink-600",
     },
     {
+      id: 4,
+      title: "GSTIN Verification & Protection",
+      description: "Compliant verified merchant network protecting your brand identity against counterfeits.",
+      icon: ShieldCheck,
+      color: "from-amber-500 to-orange-600",
+    },
+    {
       id: 5,
-      title: "Dedicated Account Support",
-      description: "Get 24/7 technical support and account executive guidance for catalog expansion.",
-      icon: Users,
+      title: "2FA Merchant Store Security",
+      description: "Time-based one-time password verification on all sensitive product edits and account access.",
+      icon: Lock,
       color: "from-red-500 to-rose-600",
     },
     {
@@ -73,11 +73,11 @@ const Home = () => {
     },
   ];
 
-  const stats = [
-    { label: "Verified Merchants", value: "5,000+", icon: Store },
-    { label: "Catalog Listings", value: "100,000+", icon: TrendingUp },
-    { label: "Active Buyers", value: "1,000,000+", icon: Users },
-    { label: "Order Delivery Rate", value: "99.4%", icon: CheckCircle },
+  const liveStats = [
+    { label: "Verified Merchants", value: `${stats?.verifiedSellers?.toLocaleString() || 0}`, icon: Store },
+    { label: "Catalog Listings", value: `${stats?.activeProducts?.toLocaleString() || 0}`, icon: TrendingUp },
+    { label: "Active Buyers", value: `${stats?.happyShoppers?.toLocaleString() || 0}`, icon: Users },
+    { label: "Order Delivery Rate", value: stats?.deliverySuccessRate || "99.4%", icon: CheckCircle },
   ];
 
   return (
@@ -107,7 +107,7 @@ const Home = () => {
               </h1>
 
               <p className="text-lg text-slate-600 font-normal leading-relaxed max-w-2xl">
-                Reach over 1,000,000 active shoppers. Enjoy {sellerCut}% payouts, automated doorstep logistics pickup, zero listing fee barriers, and live multi-channel analytics.
+                Reach over {stats?.happyShoppers > 0 ? `${stats.happyShoppers.toLocaleString()} active shoppers` : "thousands of active shoppers"}. Enjoy {sellerCut}% payouts, automated doorstep logistics pickup, zero listing fee barriers, and live multi-channel analytics.
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
@@ -169,7 +169,7 @@ const Home = () => {
       <section className="py-12 bg-white border-y border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, idx) => {
+            {liveStats.map((stat, idx) => {
               const IconComp = stat.icon;
               return (
                 <div key={idx} className="text-center space-y-1">

@@ -12,13 +12,15 @@ import {
   CheckCircle,
   Sparkles,
   Award,
-  TrendingUp
+  TrendingUp,
+  Store,
+  Headphones
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSettings } from "../context/SettingsProvider";
 
 const Home = () => {
-  const { settings } = useSettings();
+  const { settings, stats } = useSettings();
   const brandName = settings?.platformName || "ZyCart";
   const tagline = settings?.tagline || "Easy Shop, Easy Life";
 
@@ -29,38 +31,38 @@ const Home = () => {
   const features = [
     {
       id: 1,
-      title: "Curated Selection",
-      description: "Discover thousands of handpicked products from verified brand sellers.",
-      icon: ShoppingCart,
+      title: "Doorstep Express Delivery",
+      description: `Fast and secure shipment delivered in ${settings?.estimatedDeliveryDays || "3-5 Business Days"}.`,
+      icon: Truck,
       color: "from-blue-500 to-indigo-600",
     },
     {
       id: 2,
-      title: "Express Delivery",
-      description: "Quick, reliable doorstep shipping with real-time tracking.",
-      icon: Truck,
-      color: "from-emerald-500 to-teal-600",
-    },
-    {
-      id: 3,
-      title: "Buyer Protection",
-      description: "Encrypted transactions and guaranteed money-back protection.",
-      icon: Shield,
+      title: "Direct Verified Merchants",
+      description: "Shop directly from authenticated multi-vendor sellers across categories.",
+      icon: Store,
       color: "from-purple-500 to-pink-600",
     },
     {
+      id: 3,
+      title: "Safe & Encrypted Payments",
+      description: "End-to-end secured checkouts with full fraud protection.",
+      icon: Shield,
+      color: "from-emerald-500 to-teal-600",
+    },
+    {
       id: 4,
-      title: "Unbeatable Deals",
-      description: "Daily discount prices, flash sales, and exclusive store coupons.",
-      icon: Zap,
+      title: "24/7 Dedicated Support",
+      description: `Email us anytime at ${settings?.supportEmail || "support@zycart.com"}.`,
+      icon: Headphones,
       color: "from-amber-500 to-orange-600",
     },
     {
       id: 5,
-      title: "Wishlist & Save",
-      description: "Save items for later and get notified on price drops instantly.",
-      icon: Heart,
-      color: "from-red-500 to-rose-600",
+      title: "Transparent Pricing",
+      description: "Zero hidden charges with flat low delivery and free shipping perks.",
+      icon: Sparkles,
+      color: "from-cyan-500 to-blue-600",
     },
     {
       id: 6,
@@ -71,11 +73,11 @@ const Home = () => {
     },
   ];
 
-  const stats = [
-    { label: "Active Products", value: "100,000+", icon: ShoppingCart },
-    { label: "Verified Sellers", value: "5,000+", icon: Star },
-    { label: "Orders Shipped", value: "50,000+", icon: Truck },
-    { label: "Happy Shoppers", value: "1,000,000+", icon: Heart },
+  const liveStats = [
+    { label: "Active Products", value: `${stats?.activeProducts?.toLocaleString() || 0}`, icon: ShoppingCart },
+    { label: "Verified Sellers", value: `${stats?.verifiedSellers?.toLocaleString() || 0}`, icon: Star },
+    { label: "Orders Shipped", value: `${stats?.ordersShipped?.toLocaleString() || 0}`, icon: Truck },
+    { label: "Happy Shoppers", value: `${stats?.happyShoppers?.toLocaleString() || 0}`, icon: Heart },
   ];
 
   return (
@@ -161,11 +163,11 @@ const Home = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 text-center">
-                    <p className="text-3xl font-black text-[#3F51F4]">100K+</p>
+                    <p className="text-3xl font-black text-[#3F51F4]">{stats?.activeProducts?.toLocaleString() || 0}</p>
                     <p className="text-xs font-semibold text-slate-600 mt-1">Products Listed</p>
                   </div>
                   <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 text-center">
-                    <p className="text-3xl font-black text-emerald-600">5K+</p>
+                    <p className="text-3xl font-black text-emerald-600">{stats?.verifiedSellers?.toLocaleString() || 0}</p>
                     <p className="text-xs font-semibold text-slate-600 mt-1">Brand Merchants</p>
                   </div>
                 </div>
@@ -177,10 +179,12 @@ const Home = () => {
                     </div>
                     <div>
                       <p className="text-xs font-bold text-[#1B2A41]">Buyer Satisfaction Score</p>
-                      <p className="text-[10px] text-slate-500">Based on 1M+ reviews</p>
+                      <p className="text-[10px] text-slate-500">
+                        {stats?.reviewCount > 0 ? `Based on ${stats.reviewCount.toLocaleString()} reviews` : "Based on verified buyer reviews"}
+                      </p>
                     </div>
                   </div>
-                  <span className="text-sm font-black text-slate-900">4.9 / 5.0</span>
+                  <span className="text-sm font-black text-slate-900">{stats?.buyerSatisfactionScore || "5.0 / 5.0"}</span>
                 </div>
               </div>
             </motion.div>
@@ -199,11 +203,11 @@ const Home = () => {
       <section className="py-12 bg-white border-y border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, idx) => {
-              const IconComp = stat.icon;
+            {liveStats.map((stat, idx) => {
+              const IconComponent = stat.icon;
               return (
-                <div key={idx} className="text-center space-y-1">
-                  <IconComp className="w-7 h-7 text-[#3F51F4] mx-auto mb-2" />
+                <div key={idx} className="text-center space-y-2">
+                  <IconComponent className="w-6 h-6 mx-auto text-[#3F51F4]" />
                   <p className="text-2xl sm:text-3xl font-black text-[#1B2A41]">{stat.value}</p>
                   <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</p>
                 </div>

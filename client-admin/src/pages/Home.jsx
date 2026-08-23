@@ -19,34 +19,34 @@ import { useSettings } from "../context/SettingsProvider";
 
 const Home = () => {
   const { user } = useAuth();
-  const { settings } = useSettings();
+  const { settings, stats } = useSettings();
   const brandName = settings?.platformName || "ZyCart";
   const commissionRate = settings?.platformCommissionRate ?? 5;
-  const sellerCut = Math.max(0, 100 - commissionRate);
+  const sellerCut = 100 - commissionRate;
 
   useEffect(() => {
-    document.title = `${brandName} Admin — Enterprise Platform Command Center`;
+    document.title = `${brandName} Operations Hub — Executive Administration`;
   }, [brandName]);
 
   const features = [
     {
       id: 1,
       title: "Merchant Verification & Approvals",
-      description: "Inspect GSTIN, PAN, and business credentials before approving seller accounts.",
-      icon: CheckCircle,
-      color: "from-emerald-500 to-teal-600",
+      description: "Review seller applications, inspect GST documents, and activate verified merchant accounts.",
+      icon: ShieldCheck,
+      color: "from-blue-500 to-indigo-600",
     },
     {
       id: 2,
-      title: "Sub-Admin Granular Permissions",
-      description: "Assign role-based access for sellers, customer directory, or order audits.",
-      icon: ShieldCheck,
-      color: "from-[#3F51F4] to-blue-600",
+      title: "Dynamic Taxonomy & Attributes",
+      description: "Manage hierarchical categories and configure category-specific technical schemas.",
+      icon: Layers,
+      color: "from-emerald-500 to-teal-600",
     },
     {
       id: 3,
-      title: "Platform Revenue & Split Audits",
-      description: `Real-time auditing of ${commissionRate}% platform commission cuts and ${sellerCut}% seller payouts.`,
+      title: "Commission Splits & Payouts",
+      description: "Configure dynamic commission percentages and monitor platform fee splits.",
       icon: BarChart3,
       color: "from-purple-500 to-indigo-600",
     },
@@ -73,11 +73,11 @@ const Home = () => {
     },
   ];
 
-  const stats = [
-    { label: "Shoppers Registered", value: "10,000+", icon: Users },
-    { label: "Verified Merchants", value: "5,000+", icon: Store },
-    { label: "Orders Fulfilled", value: "50,000+", icon: CheckCircle },
-    { label: "System Uptime", value: "99.99%", icon: Shield },
+  const liveStats = [
+    { label: "Shoppers Registered", value: `${stats?.happyShoppers?.toLocaleString() || 0}`, icon: Users },
+    { label: "Verified Merchants", value: `${stats?.verifiedSellers?.toLocaleString() || 0}`, icon: Store },
+    { label: "Orders Fulfilled", value: `${stats?.ordersFulfilled?.toLocaleString() || 0}`, icon: CheckCircle },
+    { label: "System Uptime", value: stats?.systemUptime || "99.99%", icon: Shield },
   ];
 
   return (
@@ -128,26 +128,28 @@ const Home = () => {
               className="lg:col-span-5"
             >
               <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/80 space-y-6">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-blue-100 text-[#3F51F4] flex items-center justify-center font-bold">
+                    <div className="w-10 h-10 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600">
                       <ShieldCheck className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="font-extrabold text-sm text-[#1B2A41]">Platform Security</h3>
-                      <p className="text-xs text-slate-500">Sub-Admin Permission Matrix</p>
+                      <h3 className="font-extrabold text-sm text-[#1B2A41]">Operations Summary</h3>
+                      <p className="text-xs text-slate-500">Live platform metrics</p>
                     </div>
                   </div>
+                  <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-extrabold rounded-full uppercase">
+                    Live
+                  </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 rounded-2xl bg-purple-50 border border-purple-100 text-center">
-                    <p className="text-3xl font-black text-purple-600">Super</p>
-                    <p className="text-xs font-semibold text-slate-600 mt-1">Role Privileges</p>
+                  <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 text-center">
+                    <p className="text-3xl font-black text-[#3F51F4]">{sellerCut}%</p>
+                    <p className="text-xs font-semibold text-slate-600 mt-1">Merchant Payout Rate</p>
                   </div>
-
-                  <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 text-center">
-                    <p className="text-3xl font-black text-emerald-600">20%</p>
+                  <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 text-center">
+                    <p className="text-3xl font-black text-emerald-600">{commissionRate}%</p>
                     <p className="text-xs font-semibold text-slate-600 mt-1">Platform Cut Audit</p>
                   </div>
                 </div>
@@ -162,7 +164,7 @@ const Home = () => {
       <section className="py-12 bg-white border-y border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, idx) => {
+            {liveStats.map((stat, idx) => {
               const IconComp = stat.icon;
               return (
                 <div key={idx} className="text-center space-y-1">
