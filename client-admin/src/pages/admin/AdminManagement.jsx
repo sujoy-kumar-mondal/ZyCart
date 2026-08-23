@@ -34,15 +34,20 @@ import { toast } from "react-hot-toast";
 import { useAuth } from "../../context/AuthProvider";
 
 const ALL_PERMISSIONS = [
-  { id: "manage_users", label: "Manage Users", icon: Users, desc: "View, ban, unban, delete customer accounts" },
-  { id: "manage_sellers", label: "Manage Sellers", icon: Store, desc: "Approve, view, ban, unban seller accounts" },
-  { id: "manage_orders", label: "Manage Orders", icon: ShoppingBag, desc: "View and update status of customer orders" },
-  { id: "manage_products", label: "Manage Products", icon: Package, desc: "Moderate seller product listings" },
-  { id: "manage_categories", label: "Manage Categories", icon: Layers, desc: "Edit categories and dynamic schemas" },
-  { id: "manage_admins", label: "Manage Admins", icon: ShieldCheck, desc: "Create, edit, inspect, and delete admin accounts" },
-  { id: "view_analytics", label: "View Analytics", icon: TrendingUp, desc: "Access dashboard statistics and reports" },
-  { id: "system_settings", label: "System Settings", icon: Settings, desc: "Configure global system parameters" },
+  { id: "manage_users", label: "Manage Users", short: "Users", icon: Users, desc: "View, ban, unban, delete customer accounts", bg: "bg-blue-50 text-blue-700 border-blue-200" },
+  { id: "manage_sellers", label: "Manage Sellers", short: "Sellers", icon: Store, desc: "Approve, view, ban, unban seller accounts", bg: "bg-indigo-50 text-indigo-700 border-indigo-200" },
+  { id: "manage_orders", label: "Manage Orders", short: "Orders", icon: ShoppingBag, desc: "View and update status of customer orders", bg: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  { id: "manage_products", label: "Manage Products", short: "Products", icon: Package, desc: "Moderate seller product listings", bg: "bg-amber-50 text-amber-700 border-amber-200" },
+  { id: "manage_categories", label: "Manage Categories", short: "Categories", icon: Layers, desc: "Edit categories and dynamic schemas", bg: "bg-teal-50 text-teal-700 border-teal-200" },
+  { id: "manage_admins", label: "Manage Admins", short: "Admins", icon: ShieldCheck, desc: "Create, edit, inspect, and delete admin accounts", bg: "bg-purple-50 text-purple-700 border-purple-200" },
+  { id: "view_analytics", label: "View Analytics", short: "Analytics", icon: TrendingUp, desc: "Access dashboard statistics and reports", bg: "bg-cyan-50 text-cyan-700 border-cyan-200" },
+  { id: "system_settings", label: "System Settings", short: "Settings", icon: Settings, desc: "Configure global system parameters", bg: "bg-rose-50 text-rose-700 border-rose-200" },
 ];
+
+const PERMISSION_MAP = ALL_PERMISSIONS.reduce((acc, p) => {
+  acc[p.id] = p;
+  return acc;
+}, {});
 
 const AdminManagement = () => {
   const { user: currentUser, refreshUser } = useAuth();
@@ -74,6 +79,8 @@ const AdminManagement = () => {
     permissions: ["manage_users", "manage_sellers", "manage_orders", "view_analytics"],
     isActive: true,
   });
+
+  const isCurrentSuperAdmin = currentUser?.role === "super_admin";
 
   const fetchAdmins = async () => {
     try {
@@ -216,6 +223,11 @@ const AdminManagement = () => {
       return;
     }
 
+    if (admin.role === "super_admin" && !isCurrentSuperAdmin) {
+      toast.error("Sub-admins do not have permission to delete a Super Administrator.");
+      return;
+    }
+
     try {
       setSubmitting(true);
       const res = await axios.delete(`/admin/admins/${admin._id}`);
@@ -274,107 +286,107 @@ const AdminManagement = () => {
   const activeCount = admins.filter((a) => a.isActive).length;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-[#F8FAFC] py-6 sm:py-10 px-3 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto space-y-5">
         
-        {/* Header Banner matching AdminProducts & AdminOrders */}
-        <div className="bg-gradient-to-r from-[#1B2A41] via-[#243B5A] to-[#3F51F4] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        {/* Header Banner */}
+        <div className="bg-gradient-to-r from-[#1B2A41] via-[#243B5A] to-[#3F51F4] rounded-3xl p-5 sm:p-7 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
 
-          <div className="space-y-2 relative z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+          <div className="space-y-1.5 relative z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-white/10 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
               <ShieldCheck className="w-3.5 h-3.5 text-blue-300" /> Platform Security &amp; Access Control
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
               Sub-Admin Roles &amp; Permissions
             </h1>
-            <p className="text-xs sm:text-sm text-slate-200/90 max-w-xl font-medium">
+            <p className="text-xs text-slate-200/90 max-w-xl font-medium">
               Create sub-administrator accounts, inspect granted capabilities, configure granular permission flags, and audit operational access.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 relative z-10 shrink-0">
+          <div className="flex items-center gap-2.5 relative z-10 shrink-0">
             <button
               onClick={fetchAdmins}
-              className="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs backdrop-blur-md transition flex items-center gap-2 cursor-pointer"
+              className="px-3.5 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs backdrop-blur-md transition flex items-center gap-1.5 cursor-pointer"
             >
-              <RefreshCw className="w-4 h-4" /> Refresh
+              <RefreshCw className="w-3.5 h-3.5" /> Refresh
             </button>
             <button
               onClick={openAddModal}
-              className="px-5 py-3 rounded-2xl bg-white text-[#1B2A41] font-black text-xs shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-2 cursor-pointer"
+              className="px-4 py-2.5 rounded-2xl bg-white text-[#1B2A41] font-black text-xs shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-1.5 cursor-pointer"
             >
-              <UserPlus className="w-4 h-4 text-[#3F51F4]" /> Add New Sub-Admin
+              <UserPlus className="w-4 h-4 text-[#3F51F4]" /> Add Sub-Admin
             </button>
           </div>
         </div>
 
         {/* 4 Metric Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-400">
-              <span className="text-xs font-bold uppercase tracking-wider">Total Administrators</span>
+              <span className="text-[11px] font-bold uppercase tracking-wider">Total Administrators</span>
               <ShieldCheck className="w-4 h-4 text-[#3F51F4]" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-[#1B2A41]">{admins.length}</p>
-            <p className="text-[11px] text-slate-500 font-semibold">Registered staff profiles</p>
+            <p className="text-2xl font-black text-[#1B2A41]">{admins.length}</p>
+            <p className="text-[10px] text-slate-500 font-semibold">Registered staff profiles</p>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-400">
-              <span className="text-xs font-bold uppercase tracking-wider">Active Staff</span>
+              <span className="text-[11px] font-bold uppercase tracking-wider">Active Staff</span>
               <UserCheck className="w-4 h-4 text-emerald-500" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-emerald-600">{activeCount}</p>
-            <p className="text-[11px] text-slate-500 font-semibold">Active operational accounts</p>
+            <p className="text-2xl font-black text-emerald-600">{activeCount}</p>
+            <p className="text-[10px] text-slate-500 font-semibold">Active operational accounts</p>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-400">
-              <span className="text-xs font-bold uppercase tracking-wider">Super Admins</span>
+              <span className="text-[11px] font-bold uppercase tracking-wider">Super Admins</span>
               <Shield className="w-4 h-4 text-purple-500" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-purple-600">{superAdminCount}</p>
-            <p className="text-[11px] text-slate-500 font-semibold">Full root privileges</p>
+            <p className="text-2xl font-black text-purple-600">{superAdminCount}</p>
+            <p className="text-[10px] text-slate-500 font-semibold">Full root privileges</p>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
+          <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-400">
-              <span className="text-xs font-bold uppercase tracking-wider">Sub-Admins</span>
+              <span className="text-[11px] font-bold uppercase tracking-wider">Sub-Admins</span>
               <Users className="w-4 h-4 text-blue-500" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-blue-600">{admins.length - superAdminCount}</p>
-            <p className="text-[11px] text-slate-500 font-semibold">Role-based restricted staff</p>
+            <p className="text-2xl font-black text-blue-600">{admins.length - superAdminCount}</p>
+            <p className="text-[10px] text-slate-500 font-semibold">Role-based restricted staff</p>
           </div>
         </div>
 
         {/* Search Bar */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between gap-4">
-          <div className="relative flex-1 min-w-[280px]">
+        <div className="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between gap-3">
+          <div className="relative flex-1">
             <input
               type="text"
               placeholder="Search admin name, email, or mobile..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
             />
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5 pointer-events-none" />
           </div>
         </div>
 
-        {/* Admins Table */}
+        {/* Admins Table - Fully Responsive Without Horizontal Scrollbar */}
         <div className="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
+            <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-                  <th className="px-6 py-4 whitespace-nowrap">Admin Member</th>
-                  <th className="px-6 py-4 whitespace-nowrap">Email Address</th>
-                  <th className="px-6 py-4 whitespace-nowrap">Contact Phone</th>
-                  <th className="px-6 py-4 whitespace-nowrap">Role Type</th>
-                  <th className="px-6 py-4 whitespace-nowrap">Account Status</th>
-                  <th className="px-6 py-4 whitespace-nowrap">Granted Privileges</th>
-                  <th className="px-6 py-4 text-right whitespace-nowrap">Actions</th>
+                <tr className="bg-slate-50/80 border-b border-slate-100 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                  <th className="px-3.5 py-3">Admin Member</th>
+                  <th className="px-3 py-3">Email Address</th>
+                  <th className="px-3 py-3">Contact Phone</th>
+                  <th className="px-2.5 py-3 text-center">Role Type</th>
+                  <th className="px-2.5 py-3 text-center">Status</th>
+                  <th className="px-3 py-3">Granted Privileges</th>
+                  <th className="px-3.5 py-3 text-right">Actions</th>
                 </tr>
               </thead>
 
@@ -382,22 +394,23 @@ const AdminManagement = () => {
                 {filteredAdmins.map((adm) => {
                   const isSelf = adm._id === currentUser?._id;
                   const isSuper = adm.role === "super_admin";
+                  const canDelete = isCurrentSuperAdmin ? !isSelf : (!isSuper && !isSelf);
 
                   return (
                     <tr key={adm._id} className="hover:bg-slate-50/60 transition">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-xs text-white shrink-0 ${
+                      <td className="px-3.5 py-3">
+                        <div className="flex items-center gap-2.5 min-w-[130px]">
+                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-extrabold text-xs text-white shrink-0 ${
                             isSuper
-                              ? "bg-gradient-to-tr from-purple-600 to-indigo-600 shadow-md shadow-purple-500/20"
-                              : "bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] shadow-md shadow-blue-500/20"
+                              ? "bg-gradient-to-tr from-purple-600 to-indigo-600 shadow-xs shadow-purple-500/20"
+                              : "bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] shadow-xs shadow-blue-500/20"
                           }`}>
                             {adm.name ? adm.name[0].toUpperCase() : "A"}
                           </div>
                           <div>
-                            <span className="font-extrabold text-slate-900">{adm.name}</span>
+                            <span className="font-extrabold text-slate-900 block leading-tight">{adm.name}</span>
                             {isSelf && (
-                              <span className="ml-2 text-[9px] font-black text-[#3F51F4] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
+                              <span className="inline-block mt-0.5 text-[8px] font-black text-[#3F51F4] bg-blue-50 px-1.5 py-0.2 rounded-full border border-blue-100">
                                 You
                               </span>
                             )}
@@ -405,27 +418,27 @@ const AdminManagement = () => {
                         </div>
                       </td>
 
-                      <td className="px-6 py-4 whitespace-nowrap font-bold text-slate-700">
-                        {adm.email}
+                      <td className="px-3 py-3 font-semibold text-slate-700">
+                        <span className="break-all">{adm.email}</span>
                       </td>
 
-                      <td className="px-6 py-4 whitespace-nowrap text-slate-600 font-semibold">
+                      <td className="px-3 py-3 text-slate-600 font-semibold whitespace-nowrap">
                         {adm.mobile || "N/A"}
                       </td>
 
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${
+                      <td className="px-2.5 py-3 text-center whitespace-nowrap">
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${
                           isSuper ? "bg-purple-100 text-purple-800 border border-purple-200" : "bg-blue-100 text-blue-800 border border-blue-200"
                         }`}>
                           {isSuper ? "Super Admin" : "Sub-Admin"}
                         </span>
                       </td>
 
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-2.5 py-3 text-center whitespace-nowrap">
                         <button
                           onClick={() => handleToggleStatus(adm)}
                           disabled={isSelf}
-                          className={`px-2.5 py-1 rounded-full text-[10px] font-black cursor-pointer transition ${
+                          className={`px-2 py-0.5 rounded-full text-[9px] font-black cursor-pointer transition ${
                             adm.isActive ? "bg-emerald-100 text-emerald-800 border border-emerald-200" : "bg-red-100 text-red-800 border border-red-200"
                           } disabled:opacity-50`}
                         >
@@ -433,45 +446,59 @@ const AdminManagement = () => {
                         </button>
                       </td>
 
-                      <td className="px-6 py-4">
+                      <td className="px-3 py-3">
                         {isSuper ? (
-                          <span className="text-[10px] font-extrabold text-purple-700 bg-purple-50 px-2.5 py-1 rounded-full border border-purple-200">
-                            Full Privileges
+                          <span className="inline-flex items-center gap-1 text-[9px] font-black text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200 shadow-xs whitespace-nowrap">
+                            <Shield className="w-2.5 h-2.5 text-purple-600" /> Full Privileges
                           </span>
                         ) : adm.permissions && adm.permissions.length > 0 ? (
-                          <div className="flex flex-wrap gap-1 max-w-xs">
-                            <span className="text-[10px] font-black px-2.5 py-0.5 bg-blue-50 text-[#3F51F4] rounded-full border border-blue-100">
-                              {adm.permissions.length} Module{adm.permissions.length > 1 ? "s" : ""}
-                            </span>
+                          <div className="flex flex-wrap gap-1 max-w-[280px]">
+                            {adm.permissions.map((p) => {
+                              const permInfo = PERMISSION_MAP[p];
+                              return (
+                                <span
+                                  key={p}
+                                  className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded-md border shadow-xs ${
+                                    permInfo?.bg || "bg-slate-100 text-slate-700 border-slate-200"
+                                  }`}
+                                >
+                                  {permInfo?.short || p.replace(/manage_|_/g, " ")}
+                                </span>
+                              );
+                            })}
                           </div>
                         ) : (
                           <span className="text-slate-400 font-bold text-[10px]">No permissions</span>
                         )}
                       </td>
 
-                      <td className="px-6 py-4 text-right whitespace-nowrap">
-                        <div className="flex items-center justify-end gap-2">
+                      <td className="px-3.5 py-3 text-right whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => openInspectModal(adm)}
-                            className="px-3 py-1.5 rounded-xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-extrabold text-xs transition flex items-center gap-1 cursor-pointer active:scale-95 shadow-xs"
+                            className="px-2.5 py-1 rounded-xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-extrabold text-[11px] transition flex items-center gap-1 cursor-pointer active:scale-95 shadow-xs"
+                            title="Inspect Sub-Admin"
                           >
-                            <Eye className="w-3.5 h-3.5" /> Inspect
+                            <Eye className="w-3 h-3" /> Inspect
                           </button>
 
                           <button
                             onClick={() => openEditModal(adm)}
-                            className="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 font-extrabold text-xs transition cursor-pointer active:scale-95 shadow-xs flex items-center gap-1"
+                            className="px-2.5 py-1 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 font-extrabold text-[11px] transition cursor-pointer active:scale-95 shadow-xs flex items-center gap-1"
+                            title="Edit Role & Permissions"
                           >
-                            <Edit3 className="w-3.5 h-3.5" /> Edit
+                            <Edit3 className="w-3 h-3" /> Edit
                           </button>
 
-                          <button
-                            onClick={() => setDeleteModal({ open: true, admin: adm })}
-                            disabled={isSelf}
-                            className="px-3 py-1.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 font-extrabold text-xs transition disabled:opacity-30 cursor-pointer active:scale-95 shadow-xs flex items-center gap-1"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" /> Delete
-                          </button>
+                          {canDelete && (
+                            <button
+                              onClick={() => setDeleteModal({ open: true, admin: adm })}
+                              className="px-2.5 py-1 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 font-extrabold text-[11px] transition cursor-pointer active:scale-95 shadow-xs flex items-center gap-1"
+                              title="Delete Administrator"
+                            >
+                              <Trash2 className="w-3 h-3" /> Delete
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -612,7 +639,7 @@ const AdminManagement = () => {
             {/* Modal Actions */}
             <div className="flex items-center justify-between border-t border-slate-100 pt-4">
               <div>
-                {inspectingAdmin._id !== currentUser?._id && (
+                {inspectingAdmin._id !== currentUser?._id && (inspectingAdmin.role !== "super_admin" || isCurrentSuperAdmin) && (
                   <button
                     type="button"
                     onClick={() => {
