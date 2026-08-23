@@ -231,7 +231,7 @@ const ProductsPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Desktop Filter Sidebar */}
-          <div className="hidden lg:block lg:col-span-4 sticky top-24">
+          <div className="hidden lg:block lg:col-span-3 sticky top-24">
             <ProductFilter 
               onFilterChange={handleFiltersChange}
               onPriceChange={setPriceRange}
@@ -240,7 +240,7 @@ const ProductsPage = () => {
           </div>
 
           {/* Main Products Grid Column */}
-          <div className="lg:col-span-8 space-y-6">
+          <div className="lg:col-span-9 space-y-6">
             
             {/* Sorting & Result Count Bar */}
             <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 flex flex-wrap items-center justify-between gap-4">

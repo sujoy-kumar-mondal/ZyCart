@@ -228,15 +228,25 @@ const TrendsSlider = ({ type, title }) => {
             }
           }
         `}</style>
-        <div className="trends-slider">
-          <Slider ref={sliderRef} {...sliderSettings}>
+        {products.length > 3 ? (
+          <div className="trends-slider">
+            <Slider ref={sliderRef} {...sliderSettings}>
+              {products.map((trend, index) => (
+                <div key={trend._id || index} className="px-2 md:px-3 py-4 w-full">
+                  {trend.product && <ProductCard product={trend.product} />}
+                </div>
+              ))}
+            </Slider>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {products.map((trend, index) => (
-              <div key={trend._id || index} className="px-2 md:px-3 py-4 w-full">
+              <div key={trend._id || index} className="w-full">
                 {trend.product && <ProductCard product={trend.product} />}
               </div>
             ))}
-          </Slider>
-        </div>
+          </div>
+        )}
       </div>
     </motion.section>
   );
