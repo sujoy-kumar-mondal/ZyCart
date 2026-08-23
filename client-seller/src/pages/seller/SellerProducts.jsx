@@ -3,9 +3,11 @@ import { Link, useLocation } from "react-router-dom";
 import axios from "../../utils/axiosInstance.js";
 import Loader from "../../components/Loader";
 import toast from "react-hot-toast";
-import { ChevronDown, Search, Filter, X, PlusCircle, Edit, Trash2, Eye, EyeOff, Package, Tag, Calendar } from "lucide-react";
+import { useSettings } from "../../context/SettingsProvider";
+import { ChevronDown, Search, Filter, X, PlusCircle, Edit, Trash2, Eye, EyeOff, Package, Tag, Calendar, AlertCircle } from "lucide-react";
 
 const SellerProducts = () => {
+  const { settings } = useSettings();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -566,7 +568,12 @@ const SellerProducts = () => {
         {/* 3 Metric Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-1">
-            <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Total Listed Items</p>
+            <div className="flex items-center justify-between">
+              <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Total Listed Items</p>
+              <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                Quota: {settings.maxProductsPerSeller || 50} max
+              </span>
+            </div>
             <p className="text-3xl font-black text-[#3F51F4]">{totalProducts}</p>
           </div>
 

@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import Seller from "../models/Seller.js";
 import Admin from "../models/Admin.js";
+import SystemSetting from "../models/SystemSetting.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { generateOTP, sendOTP, resetOTP } from "../utils/sendOtp.js";
@@ -134,6 +135,21 @@ export const loginUser = async (req, res) => {
         success: false,
         message: "Incorrect password.",
       });
+
+    // Check system 2FA configuration
+    const settings = await SystemSetting.findOne();
+    const enable2FA = settings?.enableCustomer2FA !== false;
+
+    if (!enable2FA) {
+      const token = generateToken(user._id);
+      return res.status(200).json({
+        success: true,
+        requireOtp: false,
+        token,
+        user,
+        message: "Login successful",
+      });
+    }
 
     // Generate 6-digit OTP for 2FA login
     const otp = generateOTP();
@@ -323,6 +339,10 @@ export const submitSellerDetails = async (req, res) => {
       return res.status(400).json({ success: false, message: "Seller ID is required" });
     }
 
+    // Check system settings for GST requirement
+    const settings = await SystemSetting.findOne();
+    const isGstRequired = settings?.requireGstin !== false;
+
     // Validate all required business fields (trim to handle FormData empty strings)
     const missingFields = [];
     
@@ -331,7 +351,7 @@ export const submitSellerDetails = async (req, res) => {
     if (!pan || pan.trim() === "") missingFields.push("PAN");
     if (!aadhar || aadhar.trim() === "") missingFields.push("Aadhar");
     if (!bankAccount || bankAccount.trim() === "") missingFields.push("Bank Account");
-    if (!gst || gst.trim() === "") missingFields.push("GST");
+    if (isGstRequired && (!gst || gst.trim() === "")) missingFields.push("GST");
 
     if (missingFields.length > 0) {
       return res.status(400).json({ 
@@ -366,11 +386,13 @@ export const submitSellerDetails = async (req, res) => {
       });
     }
 
-    if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(cleanGst)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid GST number format (15 characters: e.g. 22AAAAA0000A1Z5).",
-      });
+    if (gst && gst.trim()) {
+      if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(cleanGst)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid GSTIN format (Must be 15 characters, e.g. 22AAAAA0000A1Z5).",
+        });
+      }
     }
 
     let seller = await Seller.findById(sellerId);
@@ -397,6 +419,12 @@ export const submitSellerDetails = async (req, res) => {
     
     if (address) seller.address = address;
 
+    // Handle Auto-Approve Seller system setting
+    if (settings?.autoApproveSellers) {
+      seller.isApproved = true;
+      seller.approvalDate = new Date();
+    }
+
     try {
       await seller.save();
     } catch (saveError) {
@@ -413,7 +441,9 @@ export const submitSellerDetails = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "Seller details submitted successfully. Awaiting admin approval.",
+      message: seller.isApproved
+        ? "Seller account approved and activated successfully!"
+        : "Seller details submitted successfully. Awaiting admin approval.",
       seller,
     });
   } catch (error) {
@@ -456,6 +486,23 @@ export const loginSeller = async (req, res) => {
         success: false,
         message: "Incorrect password.",
       });
+
+    // Check system 2FA configuration
+    const settings = await SystemSetting.findOne();
+    const enable2FA = settings?.enableSeller2FA !== false;
+
+    if (!enable2FA) {
+      seller.lastLogin = new Date();
+      await seller.save();
+      const token = generateToken(seller._id);
+      return res.status(200).json({
+        success: true,
+        requireOtp: false,
+        token,
+        seller,
+        message: "Login successful",
+      });
+    }
 
     // Generate 6-digit OTP for 2FA login
     const otp = generateOTP();
@@ -596,6 +643,25 @@ export const loginAdmin = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Incorrect password.",
+      });
+    }
+
+    // Check system 2FA configuration
+    const settings = await SystemSetting.findOne();
+    const enable2FA = settings?.enableAdmin2FA !== false;
+
+    if (!enable2FA) {
+      admin.loginAttempts = 0;
+      admin.lockedUntil = null;
+      admin.lastLogin = new Date();
+      await admin.save();
+      const token = generateToken(admin._id);
+      return res.status(200).json({
+        success: true,
+        requireOtp: false,
+        token,
+        admin,
+        message: "Admin login successful",
       });
     }
 

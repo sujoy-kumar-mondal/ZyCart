@@ -3,6 +3,7 @@ import Product from "../models/Product.js";
 import Order from "../models/Order.js";
 import User from "../models/User.js";
 import CategoryAttribute from "../models/CategoryAttribute.js";
+import SystemSetting from "../models/SystemSetting.js";
 import cloudinary from "../config/cloudinary.js";
 
 // Helper function to extract Cloudinary Public ID from image URL
@@ -158,6 +159,18 @@ export const addProduct = async (req, res) => {
 
     console.log("📦 Received attributes:", attributes);
     console.log("🔑 Attribute keys:", Object.keys(attributes || {}));
+
+    // Check seller product quota from system settings
+    const settings = await SystemSetting.findOne();
+    const maxAllowedProducts = settings?.maxProductsPerSeller ?? 50;
+    const currentProductCount = await Product.countDocuments({ seller: sellerId });
+
+    if (currentProductCount >= maxAllowedProducts) {
+      return res.status(400).json({
+        success: false,
+        message: `Product listing quota reached. You can list a maximum of ${maxAllowedProducts} products on ZyCart.`,
+      });
+    }
 
     if (!title || !price || !stock || !mainCategory || !subCategory || !subSubCategory) {
       return res.status(400).json({

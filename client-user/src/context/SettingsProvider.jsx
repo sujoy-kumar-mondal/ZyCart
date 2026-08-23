@@ -1,0 +1,78 @@
+import React, { createContext, useContext, useEffect, useState } from "react";
+import axios from "../utils/axiosInstance.js";
+
+const DEFAULT_SETTINGS = {
+  platformName: "ZyCart",
+  tagline: "Easy Shop, Easy Life",
+  supportEmail: "support@zycart.com",
+  supportPhone: "+91 98765 43210",
+  currencySymbol: "₹",
+  announcementBanner: {
+    enabled: false,
+    message: "Welcome to ZyCart! Enjoy free shipping on orders above ₹499.",
+  },
+  deliveryFee: 40,
+  freeDeliveryThreshold: 499,
+  minOrderValue: 0,
+  defaultMaxQuantityPerItem: 5,
+  estimatedDeliveryDays: "3-5 Business Days",
+  platformCommissionRate: 5,
+  autoApproveSellers: false,
+  maxProductsPerSeller: 50,
+  requireGstin: true,
+  enableCustomer2FA: true,
+  enableSeller2FA: true,
+  enableAdmin2FA: true,
+  maintenanceMode: {
+    enabled: false,
+    message: "ZyCart is currently undergoing scheduled platform maintenance. We'll be back shortly!",
+  },
+};
+
+const SettingsContext = createContext({
+  settings: DEFAULT_SETTINGS,
+  loading: true,
+  refreshSettings: () => {},
+});
+
+export const SettingsProvider = ({ children }) => {
+  const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+  const [loading, setLoading] = useState(true);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await axios.get("/settings/public");
+      if (res.data.success && res.data.settings) {
+        setSettings({
+          ...DEFAULT_SETTINGS,
+          ...res.data.settings,
+          announcementBanner: {
+            ...DEFAULT_SETTINGS.announcementBanner,
+            ...(res.data.settings.announcementBanner || {}),
+          },
+          maintenanceMode: {
+            ...DEFAULT_SETTINGS.maintenanceMode,
+            ...(res.data.settings.maintenanceMode || {}),
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Failed to load platform settings:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  return (
+    <SettingsContext.Provider value={{ settings, loading, refreshSettings: fetchSettings }}>
+      {children}
+    </SettingsContext.Provider>
+  );
+};
+
+export const useSettings = () => useContext(SettingsContext);
+export default SettingsContext;

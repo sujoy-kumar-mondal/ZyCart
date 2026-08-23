@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "../../utils/axiosInstance.js";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthProvider.jsx";
+import { useSettings } from "../../context/SettingsProvider.jsx";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
-import { Store, ShieldCheck, ArrowRight, Upload, Building, CreditCard, FileText, CheckCircle2 } from "lucide-react";
+import { Store, ShieldCheck, ArrowRight, Upload, Building, CreditCard, FileText, CheckCircle2, Sparkles } from "lucide-react";
 
 const SellerApply = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { settings } = useSettings();
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -43,6 +45,9 @@ const SellerApply = () => {
   const handleSendOtp = async (e) => {
     e.preventDefault();
 
+    if (settings.requireGstin !== false && !form.gst) {
+      return toast.error("GSTIN number is required!");
+    }
     if (!email) return toast.error("Email is required!");
     if (!email.includes("@")) return toast.error("Please enter a valid email!");
     if (!registrationForm.name.trim()) return toast.error("Full Name is required!");
@@ -418,11 +423,11 @@ const SellerApply = () => {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                  GSTIN Number *
+                  GSTIN Number {settings.requireGstin !== false ? "*" : "(Optional)"}
                 </label>
                 <input
                   type="text"
-                  required
+                  required={settings.requireGstin !== false}
                   name="gst"
                   maxLength={15}
                   value={form.gst}

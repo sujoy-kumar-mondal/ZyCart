@@ -1,5 +1,6 @@
 import Order from "../models/Order.js";
 import Product from "../models/Product.js";
+import SystemSetting from "../models/SystemSetting.js";
 import { updateAddressOnOrder } from "./userController.js";
 
 // ------------------------------------------------------------
@@ -73,27 +74,49 @@ export const placeOrder = async (req, res) => {
     }
 
     // --------------------------------------------
-    // STEP 3: Build Child Orders
+    // STEP 3: Fetch System Settings & Build Child Orders
     // --------------------------------------------
+    const settings = await SystemSetting.findOne();
+    const minOrderVal = settings?.minOrderValue ?? 0;
+    const freeDeliveryThreshold = settings?.freeDeliveryThreshold ?? 499;
+    const standardDeliveryFee = settings?.deliveryFee ?? 40;
+    const commissionRate = settings?.platformCommissionRate ?? 5;
+
     const childOrders = [];
-
-    let totalAmount = 0;
-
+    let itemsTotal = 0;
     const now = new Date();
 
     for (const [sellerId, groupItems] of Object.entries(sellerGroups)) {
       const childTotal = groupItems.reduce((a, b) => a + b.subtotal, 0);
-      totalAmount += childTotal;
+      itemsTotal += childTotal;
+
+      const commissionAmount = Math.round((childTotal * commissionRate) / 100);
+      const sellerEarnings = childTotal - commissionAmount;
 
       childOrders.push({
         seller: sellerId,
         items: groupItems,
         amount: childTotal,
+        commissionRate,
+        commissionAmount,
+        sellerEarnings,
         status: "Pending",
         placedAt: now,
         confirmedAt: now,
       });
     }
+
+    // Check minimum order value restriction
+    if (minOrderVal > 0 && itemsTotal < minOrderVal) {
+      return res.status(400).json({
+        success: false,
+        message: `Minimum order value for checkout is ₹${minOrderVal}. Please add more items.`,
+      });
+    }
+
+    // Calculate dynamic delivery fee
+    const deliveryFee = itemsTotal >= freeDeliveryThreshold ? 0 : standardDeliveryFee;
+    const totalAmount = itemsTotal + deliveryFee;
 
     // --------------------------------------------
     // STEP 4: Generate Unique Parent Order Number
@@ -108,6 +131,8 @@ export const placeOrder = async (req, res) => {
       parentOrderNumber,
       user: userId,
       address,
+      itemsTotal,
+      deliveryFee,
       totalAmount,
       childOrders,
       status: "Pending",

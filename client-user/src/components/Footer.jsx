@@ -1,8 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ShoppingBag, ShieldCheck, Truck, Headphones, ArrowRight, Heart } from "lucide-react";
+import { useSettings } from "../context/SettingsProvider";
 
 const Footer = () => {
+  const { settings } = useSettings();
   const sellerUrl = import.meta.env.VITE_SELLER_URL || "http://localhost:5174";
   const adminUrl = import.meta.env.VITE_ADMIN_URL || "http://localhost:5175";
 
@@ -18,7 +20,7 @@ const Footer = () => {
             </div>
             <div>
               <h4 className="font-extrabold text-white text-sm">Free Delivery</h4>
-              <p className="text-xs text-slate-400">On all eligible orders</p>
+              <p className="text-xs text-slate-400">On orders above ₹{settings.freeDeliveryThreshold ?? 499}</p>
             </div>
           </div>
 
@@ -68,7 +70,7 @@ const Footer = () => {
             </Link>
 
             <p className="text-sm text-slate-400 leading-relaxed">
-              ZyCart is your next-generation multi-vendor e-commerce platform delivering top-tier quality, transparent pricing, and instant doorstep delivery across categories.
+              {settings.platformName || "ZyCart"} is your next-generation multi-vendor e-commerce platform delivering top-tier quality, transparent pricing, and instant doorstep delivery across categories.
             </p>
 
             <div className="pt-2">
@@ -159,7 +161,7 @@ const Footer = () => {
 
         {/* Bottom Copyright & Credit Bar */}
         <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p>© {new Date().getFullYear()} ZyCart Inc. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {settings.platformName || "ZyCart"} Marketplace. All rights reserved.</p>
           <div className="flex items-center gap-1 font-medium">
             Crafted with <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500 inline" /> for a seamless shopping experience
           </div>

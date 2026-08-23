@@ -17,6 +17,8 @@ import wishlistRoutes from "./routes/wishlistRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import attributeRoutes from "./routes/attributeRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import settingsRoutes from "./routes/settingsRoutes.js";
+import SystemSetting from "./models/SystemSetting.js";
 
 
 const app = express();
@@ -56,6 +58,33 @@ app.use(express.json({ limit: "20mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Maintenance Mode Interceptor
+app.use(async (req, res, next) => {
+  if (
+    req.path.startsWith("/admin") ||
+    req.path.startsWith("/settings") ||
+    req.path.startsWith("/auth/admin") ||
+    req.path === "/" ||
+    req.path === "/health"
+  ) {
+    return next();
+  }
+
+  try {
+    const settings = await SystemSetting.findOne();
+    if (settings?.maintenanceMode?.enabled) {
+      if (req.method !== "GET" || req.path.startsWith("/orders") || req.path.startsWith("/cart")) {
+        return res.status(503).json({
+          success: false,
+          maintenance: true,
+          message: settings.maintenanceMode.message || "System is under scheduled maintenance. Please try again later.",
+        });
+      }
+    }
+  } catch (err) {}
+  next();
+});
+
 // -----------------------------------
 // HEALTH CHECK ROUTES (For deployment)
 // -----------------------------------
@@ -80,6 +109,7 @@ app.use("/wishlist", wishlistRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/attributes", attributeRoutes);
 app.use("/reviews", reviewRoutes);
+app.use("/settings", settingsRoutes);
 
 // -----------------------------------
 // Error Handler (Global)

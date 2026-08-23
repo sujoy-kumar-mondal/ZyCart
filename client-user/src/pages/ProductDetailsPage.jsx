@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../utils/axiosInstance';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Heart, ShoppingCart, ChevronLeft, ChevronRight, Check, ShieldCheck, Truck, RefreshCw, Zap } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ReviewSection from '../components/ReviewSection';
@@ -9,12 +9,15 @@ import ProductCard from '../components/ProductCard';
 import { useAuth } from '../context/AuthProvider';
 import { useCart } from '../context/CartProvider';
 import { useWishlist } from '../context/WishlistProvider';
+import { useSettings } from '../context/SettingsProvider';
 
 const ProductDetailsPage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { addToCart } = useCart();
   const { wishlist, addToWishlist, removeFromWishlist, isInWishlist: checkIsInWishlist } = useWishlist();
+  const { settings } = useSettings();
   
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -509,7 +512,7 @@ const ProductDetailsPage = () => {
               <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
                 <Truck className="w-5 h-5 text-blue-600 mx-auto mb-1" />
                 <p className="text-xs font-bold text-slate-800">Fast Delivery</p>
-                <p className="text-[10px] text-slate-500">Doorstep shipping</p>
+                <p className="text-[10px] text-slate-500">{settings.estimatedDeliveryDays || "Doorstep shipping"}</p>
               </div>
               <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100">
                 <ShieldCheck className="w-5 h-5 text-emerald-600 mx-auto mb-1" />

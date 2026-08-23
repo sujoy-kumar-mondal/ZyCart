@@ -3,7 +3,8 @@ import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 import { useCart } from "../context/CartProvider";
 import { useWishlist } from "../context/WishlistProvider";
-import { Menu, X, Search, Heart, ShoppingCart, LogOut, User, Package, Settings, ChevronDown } from "lucide-react";
+import { useSettings } from "../context/SettingsProvider";
+import { Menu, X, Search, Heart, ShoppingCart, LogOut, User, Package, Settings, ChevronDown, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
 
@@ -11,6 +12,7 @@ const Navbar = () => {
   const { user, logout } = useAuth();
   const { totalItems } = useCart();
   const { wishlist } = useWishlist();
+  const { settings } = useSettings();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -45,9 +47,18 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition-all">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 gap-4">
+    <>
+      {/* Global Announcement Banner */}
+      {settings.announcementBanner?.enabled && (
+        <div className="bg-gradient-to-r from-[#1B2A41] via-[#3F51F4] to-[#1B2A41] text-white py-2 px-4 text-center text-xs font-bold shadow-xs relative z-50 flex items-center justify-center gap-2">
+          <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+          <span>{settings.announcementBanner.message}</span>
+        </div>
+      )}
+
+      <nav className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition-all">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20 gap-4">
           
           {/* Brand Logo */}
           <Link
@@ -328,6 +339,7 @@ const Navbar = () => {
         )}
       </AnimatePresence>
     </nav>
+    </>
   );
 };
 

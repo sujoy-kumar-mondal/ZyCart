@@ -29,6 +29,21 @@ const childOrderSchema = new mongoose.Schema(
       required: true,
     },
 
+    commissionRate: {
+      type: Number,
+      default: 5,
+    },
+
+    commissionAmount: {
+      type: Number,
+      default: 0,
+    },
+
+    sellerEarnings: {
+      type: Number,
+      default: 0,
+    },
+
     // Status: Pending → Confirmed → Packed → Shipped → Out for Delivery → Delivered → Cancelled
     status: {
       type: String,
@@ -78,6 +93,16 @@ const parentOrderSchema = new mongoose.Schema(
       city: { type: String, required: true },
       state: { type: String, required: true },
       postalCode: { type: String, required: true },
+    },
+
+    itemsTotal: {
+      type: Number,
+      default: 0,
+    },
+
+    deliveryFee: {
+      type: Number,
+      default: 0,
     },
 
     totalAmount: {
