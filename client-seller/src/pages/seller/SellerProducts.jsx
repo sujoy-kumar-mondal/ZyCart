@@ -128,114 +128,80 @@ const SellerProducts = () => {
     fetchAllPathways();
   }, []);
 
-  // Helper for tokenizing and cleaning title / search query
-  const extractMeaningfulTokens = (text) => {
+  // Helper to extract clean words from text
+  const getCleanWords = (text) => {
     if (!text) return [];
-    const cleaned = text.replace(/[^a-zA-Z0-9\s]/g, " ").toLowerCase();
-    const rawTokens = cleaned.split(/\s+/).filter((t) => t.length > 1);
+    const raw = text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, " ")
+      .split(/\s+/)
+      .filter((w) => w.length >= 2);
 
-    const stopWords = new Set([
-      "for", "and", "the", "with", "in", "of", "to", "a", "an", "by", "on", "at",
-      "pack", "combo", "set", "piece", "pieces", "black", "white", "blue", "red", "green", "color",
-      "new", "latest", "best", "top", "premium", "original", "gen", "pro", "max", "plus", "ultra"
-    ]);
+    const words = new Set(raw);
 
-    const meaningful = [];
-    for (const token of rawTokens) {
-      if (!stopWords.has(token) && !/^\d+$/.test(token)) {
-        meaningful.push(token);
+    // Add singular forms
+    for (const w of raw) {
+      if (w.endsWith("ies") && w.length > 4) words.add(w.slice(0, -3) + "y");
+      else if (w.endsWith("es") && w.length > 4) words.add(w.slice(0, -2));
+      else if (w.endsWith("s") && !w.endsWith("ss") && w.length > 3) words.add(w.slice(0, -1));
+    }
+
+    // Combine adjacent number + unit (e.g., '16' + 'gb' -> '16gb', '512' + 'gb' -> '512gb')
+    for (let i = 0; i < raw.length - 1; i++) {
+      if (/^\d+$/.test(raw[i]) && ["gb", "tb", "mb", "inch", "kg", "ghz", "hz"].includes(raw[i + 1])) {
+        words.add(raw[i] + raw[i + 1]);
       }
     }
 
-    for (const token of rawTokens) {
-      if (["men", "women", "kids", "boys", "girls"].includes(token)) {
-        meaningful.push(token);
-      }
-    }
-
-    return Array.from(new Set(meaningful));
+    return Array.from(words);
   };
 
-  const SYNONYMS = {
-    watch: ["watch", "watches", "timepiece", "analog", "analogue", "dial", "smartwatch", "wrist"],
-    watches: ["watch", "watches", "timepiece", "analog", "analogue", "dial", "smartwatch", "wrist"],
-    analog: ["analog", "analogue", "dial", "wrist", "watch", "watches"],
-    analogue: ["analog", "analogue", "dial", "wrist", "watch", "watches"],
-    smartwatch: ["smartwatch", "smart", "watch", "wearable", "band"],
-    phone: ["phone", "mobile", "smartphone", "cellphone"],
-    mobile: ["mobile", "phone", "smartphone", "cellphone"],
-    smartphone: ["smartphone", "mobile", "phone"],
-    iphone: ["iphone", "mobile", "smartphone", "apple"],
-    shoe: ["shoe", "shoes", "footwear", "sneaker", "sneakers", "boots", "sandals", "slippers"],
-    shoes: ["shoe", "shoes", "footwear", "sneaker", "sneakers", "boots", "sandals", "slippers"],
-    sneaker: ["sneaker", "sneakers", "shoe", "shoes", "footwear"],
-    sneakers: ["sneaker", "sneakers", "shoe", "shoes", "footwear"],
-    shirt: ["shirt", "shirts", "tshirt", "t-shirt", "topwear", "clothing", "apparel"],
-    tshirt: ["tshirt", "t-shirt", "shirt", "topwear", "clothing"],
-    tshirts: ["tshirt", "t-shirt", "shirt", "topwear", "clothing"],
-    laptop: ["laptop", "laptops", "notebook", "computer", "pc"],
-    earphone: ["earphone", "earphones", "earbuds", "headphone", "headphones", "headset", "audio"],
-    earbuds: ["earbuds", "earphone", "earphones", "headphone", "headphones", "headset", "audio", "tws"],
-    headphone: ["headphone", "headphones", "headset", "earphone", "audio"],
-    dress: ["dress", "dresses", "gown", "clothing", "women"],
-    jeans: ["jeans", "denim", "pants", "trousers", "bottomwear"],
-    pant: ["pant", "pants", "trousers", "bottomwear", "jeans"],
-    bag: ["bag", "bags", "backpack", "handbag", "luggage", "wallet"],
-    wallet: ["wallet", "wallets", "purse", "accessories", "leather"],
-    perfume: ["perfume", "fragrance", "deodorant", "cologne", "body mist", "beauty"],
-    camera: ["camera", "cameras", "dslr", "lens", "photography"],
-    television: ["television", "tv", "smart tv", "led tv", "display"],
-    tv: ["tv", "television", "smart tv", "led tv"],
-  };
+  const scoreCategoryPathway = (pathway, queryWords, rawQueryLower) => {
+    const subSubWords = getCleanWords(pathway.subSubCategory);
+    const subWords = getCleanWords(pathway.subCategory);
+    const mainWords = getCleanWords(pathway.mainCategory);
+    const attributeWords = Array.isArray(pathway.attributeWords) ? pathway.attributeWords : [];
 
-  const scorePathway = (cat, queryStr, tokens) => {
     let score = 0;
-    const mainLower = (cat.mainCategory || "").toLowerCase();
-    const subLower = (cat.subCategory || "").toLowerCase();
-    const subSubLower = (cat.subSubCategory || "").toLowerCase();
+    const matchedWords = new Set();
 
-    const queryLower = queryStr.toLowerCase();
+    // Direct phrase containment on Product Type (subSubCategory)
+    const subSubLower = (pathway.subSubCategory || "").toLowerCase();
+    if (rawQueryLower.includes(subSubLower) && subSubLower.length > 2) {
+      score += 500;
+      subSubWords.forEach((w) => matchedWords.add(w));
+    }
 
-    // 1. Direct whole phrase or substring match
-    if (queryLower.includes(subSubLower)) score += 100;
-    if (subSubLower.includes(queryLower)) score += 80;
-    if (queryLower.includes(subLower)) score += 50;
-    if (subLower.includes(queryLower)) score += 40;
+    for (const qWord of queryWords) {
+      // Product Type match (100 pts)
+      if (subSubWords.includes(qWord)) {
+        score += 100;
+        matchedWords.add(qWord);
+      }
+      // Sub Category match (40 pts)
+      if (subWords.includes(qWord)) {
+        score += 40;
+        matchedWords.add(qWord);
+      }
+      // Attributes match (25 pts)
+      if (attributeWords.includes(qWord)) {
+        score += 25;
+        matchedWords.add(qWord);
+      }
+      // Main Category match (5 pts)
+      if (mainWords.includes(qWord)) {
+        score += 5;
+        matchedWords.add(qWord);
+      }
+    }
 
-    // 2. Token matches with synonym expansion
-    tokens.forEach((token) => {
-      const related = new Set([token]);
-      if (token.endsWith("es")) related.add(token.slice(0, -2));
-      if (token.endsWith("s")) related.add(token.slice(0, -1));
-      if (SYNONYMS[token]) SYNONYMS[token].forEach((syn) => related.add(syn));
-
-      related.forEach((term) => {
-        if (subSubLower === term) {
-          score += 60;
-        } else if (subSubLower.split(/\s+/).includes(term)) {
-          score += 45;
-        } else if (subSubLower.includes(term)) {
-          score += 30;
-        }
-
-        if (subLower === term) {
-          score += 35;
-        } else if (subLower.split(/\s+/).includes(term)) {
-          score += 25;
-        } else if (subLower.includes(term)) {
-          score += 15;
-        }
-
-        if (mainLower.includes(term)) {
-          score += 10;
-        }
-      });
-    });
-
-    return score;
+    if (matchedWords.size > 0) {
+      return score * matchedWords.size;
+    }
+    return 0;
   };
 
-  // Filter category pathways as user types in category search input with NLP scoring
+  // Filter category pathways as user types in category search input with word decomposition & attribute matching
   useEffect(() => {
     if (!categorySearchQuery.trim()) {
       setCategorySearchResults([]);
@@ -243,13 +209,14 @@ const SellerProducts = () => {
     }
 
     const rawQuery = categorySearchQuery.trim();
-    const tokens = extractMeaningfulTokens(rawQuery);
+    const queryWords = getCleanWords(rawQuery);
+    const queryLower = rawQuery.toLowerCase();
 
     if (allPathways.length > 0) {
       const scored = allPathways
         .map((item) => ({
           ...item,
-          score: scorePathway(item, rawQuery, tokens),
+          score: scoreCategoryPathway(item, queryWords, queryLower),
         }))
         .filter((item) => item.score > 0)
         .sort((a, b) => b.score - a.score)

@@ -2,6 +2,7 @@ import Product from "../models/Product.js";
 import Seller from "../models/Seller.js";
 import Trend from "../models/Trend.js";
 import Category from "../models/Category.js";
+import CategoryAttribute from "../models/CategoryAttribute.js";
 import { getMainCategories, getSubCategories, getSubSubCategories, getAttributesForCategory } from "../utils/categories.js";
 
 // ----------------------------------------------------------
@@ -370,117 +371,35 @@ export const getAttributes = async (req, res) => {
   }
 };
 
-// Helper for tokenizing and cleaning title / search query
-const extractMeaningfulTokens = (text) => {
+// Helper to extract clean words from text
+const getCleanWords = (text) => {
   if (!text) return [];
-  const cleaned = text.replace(/[^a-zA-Z0-9\s]/g, " ").toLowerCase();
-  const rawTokens = cleaned.split(/\s+/).filter((t) => t.length > 1);
+  const raw = text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length >= 2);
 
-  const stopWords = new Set([
-    "for", "and", "the", "with", "in", "of", "to", "a", "an", "by", "on", "at",
-    "pack", "combo", "set", "piece", "pieces", "black", "white", "blue", "red", "green", "color",
-    "new", "latest", "best", "top", "premium", "original", "gen", "pro", "max", "plus", "ultra"
-  ]);
+  const words = new Set(raw);
 
-  const meaningful = [];
-  for (const token of rawTokens) {
-    if (!stopWords.has(token) && !/^\d+$/.test(token)) {
-      meaningful.push(token);
+  // Add singular forms
+  for (const w of raw) {
+    if (w.endsWith("ies") && w.length > 4) words.add(w.slice(0, -3) + "y");
+    else if (w.endsWith("es") && w.length > 4) words.add(w.slice(0, -2));
+    else if (w.endsWith("s") && !w.endsWith("ss") && w.length > 3) words.add(w.slice(0, -1));
+  }
+
+  // Combine adjacent number + unit (e.g., '16' + 'gb' -> '16gb', '512' + 'gb' -> '512gb')
+  for (let i = 0; i < raw.length - 1; i++) {
+    if (/^\d+$/.test(raw[i]) && ["gb", "tb", "mb", "inch", "kg", "ghz", "hz"].includes(raw[i + 1])) {
+      words.add(raw[i] + raw[i + 1]);
     }
   }
 
-  for (const token of rawTokens) {
-    if (["men", "women", "kids", "boys", "girls"].includes(token)) {
-      meaningful.push(token);
-    }
-  }
-
-  return Array.from(new Set(meaningful));
+  return Array.from(words);
 };
 
-const SYNONYMS = {
-  watch: ["watch", "watches", "timepiece", "analog", "analogue", "dial", "smartwatch", "wrist"],
-  watches: ["watch", "watches", "timepiece", "analog", "analogue", "dial", "smartwatch", "wrist"],
-  analog: ["analog", "analogue", "dial", "wrist", "watch", "watches"],
-  analogue: ["analog", "analogue", "dial", "wrist", "watch", "watches"],
-  smartwatch: ["smartwatch", "smart", "watch", "wearable", "band"],
-  phone: ["phone", "mobile", "smartphone", "cellphone"],
-  mobile: ["mobile", "phone", "smartphone", "cellphone"],
-  smartphone: ["smartphone", "mobile", "phone"],
-  iphone: ["iphone", "mobile", "smartphone", "apple"],
-  shoe: ["shoe", "shoes", "footwear", "sneaker", "sneakers", "boots", "sandals", "slippers"],
-  shoes: ["shoe", "shoes", "footwear", "sneaker", "sneakers", "boots", "sandals", "slippers"],
-  sneaker: ["sneaker", "sneakers", "shoe", "shoes", "footwear"],
-  sneakers: ["sneaker", "sneakers", "shoe", "shoes", "footwear"],
-  shirt: ["shirt", "shirts", "tshirt", "t-shirt", "topwear", "clothing", "apparel"],
-  tshirt: ["tshirt", "t-shirt", "shirt", "topwear", "clothing"],
-  tshirts: ["tshirt", "t-shirt", "shirt", "topwear", "clothing"],
-  laptop: ["laptop", "laptops", "notebook", "computer", "pc"],
-  earphone: ["earphone", "earphones", "earbuds", "headphone", "headphones", "headset", "audio"],
-  earbuds: ["earbuds", "earphone", "earphones", "headphone", "headphones", "headset", "audio", "tws"],
-  headphone: ["headphone", "headphones", "headset", "earphone", "audio"],
-  dress: ["dress", "dresses", "gown", "clothing", "women"],
-  jeans: ["jeans", "denim", "pants", "trousers", "bottomwear"],
-  pant: ["pant", "pants", "trousers", "bottomwear", "jeans"],
-  bag: ["bag", "bags", "backpack", "handbag", "luggage", "wallet"],
-  wallet: ["wallet", "wallets", "purse", "accessories", "leather"],
-  perfume: ["perfume", "fragrance", "deodorant", "cologne", "body mist", "beauty"],
-  camera: ["camera", "cameras", "dslr", "lens", "photography"],
-  television: ["television", "tv", "smart tv", "led tv", "display"],
-  tv: ["tv", "television", "smart tv", "led tv"],
-};
-
-const scorePathway = (cat, queryStr, tokens) => {
-  let score = 0;
-  const mainLower = (cat.mainCategory || "").toLowerCase();
-  const subLower = (cat.subCategory || "").toLowerCase();
-  const subSubLower = (cat.subSubCategory || "").toLowerCase();
-
-  const queryLower = queryStr.toLowerCase();
-
-  // 1. Direct whole phrase or substring match
-  if (queryLower.includes(subSubLower)) score += 100;
-  if (subSubLower.includes(queryLower)) score += 80;
-  if (queryLower.includes(subLower)) score += 50;
-  if (subLower.includes(queryLower)) score += 40;
-
-  // 2. Token matches with synonym expansion
-  tokens.forEach((token) => {
-    const related = new Set([token]);
-    if (token.endsWith("es")) related.add(token.slice(0, -2));
-    if (token.endsWith("s")) related.add(token.slice(0, -1));
-    if (SYNONYMS[token]) SYNONYMS[token].forEach((syn) => related.add(syn));
-
-    related.forEach((term) => {
-      // SubSubCategory (Product Type)
-      if (subSubLower === term) {
-        score += 60;
-      } else if (subSubLower.split(/\s+/).includes(term)) {
-        score += 45;
-      } else if (subSubLower.includes(term)) {
-        score += 30;
-      }
-
-      // SubCategory
-      if (subLower === term) {
-        score += 35;
-      } else if (subLower.split(/\s+/).includes(term)) {
-        score += 25;
-      } else if (subLower.includes(term)) {
-        score += 15;
-      }
-
-      // MainCategory
-      if (mainLower.includes(term)) {
-        score += 10;
-      }
-    });
-  });
-
-  return score;
-};
-
-// Search category pathways across 3 tiers with title pasted NLP ranking
+// Search category pathways across 3 tiers and attributes with word-by-word decomposition
 export const searchCategoryPathways = async (req, res) => {
   try {
     const { q } = req.query;
@@ -489,30 +408,97 @@ export const searchCategoryPathways = async (req, res) => {
     }
 
     const rawQuery = q.trim();
-    const tokens = extractMeaningfulTokens(rawQuery);
+    const queryWords = getCleanWords(rawQuery);
+    const queryLower = rawQuery.toLowerCase();
 
     const categories = await Category.find({ isActive: true });
+    const allAttributes = await CategoryAttribute.find({ isActive: true });
 
-    const scored = categories
-      .map((cat) => {
-        const score = scorePathway(cat, rawQuery, tokens);
-        return {
+    const attrMap = new Map();
+    for (const attr of allAttributes) {
+      const key = `${attr.mainCategory}|||${attr.subCategory}|||${attr.subSubCategory}`.toLowerCase();
+      attrMap.set(key, attr);
+    }
+
+    const scored = [];
+
+    for (const cat of categories) {
+      const key = `${cat.mainCategory}|||${cat.subCategory}|||${cat.subSubCategory}`.toLowerCase();
+      const attrDoc = attrMap.get(key);
+
+      const subSubWords = getCleanWords(cat.subSubCategory);
+      const subWords = getCleanWords(cat.subCategory);
+      const mainWords = getCleanWords(cat.mainCategory);
+
+      let attrText = "";
+      if (attrDoc && attrDoc.fields) {
+        for (const field of attrDoc.fields) {
+          attrText += ` ${field.fieldName} `;
+          if (field.options) {
+            if (Array.isArray(field.options)) {
+              attrText += ` ${field.options.join(" ")} `;
+            } else if (typeof field.options === "string") {
+              attrText += ` ${field.options} `;
+            }
+          }
+        }
+      }
+      const attributeWords = getCleanWords(attrText);
+
+      let score = 0;
+      const matchedWords = new Set();
+
+      // Direct phrase containment on Product Type (subSubCategory)
+      const subSubLower = (cat.subSubCategory || "").toLowerCase();
+      if (queryLower.includes(subSubLower) && subSubLower.length > 2) {
+        score += 500;
+        subSubWords.forEach((w) => matchedWords.add(w));
+      }
+
+      for (const qWord of queryWords) {
+        // Product Type match (100 pts)
+        if (subSubWords.includes(qWord)) {
+          score += 100;
+          matchedWords.add(qWord);
+        }
+        // Sub Category match (40 pts)
+        if (subWords.includes(qWord)) {
+          score += 40;
+          matchedWords.add(qWord);
+        }
+        // Attributes match (25 pts)
+        if (attributeWords.includes(qWord)) {
+          score += 25;
+          matchedWords.add(qWord);
+        }
+        // Main Category match (5 pts)
+        if (mainWords.includes(qWord)) {
+          score += 5;
+          matchedWords.add(qWord);
+        }
+      }
+
+      if (matchedWords.size > 0) {
+        const finalScore = score * matchedWords.size;
+        scored.push({
           _id: cat._id,
           mainCategory: cat.mainCategory,
           subCategory: cat.subCategory,
           subSubCategory: cat.subSubCategory,
           path: `${cat.mainCategory} > ${cat.subCategory} > ${cat.subSubCategory}`,
-          score,
-        };
-      })
-      .filter((item) => item.score > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 25);
+          score: finalScore,
+          matchedCount: matchedWords.size,
+          matchedWords: Array.from(matchedWords),
+        });
+      }
+    }
+
+    scored.sort((a, b) => b.score - a.score);
 
     res.status(200).json({
       success: true,
       count: scored.length,
-      results: scored,
+      results: scored.slice(0, 25),
     });
   } catch (error) {
     console.error("Search category pathways error:", error);
@@ -520,7 +506,7 @@ export const searchCategoryPathways = async (req, res) => {
   }
 };
 
-// Get all category pathways
+// Get all category pathways with their attribute keywords for instant client-side searching
 export const getAllCategoryPathways = async (req, res) => {
   try {
     const categories = await Category.find({ isActive: true }).sort({
@@ -529,13 +515,40 @@ export const getAllCategoryPathways = async (req, res) => {
       subSubCategory: 1,
     });
 
-    const results = categories.map((cat) => ({
-      _id: cat._id,
-      mainCategory: cat.mainCategory,
-      subCategory: cat.subCategory,
-      subSubCategory: cat.subSubCategory,
-      path: `${cat.mainCategory} > ${cat.subCategory} > ${cat.subSubCategory}`,
-    }));
+    const allAttributes = await CategoryAttribute.find({ isActive: true });
+    const attrMap = new Map();
+    for (const attr of allAttributes) {
+      const key = `${attr.mainCategory}|||${attr.subCategory}|||${attr.subSubCategory}`.toLowerCase();
+      attrMap.set(key, attr);
+    }
+
+    const results = categories.map((cat) => {
+      const key = `${cat.mainCategory}|||${cat.subCategory}|||${cat.subSubCategory}`.toLowerCase();
+      const attrDoc = attrMap.get(key);
+
+      let attrText = "";
+      if (attrDoc && attrDoc.fields) {
+        for (const field of attrDoc.fields) {
+          attrText += ` ${field.fieldName} `;
+          if (field.options) {
+            if (Array.isArray(field.options)) {
+              attrText += ` ${field.options.join(" ")} `;
+            } else if (typeof field.options === "string") {
+              attrText += ` ${field.options} `;
+            }
+          }
+        }
+      }
+
+      return {
+        _id: cat._id,
+        mainCategory: cat.mainCategory,
+        subCategory: cat.subCategory,
+        subSubCategory: cat.subSubCategory,
+        path: `${cat.mainCategory} > ${cat.subCategory} > ${cat.subSubCategory}`,
+        attributeWords: getCleanWords(attrText),
+      };
+    });
 
     res.status(200).json({
       success: true,
