@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
-import { Menu, X, LogOut, Settings, User, Store, Package, ShoppingBag, LayoutDashboard, Sparkles } from "lucide-react";
+import { useSettings } from "../context/SettingsProvider";
+import { Menu, X, LogOut, Settings, User, Store, Package, ShoppingBag, LayoutDashboard, Sparkles, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const { settings } = useSettings();
   const navigate = useNavigate();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -33,8 +35,17 @@ const Navbar = () => {
     }`;
 
   return (
-    <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/85 border-b border-slate-200/80 shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
+    <>
+      {/* Maintenance Alert Banner */}
+      {settings.maintenanceMode?.enabled && (
+        <div className="bg-amber-600 text-white py-2 px-4 text-center text-xs font-black shadow-xs relative z-50 flex items-center justify-center gap-2">
+          <AlertTriangle className="w-4 h-4 text-white shrink-0" />
+          <span>Notice: Customer Storefront is currently in Maintenance Mode ({settings.maintenanceMode.message})</span>
+        </div>
+      )}
+
+      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/85 border-b border-slate-200/80 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
         
         {/* Brand Logo & Merchant Badge */}
         <div className="flex items-center gap-3">
@@ -241,6 +252,7 @@ const Navbar = () => {
         )}
       </AnimatePresence>
     </nav>
+    </>
   );
 };
 

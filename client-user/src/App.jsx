@@ -4,6 +4,8 @@ import { Toaster } from "react-hot-toast";
 
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
+import MaintenanceMode from "./components/MaintenanceMode.jsx";
+import { useSettings } from "./context/SettingsProvider.jsx";
 
 // User Pages
 import Home from "./pages/Home.jsx";
@@ -24,6 +26,13 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 
 const App = () => {
+  const { settings, loading, refreshSettings } = useSettings();
+
+  // If Maintenance Mode is enabled in System Settings, show full Maintenance screen
+  if (!loading && settings?.maintenanceMode?.enabled) {
+    return <MaintenanceMode settings={settings} onRefresh={refreshSettings} />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <Toaster />
