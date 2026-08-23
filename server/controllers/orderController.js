@@ -155,12 +155,12 @@ export const placeOrder = async (req, res) => {
     }
 
     // --------------------------------------------
-    // STEP 8: Profit Sharing (4 : 1)
+    // STEP 8: Profit Sharing
     // --------------------------------------------
     const profitDetails = childOrders.map((c) => ({
       seller: c.seller,
-      sellerAmount: c.amount * 0.8, // Seller gets 80%
-      platformAmount: c.amount * 0.2, // Platform gets 20%
+      sellerAmount: c.sellerEarnings,
+      platformAmount: c.commissionAmount,
     }));
 
     // You can store profitDetails in DB if needed.

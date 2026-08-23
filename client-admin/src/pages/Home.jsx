@@ -15,13 +15,18 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
+import { useSettings } from "../context/SettingsProvider";
 
 const Home = () => {
   const { user } = useAuth();
+  const { settings } = useSettings();
+  const brandName = settings?.platformName || "ZyCart";
+  const commissionRate = settings?.platformCommissionRate ?? 5;
+  const sellerCut = Math.max(0, 100 - commissionRate);
 
   useEffect(() => {
-    document.title = "ZyCart Admin — Enterprise Platform Command Center";
-  }, []);
+    document.title = `${brandName} Admin — Enterprise Platform Command Center`;
+  }, [brandName]);
 
   const features = [
     {
@@ -41,7 +46,7 @@ const Home = () => {
     {
       id: 3,
       title: "Platform Revenue & Split Audits",
-      description: "Real-time auditing of 20% platform commission cuts and 80% seller payouts.",
+      description: `Real-time auditing of ${commissionRate}% platform commission cuts and ${sellerCut}% seller payouts.`,
       icon: BarChart3,
       color: "from-purple-500 to-indigo-600",
     },
@@ -97,12 +102,12 @@ const Home = () => {
               <h1 className="text-4xl sm:text-6xl font-black text-[#1B2A41] leading-tight">
                 Enterprise Command Center for{" "}
                 <span className="bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
-                  ZyCart Marketplace
+                  {brandName} Marketplace
                 </span>
               </h1>
 
               <p className="text-lg text-slate-600 font-normal leading-relaxed max-w-2xl">
-                Oversee customer accounts, verify merchant GST credentials, audit platform revenue splits (20% platform cut / 80% merchant cut), and configure sub-admin role permissions.
+                Oversee customer accounts, verify merchant GST credentials, audit platform revenue splits ({commissionRate}% platform cut / {sellerCut}% merchant cut), and configure sub-admin role permissions.
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">

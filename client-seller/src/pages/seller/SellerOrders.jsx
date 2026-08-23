@@ -155,7 +155,7 @@ const SellerOrders = () => {
                   <span className="text-xs font-bold text-slate-400">Package Subtotal: </span>
                   <span className="text-lg font-black text-[#1B2A41]">{currency}{order.amount?.toLocaleString()}</span>
                   <span className="text-xs font-bold text-emerald-600 ml-2">
-                    (Your Net Payout: {currency}{(order.amount * (1 - commissionRate / 100))?.toLocaleString()} after {commissionRate}% platform fee)
+                    (Your Net Payout: {currency}{(order.sellerEarnings !== undefined && order.sellerEarnings !== null ? order.sellerEarnings : (order.amount * (1 - (order.commissionRate ?? commissionRate) / 100)))?.toLocaleString()} after {order.commissionRate ?? commissionRate}% platform fee)
                   </span>
                 </div>
 

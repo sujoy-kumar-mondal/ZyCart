@@ -15,13 +15,18 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
+import { useSettings } from "../context/SettingsProvider";
 
 const Home = () => {
   const { user } = useAuth();
+  const { settings } = useSettings();
+  const brandName = settings?.platformName || "ZyCart";
+  const commissionRate = settings?.platformCommissionRate ?? 5;
+  const sellerCut = Math.max(0, 100 - commissionRate);
 
   useEffect(() => {
-    document.title = "ZyCart Merchant Central — Grow Your E-Commerce Business";
-  }, []);
+    document.title = `${brandName} Merchant Central — Grow Your E-Commerce Business`;
+  }, [brandName]);
 
   const features = [
     {
@@ -41,7 +46,7 @@ const Home = () => {
     {
       id: 3,
       title: "Weekly Payout Settlements",
-      description: "Direct bank account transfers every week with transparent 80% merchant payouts.",
+      description: `Direct bank account transfers every week with transparent ${sellerCut}% merchant payouts.`,
       icon: Shield,
       color: "from-emerald-500 to-teal-600",
     },
@@ -97,12 +102,12 @@ const Home = () => {
               <h1 className="text-4xl sm:text-6xl font-black text-[#1B2A41] leading-tight">
                 Grow Your Brand on{" "}
                 <span className="bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
-                  ZyCart Merchant
+                  {brandName} Merchant
                 </span>
               </h1>
 
               <p className="text-lg text-slate-600 font-normal leading-relaxed max-w-2xl">
-                Reach over 1,000,000 active shoppers. Enjoy 80% payouts, automated doorstep logistics pickup, zero listing fee barriers, and live multi-channel analytics.
+                Reach over 1,000,000 active shoppers. Enjoy {sellerCut}% payouts, automated doorstep logistics pickup, zero listing fee barriers, and live multi-channel analytics.
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
@@ -144,7 +149,7 @@ const Home = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100 text-center">
-                    <p className="text-3xl font-black text-[#3F51F4]">80%</p>
+                    <p className="text-3xl font-black text-[#3F51F4]">{sellerCut}%</p>
                     <p className="text-xs font-semibold text-slate-600 mt-1">Net Seller Cut</p>
                   </div>
 
