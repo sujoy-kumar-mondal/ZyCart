@@ -12,6 +12,8 @@ import {
   getSubCategoriesRoute,
   getSubSubCategoriesRoute,
   getAttributes,
+  searchCategoryPathways,
+  getAllCategoryPathways,
 } from "../controllers/productController.js";
 
 
@@ -34,6 +36,8 @@ router.get("/trends/top-purchase", getTopPurchaseTrends);
 router.get("/trends/top-views", getTopViewTrends);
 
 // Category routes (MUST come before /:id to avoid matching "categories" as an ID)
+router.get("/categories/search", searchCategoryPathways);
+router.get("/categories/all-pathways", getAllCategoryPathways);
 router.get("/categories", getCategories);
 router.get("/categories/:main", getSubCategoriesRoute);
 router.get("/categories/:main/:sub", getSubSubCategoriesRoute);

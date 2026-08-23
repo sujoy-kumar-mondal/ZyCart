@@ -1,6 +1,7 @@
 import Product from "../models/Product.js";
 import Seller from "../models/Seller.js";
 import Trend from "../models/Trend.js";
+import Category from "../models/Category.js";
 import { getMainCategories, getSubCategories, getSubSubCategories, getAttributesForCategory } from "../utils/categories.js";
 
 // ----------------------------------------------------------
@@ -366,5 +367,71 @@ export const getAttributes = async (req, res) => {
   } catch (error) {
     console.error("Get attributes error:", error);
     res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// Search category pathways across 3 tiers (e.g. searching "watch" returns "Electronics > Wearable Smart Devices > Smart Watches")
+export const searchCategoryPathways = async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q || !q.trim()) {
+      return res.status(200).json({ success: true, count: 0, results: [] });
+    }
+
+    const searchRegex = new RegExp(q.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+
+    const categories = await Category.find({
+      isActive: true,
+      $or: [
+        { subSubCategory: searchRegex },
+        { subCategory: searchRegex },
+        { mainCategory: searchRegex },
+      ],
+    }).limit(25);
+
+    const results = categories.map((cat) => ({
+      _id: cat._id,
+      mainCategory: cat.mainCategory,
+      subCategory: cat.subCategory,
+      subSubCategory: cat.subSubCategory,
+      path: `${cat.mainCategory} > ${cat.subCategory} > ${cat.subSubCategory}`,
+    }));
+
+    res.status(200).json({
+      success: true,
+      count: results.length,
+      results,
+    });
+  } catch (error) {
+    console.error("Search category pathways error:", error);
+    res.status(500).json({ success: false, message: "Server error searching categories" });
+  }
+};
+
+// Get all category pathways
+export const getAllCategoryPathways = async (req, res) => {
+  try {
+    const categories = await Category.find({ isActive: true }).sort({
+      mainCategory: 1,
+      subCategory: 1,
+      subSubCategory: 1,
+    });
+
+    const results = categories.map((cat) => ({
+      _id: cat._id,
+      mainCategory: cat.mainCategory,
+      subCategory: cat.subCategory,
+      subSubCategory: cat.subSubCategory,
+      path: `${cat.mainCategory} > ${cat.subCategory} > ${cat.subSubCategory}`,
+    }));
+
+    res.status(200).json({
+      success: true,
+      count: results.length,
+      results,
+    });
+  } catch (error) {
+    console.error("Get all category pathways error:", error);
+    res.status(500).json({ success: false, message: "Server error fetching category pathways" });
   }
 };

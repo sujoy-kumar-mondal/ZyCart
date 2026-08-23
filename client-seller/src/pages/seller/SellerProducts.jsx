@@ -4,7 +4,7 @@ import axios from "../../utils/axiosInstance.js";
 import Loader from "../../components/Loader";
 import toast from "react-hot-toast";
 import { useSettings } from "../../context/SettingsProvider";
-import { ChevronDown, Search, Filter, X, PlusCircle, Edit, Trash2, Eye, EyeOff, Package, Tag, Calendar, AlertCircle } from "lucide-react";
+import { ChevronDown, Search, Filter, X, PlusCircle, Edit, Trash2, Eye, EyeOff, Package, Tag, Calendar, AlertCircle, Sparkles, CheckCircle2, ChevronRight, Layers } from "lucide-react";
 
 const SellerProducts = () => {
   const { settings } = useSettings();
@@ -85,6 +85,12 @@ const SellerProducts = () => {
   const [subSubCategories, setSubSubCategories] = useState([]);
   const [attributesSchema, setAttributesSchema] = useState({});
 
+  // Smart Category & Product Type Search States
+  const [allPathways, setAllPathways] = useState([]);
+  const [categorySearchQuery, setCategorySearchQuery] = useState("");
+  const [categorySearchResults, setCategorySearchResults] = useState([]);
+  const [showCategorySearchSuggestions, setShowCategorySearchSuggestions] = useState(false);
+
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -105,10 +111,40 @@ const SellerProducts = () => {
     } catch (error) { }
   };
 
+  const fetchAllPathways = async () => {
+    try {
+      const res = await axios.get("/products/categories/all-pathways");
+      if (res.data.success) {
+        setAllPathways(res.data.results || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch all category pathways:", error);
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
     fetchCategories();
+    fetchAllPathways();
   }, []);
+
+  // Filter category pathways as user types in category search input
+  useEffect(() => {
+    if (!categorySearchQuery.trim()) {
+      setCategorySearchResults([]);
+      return;
+    }
+
+    const q = categorySearchQuery.toLowerCase().trim();
+    const terms = q.split(/\s+/).filter(Boolean);
+
+    const matches = allPathways.filter((item) => {
+      const fullText = `${item.mainCategory} ${item.subCategory} ${item.subSubCategory}`.toLowerCase();
+      return terms.every((term) => fullText.includes(term));
+    });
+
+    setCategorySearchResults(matches);
+  }, [categorySearchQuery, allPathways]);
 
   useEffect(() => {
     let filtered = [...products];
@@ -212,6 +248,43 @@ const SellerProducts = () => {
       }
     } else {
       setAttributesSchema({});
+    }
+  };
+
+  const handleSelectCategoryPathway = async (pathway) => {
+    const { mainCategory, subCategory, subSubCategory } = pathway;
+
+    try {
+      // 1. Fetch sub categories for mainCategory
+      const subRes = await axios.get(`/products/categories/${encodeURIComponent(mainCategory)}`);
+      setSubCategories(subRes.data.subCategories || []);
+
+      // 2. Fetch subSubCategories for mainCategory & subCategory
+      const subSubRes = await axios.get(
+        `/products/categories/${encodeURIComponent(mainCategory)}/${encodeURIComponent(subCategory)}`
+      );
+      setSubSubCategories(subSubRes.data.subSubCategories || []);
+
+      // 3. Fetch attributes schema
+      const attrUrl = `/products/categories/${encodeURIComponent(mainCategory)}/${encodeURIComponent(subCategory)}/${encodeURIComponent(subSubCategory)}/attributes`;
+      const attrRes = await axios.get(attrUrl);
+      setAttributesSchema(attrRes.data.attributes || {});
+
+      // 4. Update form state
+      setForm((prev) => ({
+        ...prev,
+        mainCategory,
+        subCategory,
+        subSubCategory,
+        attributes: {},
+      }));
+
+      setCategorySearchQuery("");
+      setShowCategorySearchSuggestions(false);
+      toast.success(`Selected: ${mainCategory} > ${subCategory} > ${subSubCategory}`);
+    } catch (error) {
+      console.error("Error setting category pathway:", error);
+      toast.error("Failed to load category attributes");
     }
   };
 
@@ -514,6 +587,8 @@ const SellerProducts = () => {
     setSubCategories([]);
     setSubSubCategories([]);
     setAttributesSchema({});
+    setCategorySearchQuery("");
+    setShowCategorySearchSuggestions(false);
   };
 
   useEffect(() => {
@@ -726,56 +801,155 @@ const SellerProducts = () => {
                 />
               </div>
 
-              {/* Categories */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-slate-100 pt-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Main Category *
-                  </label>
-                  <select
-                    value={form.mainCategory}
-                    onChange={(e) => handleMainCategoryChange(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer"
-                  >
-                    <option value="">Select Main Category</option>
-                    {categories.map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                  </select>
+              {/* Smart Category & Product Type Search / Selection */}
+              <div className="border-t border-slate-100 pt-6 space-y-4">
+                <div className="space-y-2 relative">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                      <Search className="w-3.5 h-3.5 text-[#3F51F4]" /> Search Product Type / Category Pathway
+                    </label>
+                    <span className="text-[10px] font-extrabold text-[#3F51F4] bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100 flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-blue-500" /> Smart Auto-Suggest
+                    </span>
+                  </div>
+
+                  <div className="relative">
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={categorySearchQuery}
+                      onChange={(e) => {
+                        setCategorySearchQuery(e.target.value);
+                        setShowCategorySearchSuggestions(true);
+                      }}
+                      onFocus={() => setShowCategorySearchSuggestions(true)}
+                      placeholder="Type to search (e.g. watch, shoes, mobile, t-shirt, laptop, headphone)..."
+                      className="w-full pl-10 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#3F51F4] focus:ring-2 focus:ring-blue-500/20 outline-none transition"
+                    />
+                    {categorySearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCategorySearchQuery("");
+                          setShowCategorySearchSuggestions(false);
+                        }}
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full cursor-pointer"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Auto-Suggestions Dropdown Popover */}
+                  {showCategorySearchSuggestions && categorySearchQuery.trim() && (
+                    <div className="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-2xl shadow-2xl border border-slate-200 z-50 max-h-64 overflow-y-auto p-2 space-y-1">
+                      <div className="px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 border-b border-slate-100 flex items-center justify-between">
+                        <span>Suggested Category Pathways ({categorySearchResults.length})</span>
+                        <span>Click to Select</span>
+                      </div>
+
+                      {categorySearchResults.length === 0 ? (
+                        <div className="p-4 text-center text-xs text-slate-400 font-semibold">
+                          No matching product type found for "<span className="text-slate-700 font-bold">{categorySearchQuery}</span>". You can choose directly from the dropdowns below.
+                        </div>
+                      ) : (
+                        categorySearchResults.map((pathway, pIdx) => (
+                          <button
+                            key={pIdx}
+                            type="button"
+                            onClick={() => handleSelectCategoryPathway(pathway)}
+                            className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs hover:bg-blue-50/80 transition flex items-center justify-between group cursor-pointer border border-transparent hover:border-blue-100"
+                          >
+                            <div className="space-y-0.5">
+                              <div className="font-extrabold text-slate-900 group-hover:text-[#3F51F4] flex items-center gap-1.5">
+                                <Tag className="w-3.5 h-3.5 text-[#3F51F4]" />
+                                <span>{pathway.subSubCategory}</span>
+                              </div>
+                              <div className="text-[11px] text-slate-400 font-semibold flex items-center gap-1.5 flex-wrap">
+                                <span className="text-slate-500">{pathway.mainCategory}</span>
+                                <ChevronRight className="w-3 h-3 text-slate-300 inline" />
+                                <span className="text-slate-500">{pathway.subCategory}</span>
+                                <ChevronRight className="w-3 h-3 text-slate-300 inline" />
+                                <span className="text-[#3F51F4] font-bold">{pathway.subSubCategory}</span>
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-lg bg-blue-50 text-[#3F51F4] group-hover:bg-[#3F51F4] group-hover:text-white transition">
+                              Select &rarr;
+                            </span>
+                          </button>
+                        ))
+                      )}
+                    </div>
+                  )}
+
+                  {/* Selected Pathway Breadcrumb Confirmation */}
+                  {form.mainCategory && form.subCategory && form.subSubCategory && (
+                    <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs font-bold text-emerald-800">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span className="text-slate-600">Selected Pathway:</span>
+                        <span className="text-emerald-950 font-black">
+                          {form.mainCategory} &gt; {form.subCategory} &gt; {form.subSubCategory}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-black uppercase px-2 py-0.5 bg-emerald-200/60 text-emerald-900 rounded-md">
+                        Active
+                      </span>
+                    </div>
+                  )}
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Sub Category *
-                  </label>
-                  <select
-                    value={form.subCategory}
-                    onChange={(e) => handleSubCategoryChange(e.target.value)}
-                    disabled={!form.mainCategory}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer disabled:opacity-50"
-                  >
-                    <option value="">Select Sub Category</option>
-                    {subCategories.map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                  </select>
-                </div>
+                {/* 3 Cascading Category Dropdowns */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                      Main Category *
+                    </label>
+                    <select
+                      value={form.mainCategory}
+                      onChange={(e) => handleMainCategoryChange(e.target.value)}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer"
+                    >
+                      <option value="">Select Main Category</option>
+                      {categories.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
 
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Product Type *
-                  </label>
-                  <select
-                    value={form.subSubCategory}
-                    onChange={(e) => handleSubSubCategoryChange(e.target.value)}
-                    disabled={!form.subCategory}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer disabled:opacity-50"
-                  >
-                    <option value="">Select Product Type</option>
-                    {subSubCategories.map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                  </select>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                      Sub Category *
+                    </label>
+                    <select
+                      value={form.subCategory}
+                      onChange={(e) => handleSubCategoryChange(e.target.value)}
+                      disabled={!form.mainCategory}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer disabled:opacity-50"
+                    >
+                      <option value="">Select Sub Category</option>
+                      {subCategories.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                      Product Type *
+                    </label>
+                    <select
+                      value={form.subSubCategory}
+                      onChange={(e) => handleSubSubCategoryChange(e.target.value)}
+                      disabled={!form.subCategory}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer disabled:opacity-50"
+                    >
+                      <option value="">Select Product Type</option>
+                      {subSubCategories.map((cat) => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
 
