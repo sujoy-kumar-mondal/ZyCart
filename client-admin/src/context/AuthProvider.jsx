@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 import axios from "../utils/axiosInstance.js";
 
 const AuthContext = createContext();
@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
     const u = localStorage.getItem("user");
     return u && u !== "undefined" ? JSON.parse(u) : null;
   });
+  const [loading, setLoading] = useState(false);
 
   // ------------------------------------------------------
   // Save login data
@@ -32,25 +33,61 @@ export const AuthProvider = ({ children }) => {
 
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    localStorage.removeItem("cart")
+    localStorage.removeItem("cart");
   };
 
   // ------------------------------------------------------
-  // Attach token to axios headers
+  // Refresh current user profile & permissions from DB
+  // ------------------------------------------------------
+  const refreshUser = useCallback(async () => {
+    const currentToken = token || localStorage.getItem("token");
+    if (!currentToken) return null;
+
+    try {
+      setLoading(true);
+      const res = await axios.get("/admin/profile", {
+        headers: { Authorization: `Bearer ${currentToken}` },
+      });
+
+      if (res.data.success && res.data.admin) {
+        const freshAdmin = res.data.admin;
+        if (freshAdmin.isActive === false) {
+          logout();
+          return null;
+        }
+        setUser(freshAdmin);
+        localStorage.setItem("user", JSON.stringify(freshAdmin));
+        return freshAdmin;
+      }
+    } catch (err) {
+      if (err.response?.status === 401 || err.response?.status === 403) {
+        logout();
+      }
+    } finally {
+      setLoading(false);
+    }
+    return null;
+  }, [token]);
+
+  // ------------------------------------------------------
+  // Attach token to axios headers and fetch latest profile on mount
   // ------------------------------------------------------
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      refreshUser();
     } else {
       delete axios.defaults.headers.common["Authorization"];
     }
-  }, [token]);
+  }, [token, refreshUser]);
 
   const value = {
     user,
     token,
     login,
     logout,
+    refreshUser,
+    loading,
     isAuthenticated: !!token,
   };
 

@@ -28,7 +28,7 @@ const ALL_PERMISSIONS = [
 ];
 
 const AdminManagement = () => {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, refreshUser } = useAuth();
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -164,6 +164,7 @@ const AdminManagement = () => {
       setShowEditModal(false);
       setSelectedAdmin(null);
       fetchAdmins();
+      if (refreshUser) refreshUser();
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to update admin");
     } finally {

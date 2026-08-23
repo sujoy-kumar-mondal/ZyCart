@@ -63,7 +63,7 @@ const App = () => {
           <Route
             path="/admin/users"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permission="manage_users">
                 <AdminUsers />
               </ProtectedRoute>
             }
@@ -72,7 +72,7 @@ const App = () => {
           <Route
             path="/admin/users/:userId"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permission="manage_users">
                 <AdminUserDetails />
               </ProtectedRoute>
             }
@@ -81,7 +81,7 @@ const App = () => {
           <Route
             path="/admin/sellers"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permission="manage_sellers">
                 <AdminSellers />
               </ProtectedRoute>
             }
@@ -90,7 +90,7 @@ const App = () => {
           <Route
             path="/admin/sellers/:sellerId"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permission="manage_sellers">
                 <AdminSellerDetails />
               </ProtectedRoute>
             }
@@ -99,7 +99,7 @@ const App = () => {
           <Route
             path="/admin/orders"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permission="manage_orders">
                 <AdminOrders />
               </ProtectedRoute>
             }
@@ -108,7 +108,7 @@ const App = () => {
           <Route
             path="/admin/orders/:orderId"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permission="manage_orders">
                 <AdminOrderDetails />
               </ProtectedRoute>
             }
@@ -117,7 +117,7 @@ const App = () => {
           <Route
             path="/admin/products"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permission="manage_products">
                 <AdminProducts />
               </ProtectedRoute>
             }
@@ -126,7 +126,7 @@ const App = () => {
           <Route
             path="/admin/categories"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permission="manage_categories">
                 <AdminCategories />
               </ProtectedRoute>
             }
@@ -135,7 +135,7 @@ const App = () => {
           <Route
             path="/admin/admins"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permission="manage_admins">
                 <AdminManagement />
               </ProtectedRoute>
             }
@@ -144,7 +144,7 @@ const App = () => {
           <Route
             path="/admin/settings"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute permission="system_settings">
                 <AdminSettings />
               </ProtectedRoute>
             }
