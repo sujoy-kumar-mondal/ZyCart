@@ -39,7 +39,12 @@ export const getAdminDashboard = async (req, res) => {
 // ----------------------------------------------------------
 export const getUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password -otp");
+    const users = await User.find({
+      $or: [
+        { password: { $exists: true, $ne: "" } },
+        { name: { $exists: true, $ne: "" } }
+      ]
+    }).select("-password -otp");
 
     res.status(200).json({
       success: true,
@@ -90,7 +95,12 @@ export const unbanUser = async (req, res) => {
 // ----------------------------------------------------------
 export const getSellers = async (req, res) => {
   try {
-    const sellers = await Seller.find().select("-password -otp");
+    const sellers = await Seller.find({
+      $or: [
+        { password: { $exists: true, $ne: "" } },
+        { name: { $exists: true, $ne: "" } }
+      ]
+    }).select("-password -otp");
 
     res.status(200).json({
       success: true,

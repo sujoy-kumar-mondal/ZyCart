@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import Seller from "../models/Seller.js";
 import Admin from "../models/Admin.js";
 import SystemSetting from "../models/SystemSetting.js";
+import Otp from "../models/Otp.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { generateOTP, sendOTP, resetOTP } from "../utils/sendOtp.js";
@@ -19,67 +20,99 @@ const generateToken = (userId) => {
 // USER REGISTRATION & LOGIN
 // ===========================================================
 
-// 1. SEND OTP TO EMAIL (USER)
+// 1. SEND OTP TO EMAIL (USER REGISTRATION)
 export const registerWithEmail = async (req, res) => {
   try {
     const { email } = req.body;
 
     if (!email)
-      return res.status(400).json({ success: false, message: "Email required" });
+      return res.status(400).json({ success: false, message: "Email is required" });
 
-    let user = await User.findOne({ email });
+    const cleanEmail = email.toLowerCase().trim();
 
-    // If user exists but NOT verified → overwrite OTP
-    // If user exists AND has password → already registered
-    if (user && user.password) {
+    // If fully registered user exists with password → reject
+    const existingUser = await User.findOne({ email: cleanEmail, password: { $exists: true, $ne: "" } });
+    if (existingUser) {
       return res
         .status(400)
-        .json({ success: false, message: "Email already registered." });
+        .json({ success: false, message: "Email already registered. Please sign in." });
     }
+
+    // Clean up any legacy unverified dummy records
+    await User.deleteMany({ email: cleanEmail, $or: [{ password: "" }, { password: null }, { password: { $exists: false } }] });
 
     const otp = generateOTP();
 
-    if (!user) {
-      user = await User.create({ email, otp, otpExpires: Date.now() + 5 * 60 * 1000 });
-    } else {
-      user.otp = otp;
-      user.otpExpires = Date.now() + 5 * 60 * 1000;
-      await user.save();
-    }
+    // Store OTP in temporary Otp collection (auto-expires in 5 mins)
+    await Otp.deleteMany({ email: cleanEmail, purpose: "user_registration" });
+    await Otp.create({
+      email: cleanEmail,
+      otp,
+      purpose: "user_registration",
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+    });
 
-    const mailSent = await sendOTP(email, otp);
+    const mailSent = await sendOTP(cleanEmail, otp);
 
     if (!mailSent) {
       return res.status(500).json({
         success: false,
-        message: "Failed to send OTP. Try again.",
+        message: "Failed to send OTP email. Please try again.",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "OTP sent successfully",
+      message: "Verification code sent to your email.",
     });
   } catch (error) {
+    console.error("registerWithEmail error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
-// 2. VERIFY OTP + COMPLETE USER REGISTRATION
+// 2. VERIFY OTP + CREATE USER ACCOUNT (ONLY CREATED ON SUCCESSFUL VERIFICATION)
 export const verifyOtpAndRegister = async (req, res) => {
   try {
     const { email, otp, name, mobile, password } = req.body;
 
-    const user = await User.findOne({ email });
+    if (!email || !otp || !name || !mobile || !password) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
 
-    if (!user)
-      return res.status(404).json({ success: false, message: "User not found" });
+    const cleanEmail = email.toLowerCase().trim();
 
-    if (user.otp !== otp)
-      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    // Find and validate OTP from Otp collection
+    const otpRecord = await Otp.findOne({ email: cleanEmail, purpose: "user_registration" });
 
-    if (user.otpExpires < Date.now())
-      return res.status(400).json({ success: false, message: "OTP expired" });
+    if (!otpRecord) {
+      return res.status(400).json({
+        success: false,
+        message: "Verification code expired or not found. Please request a new code.",
+      });
+    }
+
+    if (new Date(otpRecord.expiresAt).getTime() < Date.now()) {
+      await Otp.deleteMany({ email: cleanEmail, purpose: "user_registration" });
+      return res.status(400).json({
+        success: false,
+        message: "Verification code has expired. Please request a new code.",
+      });
+    }
+
+    if (otpRecord.otp !== String(otp).trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid verification code. Please check and try again.",
+      });
+    }
+
+    if (!/^[0-9]{10}$/.test(String(mobile).trim())) {
+      return res.status(400).json({
+        success: false,
+        message: "Mobile number must be a valid 10-digit number.",
+      });
+    }
 
     if (!isStrongPassword(password)) {
       return res.status(400).json({
@@ -88,20 +121,40 @@ export const verifyOtpAndRegister = async (req, res) => {
       });
     }
 
-    // Save user info
-    user.name = name;
-    user.mobile = mobile;
-    user.password = password; // hashed by pre('save')
-    user.otp = "";
-    user.otpExpires = null;
+    // Double check email uniqueness before creating
+    const existing = await User.findOne({ email: cleanEmail, password: { $exists: true, $ne: "" } });
+    if (existing) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already registered. Please sign in.",
+      });
+    }
 
-    await user.save();
+    // Clean up any stray dummy record
+    await User.deleteMany({ email: cleanEmail });
+
+    // ONLY NOW create the user in the database
+    const newUser = await User.create({
+      name: name.trim(),
+      email: cleanEmail,
+      mobile: String(mobile).trim(),
+      password, // hashed automatically by UserSchema pre('save') hook
+    });
+
+    // Delete the consumed OTP
+    await Otp.deleteMany({ email: cleanEmail, purpose: "user_registration" });
 
     res.status(201).json({
       success: true,
-      message: "Registration successful!",
+      message: "Registration successful! You can now sign in.",
+      user: {
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+      },
     });
   } catch (error) {
+    console.error("verifyOtpAndRegister error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
@@ -215,53 +268,53 @@ export const verifyLoginOtpUser = async (req, res) => {
 // SELLER REGISTRATION & LOGIN
 // ===========================================================
 
-// 4. SEND OTP TO EMAIL (SELLER)
+// 4. SEND OTP TO EMAIL (SELLER REGISTRATION)
 export const sellerSendOtp = async (req, res) => {
   try {
     const { email } = req.body;
 
     if (!email)
-      return res.status(400).json({ success: false, message: "Email required" });
+      return res.status(400).json({ success: false, message: "Email is required" });
 
-    let seller = await Seller.findOne({ email });
+    const cleanEmail = email.toLowerCase().trim();
 
     // If seller exists with password → already registered
-    if (seller && seller.password) {
+    const existingSeller = await Seller.findOne({ email: cleanEmail, password: { $exists: true, $ne: "" } });
+    if (existingSeller) {
       return res
         .status(400)
-        .json({ success: false, message: "Email already registered as seller." });
+        .json({ success: false, message: "Email already registered as merchant. Please sign in." });
     }
+
+    // Clean up any legacy unverified dummy seller records
+    await Seller.deleteMany({ email: cleanEmail, $or: [{ password: "" }, { password: null }, { password: { $exists: false } }] });
 
     const otp = generateOTP();
 
-    if (!seller) {
-      seller = await Seller.create({ 
-        email, 
-        otp, 
-        otpExpires: Date.now() + 5 * 60 * 1000,
-        registrationStatus: "step1"
-      });
-    } else {
-      seller.otp = otp;
-      seller.otpExpires = Date.now() + 5 * 60 * 1000;
-      seller.registrationStatus = "step1";
-      await seller.save();
-    }
+    // Store OTP in Otp collection (auto-expires in 5 mins)
+    await Otp.deleteMany({ email: cleanEmail, purpose: "seller_registration" });
+    await Otp.create({
+      email: cleanEmail,
+      otp,
+      purpose: "seller_registration",
+      expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+    });
 
-    const mailSent = await sendOTP(email, otp);
+    const mailSent = await sendOTP(cleanEmail, otp);
 
     if (!mailSent) {
       return res.status(500).json({
         success: false,
-        message: "Failed to send OTP. Try again.",
+        message: "Failed to send OTP email. Please try again.",
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "OTP sent successfully",
+      message: "Verification code sent to merchant email.",
     });
   } catch (error) {
+    console.error("sellerSendOtp error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
@@ -284,6 +337,33 @@ export const verifySellerOtpAndRegister = async (req, res) => {
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
+    const cleanEmail = email.toLowerCase().trim();
+
+    // Validate OTP from Otp collection
+    const otpRecord = await Otp.findOne({ email: cleanEmail, purpose: "seller_registration" });
+
+    if (!otpRecord) {
+      return res.status(400).json({
+        success: false,
+        message: "Verification code expired or not found. Please request a new code.",
+      });
+    }
+
+    if (new Date(otpRecord.expiresAt).getTime() < Date.now()) {
+      await Otp.deleteMany({ email: cleanEmail, purpose: "seller_registration" });
+      return res.status(400).json({
+        success: false,
+        message: "Verification code has expired. Please request a new code.",
+      });
+    }
+
+    if (otpRecord.otp !== String(otp).trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid verification code. Please check and try again.",
+      });
+    }
+
     if (!/^[0-9]{10}$/.test(String(mobile).trim())) {
       return res.status(400).json({
         success: false,
@@ -298,33 +378,37 @@ export const verifySellerOtpAndRegister = async (req, res) => {
       });
     }
 
-    const seller = await Seller.findOne({ email });
+    // Check if seller already exists
+    const existingSeller = await Seller.findOne({ email: cleanEmail, password: { $exists: true, $ne: "" } });
+    if (existingSeller) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already registered as merchant. Please sign in.",
+      });
+    }
 
-    if (!seller)
-      return res.status(404).json({ success: false, message: "Seller not found" });
+    // Clean up any stray dummy seller record
+    await Seller.deleteMany({ email: cleanEmail });
 
-    if (seller.otp !== otp)
-      return res.status(400).json({ success: false, message: "Invalid OTP" });
+    // ONLY NOW create the seller document in database
+    const newSeller = await Seller.create({
+      name: name.trim(),
+      email: cleanEmail,
+      mobile: String(mobile).trim(),
+      password, // hashed automatically by SellerSchema pre('save')
+      registrationStatus: "step2",
+    });
 
-    if (seller.otpExpires < Date.now())
-      return res.status(400).json({ success: false, message: "OTP expired" });
-
-    // Save basic info from Step 2
-    seller.name = name.trim();
-    seller.mobile = String(mobile).trim();
-    seller.password = password; // hashed by pre('save')
-    seller.otp = "";
-    seller.otpExpires = null;
-    seller.registrationStatus = "step2";
-
-    await seller.save();
+    // Delete the consumed OTP
+    await Otp.deleteMany({ email: cleanEmail, purpose: "seller_registration" });
 
     res.status(201).json({
       success: true,
       message: "Step 2 completed. Proceed to seller details.",
-      sellerId: seller._id,
+      sellerId: newSeller._id,
     });
   } catch (error) {
+    console.error("verifySellerOtpAndRegister error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
