@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import User from "../models/User.js";
 import Seller from "../models/Seller.js";
 import Product from "../models/Product.js";
@@ -118,6 +119,7 @@ export const getSellers = async (req, res) => {
 export const approveSeller = async (req, res) => {
   try {
     const sellerId = req.params.id;
+    const sellerObjId = mongoose.Types.ObjectId.isValid(sellerId) ? new mongoose.Types.ObjectId(sellerId) : sellerId;
 
     const seller = await Seller.findByIdAndUpdate(
       sellerId,
@@ -132,9 +134,15 @@ export const approveSeller = async (req, res) => {
       });
     }
 
+    // Restore seller's products availability
+    await Product.updateMany(
+      { $or: [{ seller: sellerId }, { seller: sellerObjId }] },
+      { isAvailable: true }
+    );
+
     res.status(200).json({
       success: true,
-      message: "Seller approved successfully",
+      message: "Seller approved successfully and products marked active",
       seller,
     });
   } catch (error) {
@@ -149,6 +157,7 @@ export const approveSeller = async (req, res) => {
 export const banSeller = async (req, res) => {
   try {
     const sellerId = req.params.id;
+    const sellerObjId = mongoose.Types.ObjectId.isValid(sellerId) ? new mongoose.Types.ObjectId(sellerId) : sellerId;
 
     const seller = await Seller.findByIdAndUpdate(
       sellerId,
@@ -165,7 +174,7 @@ export const banSeller = async (req, res) => {
 
     // Mark all products unavailable
     await Product.updateMany(
-      { seller: sellerId },
+      { $or: [{ seller: sellerId }, { seller: sellerObjId }] },
       { isAvailable: false }
     );
 
@@ -186,6 +195,7 @@ export const banSeller = async (req, res) => {
 export const unbanSeller = async (req, res) => {
   try {
     const sellerId = req.params.id;
+    const sellerObjId = mongoose.Types.ObjectId.isValid(sellerId) ? new mongoose.Types.ObjectId(sellerId) : sellerId;
 
     const seller = await Seller.findByIdAndUpdate(
       sellerId,
@@ -202,13 +212,13 @@ export const unbanSeller = async (req, res) => {
 
     // Restore products availability
     await Product.updateMany(
-      { seller: sellerId },
+      { $or: [{ seller: sellerId }, { seller: sellerObjId }] },
       { isAvailable: true }
     );
 
     res.status(200).json({
       success: true,
-      message: "Seller unbanned and activated successfully.",
+      message: "Seller unbanned and products restored to active store.",
       seller,
     });
   } catch (error) {
