@@ -325,20 +325,95 @@ const SellerProducts = () => {
     }
   };
 
+  const extractAttributeValuesFromText = (text, schema) => {
+    if (!text || !schema) return {};
+    const textLower = text.toLowerCase();
+
+    // Extract raw words and adjacent joined tokens (e.g. "16" + "gb" -> "16gb")
+    const rawWords = textLower.replace(/[^a-z0-9.\s]/g, " ").split(/\s+/).filter(Boolean);
+    const tokenSet = new Set(rawWords);
+    for (let i = 0; i < rawWords.length - 1; i++) {
+      tokenSet.add(rawWords[i] + rawWords[i + 1]);
+      tokenSet.add(rawWords[i] + " " + rawWords[i + 1]);
+    }
+
+    // Add spelling variants
+    if (tokenSet.has("gray")) tokenSet.add("grey");
+    if (tokenSet.has("grey")) tokenSet.add("gray");
+
+    const detected = {};
+
+    for (const [fieldName, field] of Object.entries(schema)) {
+      if (field.options && Array.isArray(field.options) && field.options.length > 0) {
+        let bestMatch = null;
+
+        for (const opt of field.options) {
+          const optStr = typeof opt === "string" ? opt : String(opt);
+          let optLower = optStr.toLowerCase();
+          if (optLower === "grey" && tokenSet.has("gray")) optLower = "gray";
+          if (optLower === "gray" && tokenSet.has("grey")) optLower = "grey";
+
+          const optWords = optLower.replace(/[^a-z0-9.\s]/g, " ").split(/\s+/).filter(Boolean);
+          const optCompact = optWords.join("");
+          const optPhrase = optWords.join(" ");
+
+          if (optWords.length === 1) {
+            if (tokenSet.has(optLower) || tokenSet.has(optCompact)) {
+              if (!bestMatch || optStr.length > bestMatch.length) {
+                bestMatch = optStr;
+              }
+            }
+          } else {
+            if (textLower.includes(optPhrase) || tokenSet.has(optPhrase) || tokenSet.has(optCompact)) {
+              if (!bestMatch || optStr.length > bestMatch.length) {
+                bestMatch = optStr;
+              }
+            }
+          }
+        }
+
+        if (bestMatch) {
+          detected[fieldName] = bestMatch;
+        }
+      } else if (field.dataType === "Text" || field.dataType === "Decimal" || field.dataType === "Integer") {
+        // Auto-extract specific patterns like Weight (e.g. "1.8 kg"), Model Name (e.g. "NP760VJG")
+        const fieldNameLower = fieldName.toLowerCase();
+        if (fieldNameLower.includes("weight")) {
+          const weightMatch = text.match(/(\d+(\.\d+)?\s*(kg|g|lbs|gm))/i);
+          if (weightMatch) detected[fieldName] = weightMatch[0].trim();
+        } else if (fieldNameLower.includes("model")) {
+          const modelMatch = text.match(/\b([A-Z0-9]{5,}-[A-Z0-9-]+|[A-Z0-9]{6,})\b/);
+          if (modelMatch) detected[fieldName] = modelMatch[0].trim();
+        }
+      }
+    }
+
+    return detected;
+  };
+
   const handleSubSubCategoryChange = async (subSubCat) => {
     const { mainCategory, subCategory } = form;
-    setForm({ ...form, subSubCategory: subSubCat, attributes: {} });
 
     if (mainCategory && subCategory && subSubCat) {
       try {
         const url = `/products/categories/${encodeURIComponent(mainCategory)}/${encodeURIComponent(subCategory)}/${encodeURIComponent(subSubCat)}/attributes`;
         const res = await axios.get(url);
-        setAttributesSchema(res.data.attributes || {});
+        const schema = res.data.attributes || {};
+        setAttributesSchema(schema);
+
+        const autoAttributes = extractAttributeValuesFromText(form.title || categorySearchQuery || "", schema);
+        setForm((prev) => ({
+          ...prev,
+          subSubCategory: subSubCat,
+          attributes: { ...autoAttributes },
+        }));
       } catch (error) {
         setAttributesSchema({});
+        setForm((prev) => ({ ...prev, subSubCategory: subSubCat, attributes: {} }));
       }
     } else {
       setAttributesSchema({});
+      setForm((prev) => ({ ...prev, subSubCategory: subSubCat, attributes: {} }));
     }
   };
 
@@ -359,20 +434,33 @@ const SellerProducts = () => {
       // 3. Fetch attributes schema
       const attrUrl = `/products/categories/${encodeURIComponent(mainCategory)}/${encodeURIComponent(subCategory)}/${encodeURIComponent(subSubCategory)}/attributes`;
       const attrRes = await axios.get(attrUrl);
-      setAttributesSchema(attrRes.data.attributes || {});
+      const schema = attrRes.data.attributes || {};
+      setAttributesSchema(schema);
 
-      // 4. Update form state
+      // 4. Auto-detect attributes from search query or product title
+      const searchText = categorySearchQuery || form.title || "";
+      const autoAttributes = extractAttributeValuesFromText(searchText, schema);
+
+      // 5. Update form state
       setForm((prev) => ({
         ...prev,
         mainCategory,
         subCategory,
         subSubCategory,
-        attributes: {},
+        title: prev.title || categorySearchQuery,
+        attributes: {
+          ...autoAttributes,
+        },
       }));
 
       setCategorySearchQuery("");
       setShowCategorySearchSuggestions(false);
-      toast.success(`Selected: ${mainCategory} > ${subCategory} > ${subSubCategory}`);
+      const detectedCount = Object.keys(autoAttributes).length;
+      if (detectedCount > 0) {
+        toast.success(`Selected ${subSubCategory} & auto-filled ${detectedCount} attributes!`);
+      } else {
+        toast.success(`Selected: ${mainCategory} > ${subCategory} > ${subSubCategory}`);
+      }
     } catch (error) {
       console.error("Error setting category pathway:", error);
       toast.error("Failed to load category attributes");
@@ -1042,6 +1130,140 @@ const SellerProducts = () => {
                     </select>
                   </div>
                 </div>
+
+                {/* Dynamic Category Attributes / Specifications */}
+                {Object.keys(attributesSchema).length > 0 && (
+                  <div className="mt-4 p-5 rounded-2xl bg-blue-50/30 border border-blue-100/80 space-y-4">
+                    <div className="flex items-center justify-between pb-3 border-b border-blue-100">
+                      <div className="space-y-0.5">
+                        <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+                          <Layers className="w-4 h-4 text-[#3F51F4]" />
+                          <span>{form.subSubCategory} Specifications & Attributes</span>
+                        </h4>
+                        <p className="text-[11px] font-medium text-slate-500">
+                          Provide specific hardware, technical parameters, and catalog details
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-black uppercase px-2.5 py-1 bg-blue-100 text-[#3F51F4] rounded-lg border border-blue-200/60">
+                        {Object.keys(attributesSchema).length} Attributes
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-1">
+                      {Object.entries(attributesSchema).map(([fieldName, field]) => {
+                        const isSelect = field.dataType === "Select" && Array.isArray(field.options) && field.options.length > 0;
+                        const isMultiSelect = field.dataType === "Multi-Select" && Array.isArray(field.options) && field.options.length > 0;
+                        const isBoolean = field.dataType === "Boolean";
+                        const isNumber = field.dataType === "Integer" || field.dataType === "Decimal" || field.dataType === "Range";
+
+                        return (
+                          <div key={fieldName} className="space-y-1.5">
+                            <label className="block text-xs font-bold text-slate-700 flex items-center justify-between">
+                              <span className="truncate pr-1">
+                                {fieldName} {field.required && <span className="text-rose-500 font-black">*</span>}
+                              </span>
+                              {field.filterable && (
+                                <span className="text-[9px] font-extrabold text-[#3F51F4] bg-blue-50 px-1.5 py-0.5 rounded shrink-0">
+                                  Filterable
+                                </span>
+                              )}
+                            </label>
+
+                            {isSelect ? (
+                              <select
+                                value={form.attributes[fieldName] || ""}
+                                onChange={(e) => handleAttributeChange(fieldName, e.target.value)}
+                                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer"
+                              >
+                                <option value="">Select {fieldName}</option>
+                                {field.options.map((opt) => (
+                                  <option key={opt} value={opt}>{opt}</option>
+                                ))}
+                              </select>
+                            ) : isMultiSelect ? (
+                              <div className="space-y-1.5">
+                                <select
+                                  value=""
+                                  onChange={(e) => {
+                                    const val = e.target.value;
+                                    if (!val) return;
+                                    const current = Array.isArray(form.attributes[fieldName]) ? form.attributes[fieldName] : [];
+                                    if (!current.includes(val)) {
+                                      handleAttributeChange(fieldName, [...current, val]);
+                                    }
+                                  }}
+                                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer"
+                                >
+                                  <option value="">Add {fieldName}...</option>
+                                  {field.options.map((opt) => (
+                                    <option key={opt} value={opt}>{opt}</option>
+                                  ))}
+                                </select>
+                                {Array.isArray(form.attributes[fieldName]) && form.attributes[fieldName].length > 0 && (
+                                  <div className="flex flex-wrap gap-1.5 pt-1">
+                                    {form.attributes[fieldName].map((item) => (
+                                      <span
+                                        key={item}
+                                        className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-[#3F51F4] border border-blue-200 rounded-lg text-[11px] font-bold"
+                                      >
+                                        {item}
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            const updated = form.attributes[fieldName].filter((x) => x !== item);
+                                            handleAttributeChange(fieldName, updated);
+                                          }}
+                                          className="text-blue-400 hover:text-rose-500 font-black text-xs transition cursor-pointer"
+                                        >
+                                          &times;
+                                        </button>
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            ) : isBoolean ? (
+                              <select
+                                value={form.attributes[fieldName] === true ? "true" : form.attributes[fieldName] === false ? "false" : ""}
+                                onChange={(e) => {
+                                  const val = e.target.value === "" ? "" : e.target.value === "true";
+                                  handleAttributeChange(fieldName, val);
+                                }}
+                                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer"
+                              >
+                                <option value="">Select</option>
+                                <option value="true">Yes</option>
+                                <option value="false">No</option>
+                              </select>
+                            ) : isNumber ? (
+                              <input
+                                type="number"
+                                value={form.attributes[fieldName] || ""}
+                                onChange={(e) => handleAttributeChange(fieldName, e.target.value)}
+                                placeholder={field.placeholder || `Enter ${fieldName}...`}
+                                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                              />
+                            ) : (
+                              <input
+                                type="text"
+                                value={form.attributes[fieldName] || ""}
+                                onChange={(e) => handleAttributeChange(fieldName, e.target.value)}
+                                placeholder={field.placeholder || `Enter ${fieldName}...`}
+                                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                              />
+                            )}
+
+                            {field.helpText && (
+                              <p className="text-[10px] text-slate-400 font-medium px-1">
+                                {field.helpText}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Images Drag and Drop Upload */}
