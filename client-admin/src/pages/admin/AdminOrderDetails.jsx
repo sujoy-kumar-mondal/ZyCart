@@ -331,6 +331,7 @@ const AdminOrderDetails = () => {
               </h2>
 
               <div className="space-y-3 text-xs">
+                {/* Placed Date & Time */}
                 <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
                   <span className="text-[10px] font-extrabold text-slate-400 uppercase">Placed Date &amp; Time</span>
                   <p className="font-extrabold text-slate-900">
@@ -338,26 +339,76 @@ const AdminOrderDetails = () => {
                   </p>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                  <span className="text-[10px] font-extrabold text-purple-600 uppercase">Packed Date &amp; Time</span>
-                  <p className="font-extrabold text-slate-900">
-                    {order.packedAt ? new Date(order.packedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : ["Packed", "Shipped", "Out for Delivery", "Delivered"].includes(order.status) ? "Packed by merchant" : "Pending packaging"}
-                  </p>
-                </div>
+                {order.status === "Cancelled" ? (
+                  <>
+                    {/* Show Packed only if packed before cancel */}
+                    {order.packedAt && (
+                      <div className="p-3 rounded-2xl bg-purple-50/50 border border-purple-100 space-y-1">
+                        <span className="text-[10px] font-extrabold text-purple-600 uppercase">Packed Date &amp; Time</span>
+                        <p className="font-extrabold text-slate-900">
+                          {new Date(order.packedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })}
+                        </p>
+                      </div>
+                    )}
 
-                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                  <span className="text-[10px] font-extrabold text-blue-600 uppercase">Shipped Date &amp; Time</span>
-                  <p className="font-extrabold text-slate-900">
-                    {order.shippedAt ? new Date(order.shippedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : ["Shipped", "Out for Delivery", "Delivered"].includes(order.status) ? "Shipped to logistics" : "Pending dispatch"}
-                  </p>
-                </div>
+                    {/* Show Shipped only if shipped before cancel */}
+                    {order.shippedAt && (
+                      <div className="p-3 rounded-2xl bg-blue-50/50 border border-blue-100 space-y-1">
+                        <span className="text-[10px] font-extrabold text-blue-600 uppercase">Shipped Date &amp; Time</span>
+                        <p className="font-extrabold text-slate-900">
+                          {new Date(order.shippedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })}
+                        </p>
+                      </div>
+                    )}
 
-                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                  <span className="text-[10px] font-extrabold text-emerald-600 uppercase">Delivered Date &amp; Time</span>
-                  <p className="font-extrabold text-slate-900">
-                    {order.deliveredAt ? new Date(order.deliveredAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : order.status === "Delivered" ? "Delivered to customer" : "Pending delivery"}
-                  </p>
-                </div>
+                    {/* Cancelled Date & Time (Highlighted in Red/Rose) */}
+                    <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200/80 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black text-red-600 uppercase tracking-wider">Cancelled Date &amp; Time</span>
+                        {order.cancelledBy && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-red-100 text-red-700">
+                            By {order.cancelledBy}
+                          </span>
+                        )}
+                      </div>
+                      <p className="font-black text-red-950 text-sm">
+                        {order.cancelledAt
+                          ? new Date(order.cancelledAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                          : order.updatedAt
+                          ? new Date(order.updatedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
+                          : "Order Cancelled"}
+                      </p>
+                      {order.cancellationReason && (
+                        <p className="text-[11px] text-red-700 font-semibold pt-1 border-t border-red-100">
+                          Reason: <span className="font-normal italic">"{order.cancellationReason}"</span>
+                        </p>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                      <span className="text-[10px] font-extrabold text-purple-600 uppercase">Packed Date &amp; Time</span>
+                      <p className="font-extrabold text-slate-900">
+                        {order.packedAt ? new Date(order.packedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : ["Packed", "Shipped", "Out for Delivery", "Delivered"].includes(order.status) ? "Packed by merchant" : "Pending packaging"}
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                      <span className="text-[10px] font-extrabold text-blue-600 uppercase">Shipped Date &amp; Time</span>
+                      <p className="font-extrabold text-slate-900">
+                        {order.shippedAt ? new Date(order.shippedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : ["Shipped", "Out for Delivery", "Delivered"].includes(order.status) ? "Shipped to logistics" : "Pending dispatch"}
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                      <span className="text-[10px] font-extrabold text-emerald-600 uppercase">Delivered Date &amp; Time</span>
+                      <p className="font-extrabold text-slate-900">
+                        {order.deliveredAt ? new Date(order.deliveredAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : order.status === "Delivered" ? "Delivered to customer" : "Pending delivery"}
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
 

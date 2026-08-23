@@ -104,6 +104,17 @@ const Navbar = () => {
           {/* Desktop Nav Links & Actions */}
           <div className="hidden lg:flex items-center gap-6">
             <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `text-sm font-bold transition px-3 py-2 rounded-xl ${
+                  isActive ? "text-[#3F51F4] bg-blue-50/80" : "text-slate-700 hover:text-[#3F51F4] hover:bg-slate-50"
+                }`
+              }
+            >
+              Home
+            </NavLink>
+
+            <NavLink
               to="/products"
               className={({ isActive }) =>
                 `text-sm font-bold transition px-3 py-2 rounded-xl ${

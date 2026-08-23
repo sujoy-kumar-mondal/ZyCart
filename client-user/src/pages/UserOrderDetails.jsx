@@ -377,14 +377,21 @@ const UserOrderDetails = () => {
                 {/* Cancelled */}
                 {order?.status === "Cancelled" && (
                   <div className="flex gap-3">
-                    <CheckCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                    <XCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-red-600 text-sm">Cancelled</p>
+                      <p className="font-semibold text-red-600 text-sm">
+                        Order Cancelled {order?.cancelledBy ? `(By ${order.cancelledBy})` : ""}
+                      </p>
                       <p className="text-gray-600 text-xs">
                         {order?.cancelledAt
                           ? new Date(order.cancelledAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
                           : "Order cancelled"}
                       </p>
+                      {order?.cancellationReason && (
+                        <p className="text-red-700 text-xs mt-1 font-medium italic">
+                          Reason: "{order.cancellationReason}"
+                        </p>
+                      )}
                     </div>
                   </div>
                 )}
