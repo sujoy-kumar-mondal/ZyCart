@@ -39,7 +39,7 @@ const DEFAULT_STATS = {
   totalOrders: 0,
   happyShoppers: 0,
   reviewCount: 0,
-  buyerSatisfactionScore: "5.0 / 5.0",
+  buyerSatisfactionScore: "No reviews yet",
   deliverySuccessRate: "100%",
   systemUptime: "99.99%",
 };

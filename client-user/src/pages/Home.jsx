@@ -174,17 +174,23 @@ const Home = () => {
 
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-xs">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
+                      stats?.reviewCount > 0 ? "bg-amber-100 text-amber-600" : "bg-slate-200 text-slate-500"
+                    }`}>
                       ★
                     </div>
                     <div>
                       <p className="text-xs font-bold text-[#1B2A41]">Buyer Satisfaction Score</p>
                       <p className="text-[10px] text-slate-500">
-                        {stats?.reviewCount > 0 ? `Based on ${stats.reviewCount.toLocaleString()} reviews` : "Based on verified buyer reviews"}
+                        {stats?.reviewCount > 0
+                          ? `Based on ${stats.reviewCount.toLocaleString()} verified review${stats.reviewCount > 1 ? "s" : ""}`
+                          : "Be the first to review a product"}
                       </p>
                     </div>
                   </div>
-                  <span className="text-sm font-black text-slate-900">{stats?.buyerSatisfactionScore || "5.0 / 5.0"}</span>
+                  <span className={`text-sm font-black ${stats?.reviewCount > 0 ? "text-slate-900" : "text-slate-500 text-xs"}`}>
+                    {stats?.reviewCount > 0 ? stats.buyerSatisfactionScore : "No reviews yet"}
+                  </span>
                 </div>
               </div>
             </motion.div>

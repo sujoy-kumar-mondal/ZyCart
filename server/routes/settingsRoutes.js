@@ -44,13 +44,13 @@ router.get(["/", "/public"], async (req, res) => {
     ]);
 
     const reviewCount = reviewsData[0]?.count || 0;
-    const avgScore = reviewsData[0]?.avgRating
+    const avgScore = (reviewsData[0]?.avgRating && reviewCount > 0)
       ? (Math.round(reviewsData[0].avgRating * 10) / 10).toFixed(1)
-      : "5.0";
+      : null;
 
     const deliveryRate = totalOrdersCount > 0
       ? `${(Math.round((deliveredOrdersCount / totalOrdersCount) * 1000) / 10).toFixed(1)}%`
-      : "99.4%";
+      : "100%";
 
     res.status(200).json({
       success: true,
@@ -91,7 +91,7 @@ router.get(["/", "/public"], async (req, res) => {
         totalOrders: totalOrdersCount,
         happyShoppers: usersCount,
         reviewCount,
-        buyerSatisfactionScore: `${avgScore} / 5.0`,
+        buyerSatisfactionScore: avgScore ? `${avgScore} / 5.0` : "No reviews yet",
         deliverySuccessRate: deliveryRate,
         systemUptime: "99.99%",
       },
