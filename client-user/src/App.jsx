@@ -34,10 +34,10 @@ const App = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-gray-100 w-full max-w-full overflow-x-hidden">
       <Toaster />
       <Navbar />
-      <main className="grow container-main">
+      <main className="grow container-main w-full max-w-full overflow-x-hidden">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/product/:id" element={<ProductDetailsPage />} />

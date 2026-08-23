@@ -84,19 +84,19 @@ const Home = () => {
     <div className="min-h-screen bg-[#F8FAFC] overflow-hidden">
       
       {/* HERO SECTION */}
-      <section className="relative py-16 sm:py-24 bg-gradient-to-b from-blue-50/60 via-slate-50 to-[#F8FAFC]">
+      <section className="relative py-10 sm:py-24 bg-gradient-to-b from-blue-50/60 via-slate-50 to-[#F8FAFC] overflow-hidden w-full max-w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             {/* Left Content Column */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
-              className="lg:col-span-7 space-y-6"
+              className="lg:col-span-7 space-y-5 sm:space-y-6 w-full max-w-full"
             >
 
-              <h1 className="text-4xl sm:text-6xl font-black text-[#1B2A41] leading-tight">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#1B2A41] leading-tight break-words">
                 {tagline.includes(",") ? (
                   <>
                     {tagline.split(",")[0]},{" "}
@@ -111,30 +111,30 @@ const Home = () => {
                 )}
               </h1>
 
-              <p className="text-lg sm:text-xl text-slate-600 font-normal leading-relaxed max-w-2xl">
+              <p className="text-sm sm:text-base lg:text-lg text-slate-600 font-normal leading-relaxed max-w-2xl">
                 Experience a smooth e-commerce catalog with thousands of verified products, transparent price drops, express shipping, and buyer protection.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2">
                 <Link
                   to="/products"
-                  className="px-8 py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-xl shadow-blue-500/25 transition transform active:scale-95 flex items-center justify-center gap-2"
+                  className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-extrabold text-white text-sm sm:text-base bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-xl shadow-blue-500/25 transition transform active:scale-95 flex items-center justify-center gap-2"
                 >
                   Explore Catalog <ArrowRight className="w-5 h-5" />
                 </Link>
 
                 <button
                   onClick={() => document.getElementById("trending")?.scrollIntoView({ behavior: "smooth" })}
-                  className="px-8 py-4 rounded-2xl font-extrabold text-[#3F51F4] bg-white border-2 border-blue-200/80 hover:bg-blue-50 hover:border-blue-300 transition shadow-xs flex items-center justify-center gap-2"
+                  className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-extrabold text-[#3F51F4] bg-white border-2 border-blue-200/80 hover:bg-blue-50 hover:border-blue-300 transition shadow-xs flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
                   <TrendingUp className="w-5 h-5" /> Hot Trends
                 </button>
               </div>
 
-              <div className="pt-4 flex items-center gap-6 text-xs font-bold text-slate-500 border-t border-slate-200/60">
-                <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-emerald-500" /> Verified Sellers</span>
-                <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-emerald-500" /> Instant Checkout</span>
-                <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-emerald-500" /> Easy Returns</span>
+              <div className="pt-4 flex flex-wrap items-center gap-x-4 sm:gap-x-6 gap-y-2 text-xs font-bold text-slate-500 border-t border-slate-200/60">
+                <span className="flex items-center gap-1.5 whitespace-nowrap"><CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" /> Verified Sellers</span>
+                <span className="flex items-center gap-1.5 whitespace-nowrap"><CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" /> Instant Checkout</span>
+                <span className="flex items-center gap-1.5 whitespace-nowrap"><CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" /> Easy Returns</span>
               </div>
             </motion.div>
 
@@ -143,52 +143,52 @@ const Home = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="lg:col-span-5 relative"
+              className="lg:col-span-5 relative w-full max-w-full"
             >
-              <div className="relative bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/80 space-y-6">
+              <div className="relative bg-white rounded-3xl p-5 sm:p-8 shadow-2xl border border-slate-200/80 space-y-4 sm:space-y-6 w-full max-w-full overflow-hidden">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600">
-                      <Award className="w-5 h-5" />
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                      <Award className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <div>
-                      <h3 className="font-extrabold text-sm text-[#1B2A41]">Featured Store Highlights</h3>
-                      <p className="text-xs text-slate-500">Live inventory analytics</p>
+                      <h3 className="font-extrabold text-xs sm:text-sm text-[#1B2A41]">Featured Store Highlights</h3>
+                      <p className="text-[10px] sm:text-xs text-slate-500">Live inventory analytics</p>
                     </div>
                   </div>
-                  <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-[10px] font-extrabold rounded-full uppercase">
+                  <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 bg-emerald-100 text-emerald-800 text-[10px] font-extrabold rounded-full uppercase shrink-0">
                     Live
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 text-center">
-                    <p className="text-3xl font-black text-[#3F51F4]">{stats?.activeProducts?.toLocaleString() || 0}</p>
-                    <p className="text-xs font-semibold text-slate-600 mt-1">Products Listed</p>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 text-center">
+                    <p className="text-2xl sm:text-3xl font-black text-[#3F51F4]">{stats?.activeProducts?.toLocaleString() || 0}</p>
+                    <p className="text-[11px] sm:text-xs font-semibold text-slate-600 mt-1">Products Listed</p>
                   </div>
-                  <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 text-center">
-                    <p className="text-3xl font-black text-emerald-600">{stats?.verifiedSellers?.toLocaleString() || 0}</p>
-                    <p className="text-xs font-semibold text-slate-600 mt-1">Brand Merchants</p>
+                  <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 text-center">
+                    <p className="text-2xl sm:text-3xl font-black text-emerald-600">{stats?.verifiedSellers?.toLocaleString() || 0}</p>
+                    <p className="text-[11px] sm:text-xs font-semibold text-slate-600 mt-1">Brand Merchants</p>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
+                <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${
                       stats?.reviewCount > 0 ? "bg-amber-100 text-amber-600" : "bg-slate-200 text-slate-500"
                     }`}>
                       ★
                     </div>
-                    <div>
-                      <p className="text-xs font-bold text-[#1B2A41]">Buyer Satisfaction Score</p>
-                      <p className="text-[10px] text-slate-500">
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold text-[#1B2A41] truncate">Buyer Satisfaction Score</p>
+                      <p className="text-[10px] text-slate-500 truncate">
                         {stats?.reviewCount > 0
                           ? `Based on ${stats.reviewCount.toLocaleString()} verified review${stats.reviewCount > 1 ? "s" : ""}`
                           : "Be the first to review a product"}
                       </p>
                     </div>
                   </div>
-                  <span className={`text-sm font-black ${stats?.reviewCount > 0 ? "text-slate-900" : "text-slate-500 text-xs"}`}>
+                  <span className={`font-black shrink-0 ${stats?.reviewCount > 0 ? "text-sm text-slate-900" : "text-slate-500 text-[11px] sm:text-xs"}`}>
                     {stats?.reviewCount > 0 ? stats.buyerSatisfactionScore : "No reviews yet"}
                   </span>
                 </div>

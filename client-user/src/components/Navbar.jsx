@@ -50,29 +50,29 @@ const Navbar = () => {
     <>
       {/* Global Announcement Banner */}
       {settings.announcementBanner?.enabled && (
-        <div className="bg-gradient-to-r from-[#1B2A41] via-[#3F51F4] to-[#1B2A41] text-white py-2 px-4 text-center text-xs font-bold shadow-xs relative z-50 flex items-center justify-center gap-2">
+        <div className="w-full bg-gradient-to-r from-[#1B2A41] via-[#3F51F4] to-[#1B2A41] text-white py-2 px-3 sm:px-4 text-center text-xs font-bold shadow-xs relative z-50 flex items-center justify-center gap-2 overflow-hidden">
           <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-          <span>{settings.announcementBanner.message}</span>
+          <span className="truncate">{settings.announcementBanner.message}</span>
         </div>
       )}
 
-      <nav className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20 gap-4">
+      <nav className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition-all w-full max-w-full overflow-hidden">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20 gap-2 sm:gap-4">
           
           {/* Brand Logo */}
           <Link
             to="/"
-            className="flex items-center gap-3 group shrink-0"
+            className="flex items-center gap-2 sm:gap-3 group shrink-0"
           >
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] p-2.5 shadow-md shadow-blue-500/20 group-hover:scale-105 transition transform flex items-center justify-center">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] p-2 sm:p-2.5 shadow-md shadow-blue-500/20 group-hover:scale-105 transition transform flex items-center justify-center">
               <img src="/logo_cart.svg" alt="ZyCart Logo" className="w-full h-full object-contain filter brightness-0 invert" />
             </div>
             <div className="flex flex-col">
-              <span className="text-2xl font-black tracking-tight text-[#1B2A41] leading-none">
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-[#1B2A41] leading-none">
                 {settings.platformName || "ZyCart"}
               </span>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 truncate max-w-[150px]">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 truncate max-w-[100px] sm:max-w-[150px]">
                 {settings.tagline || "Premium Store"}
               </span>
             </div>
@@ -238,17 +238,17 @@ const Navbar = () => {
                 </div>
               </>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <button
                   onClick={() => navigate("/login")}
-                  className="px-4 py-2 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-100 transition"
+                  className="hidden sm:inline-flex px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-700 hover:bg-slate-100 transition"
                 >
                   Login
                 </button>
 
                 <button
                   onClick={() => navigate("/register")}
-                  className="px-4 py-2 rounded-xl text-sm font-extrabold text-white bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-md shadow-blue-500/20 transition transform active:scale-95"
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-extrabold text-white bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-md shadow-blue-500/20 transition transform active:scale-95 whitespace-nowrap"
                 >
                   Register
                 </button>
@@ -257,10 +257,11 @@ const Navbar = () => {
 
             {/* Mobile Hamburger Menu Toggle */}
             <button
-              className="lg:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition"
+              className="lg:hidden p-1.5 sm:p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition shrink-0"
               onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle menu"
             >
-              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+              {menuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
@@ -273,7 +274,7 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200 px-4 py-4 space-y-4 shadow-xl"
+            className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-slate-200 px-4 py-4 space-y-4 shadow-xl w-full max-w-full overflow-hidden"
           >
             {/* Search Input Mobile */}
             <form onSubmit={handleSearch} className="flex items-center bg-slate-100 rounded-full px-4 py-2.5">
@@ -298,7 +299,7 @@ const Navbar = () => {
                 Explore Catalog
               </NavLink>
 
-              {user && (
+              {user ? (
                 <>
                   <NavLink
                     to="/my-orders"
@@ -329,6 +330,21 @@ const Navbar = () => {
                     My Profile
                   </NavLink>
                 </>
+              ) : (
+                <div className="pt-2 pb-1 border-t border-slate-200 grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => { navigate("/login"); setMenuOpen(false); }}
+                    className="w-full py-2.5 rounded-xl font-bold text-sm text-slate-700 bg-slate-100 hover:bg-slate-200 transition text-center"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => { navigate("/register"); setMenuOpen(false); }}
+                    className="w-full py-2.5 rounded-xl font-extrabold text-sm text-white bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] shadow-md shadow-blue-500/20 transition text-center"
+                  >
+                    Register
+                  </button>
+                </div>
               )}
 
               <NavLink
