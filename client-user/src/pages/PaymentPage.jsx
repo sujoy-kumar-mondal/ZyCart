@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "../utils/axiosInstance.js";
 import { useCart } from "../context/CartProvider";
+import { useSettings } from "../context/SettingsProvider";
 import Loader from "../components/Loader";
 import { toast } from "react-hot-toast";
 import { CreditCard, ShieldCheck, CheckCircle2, Truck, Wallet, Smartphone, Banknote } from "lucide-react";
 
 const PaymentPage = () => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
+  const brandName = settings?.platformName || "ZyCart";
   const location = useLocation();
   const navigate = useNavigate();
   const { clearCart } = useCart();
@@ -16,11 +20,11 @@ const PaymentPage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    document.title = "Payment Method — Checkout | ZyCart";
+    document.title = `Payment Method — Checkout | ${brandName}`;
     if (!orderId) {
       navigate("/checkout");
     }
-  }, []);
+  }, [brandName]);
 
   const handlePayment = async () => {
     if (!selectedMethod) {
@@ -178,7 +182,7 @@ const PaymentPage = () => {
                 <div className="pt-4 border-t border-slate-100 flex justify-between items-baseline">
                   <span className="text-base font-extrabold text-[#1B2A41]">Payable Amount</span>
                   <span className="text-3xl font-black bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
-                    ₹{totalAmount?.toLocaleString()}
+                    {currency}{totalAmount?.toLocaleString()}
                   </span>
                 </div>
               </div>

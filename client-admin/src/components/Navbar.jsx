@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
+import { useSettings } from "../context/SettingsProvider";
 import { Menu, X, LogOut, Settings, User, ShieldAlert, ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
+  const { settings } = useSettings();
   const navigate = useNavigate();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -45,7 +47,7 @@ const Navbar = () => {
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-black tracking-tight text-[#1B2A41]">ZyCart</span>
+              <span className="text-xl font-black tracking-tight text-[#1B2A41]">{settings?.platformName || "ZyCart"}</span>
               <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#3F51F4]">Admin Portal</span>
             </div>
           </Link>

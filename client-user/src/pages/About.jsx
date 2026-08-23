@@ -1,10 +1,15 @@
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
+import { useSettings } from "../context/SettingsProvider";
 
 const About = () => {
+  const { settings } = useSettings();
+  const brandName = settings?.platformName || "ZyCart";
+  const tagline = settings?.tagline || "Easy Shop, Easy Life";
+
   useEffect(() => {
-    document.title = "About Us | ZyCart";
-  }, []);
+    document.title = `About Us | ${brandName}`;
+  }, [brandName]);
 
   return (
     <div className="max-w-screen-2xl container mx-auto px-4 md:px-14 py-16 space-y-16">
@@ -15,9 +20,9 @@ const About = () => {
         transition={{ duration: 0.6 }}
         className="text-center space-y-4"
       >
-        <h1 className="text-5xl font-extrabold text-[#1B2A41]">About ZyCart</h1>
+        <h1 className="text-5xl font-extrabold text-[#1B2A41]">About {brandName}</h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Your trusted multi-seller online marketplace built with modern
+          {tagline} — Your trusted multi-seller online marketplace built with modern
           technology and a seamless user experience at its core.
         </p>
       </motion.div>
@@ -31,7 +36,7 @@ const About = () => {
       >
         <h2 className="text-3xl font-bold text-[#1B2A41] mb-4">Our Story</h2>
         <p className="text-gray-700 leading-relaxed text-lg">
-          ZyCart was founded with a vision to revolutionize online shopping by
+          {brandName} was founded with a vision to revolutionize online shopping by
           creating a seamless marketplace that connects users with multiple
           sellers. We believe in transparency, quality, and customer
           satisfaction as the cornerstones of our business. Our platform is

@@ -4,11 +4,13 @@ import { Heart } from "lucide-react";
 import { useCart } from "../context/CartProvider";
 import { useWishlist } from "../context/WishlistProvider";
 import { useAuth } from "../context/AuthProvider";
+import { useSettings } from "../context/SettingsProvider";
 import toast from "react-hot-toast";
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const { user } = useAuth();
+  const { settings } = useSettings();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [wishlistLoading, setWishlistLoading] = useState(false);
 
@@ -107,10 +109,10 @@ const ProductCard = ({ product }) => {
           {hasActiveDiscount ? (
             <div className="flex items-baseline gap-2 flex-wrap min-h-[1.75rem]">
               <span className="font-extrabold text-xl bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] text-transparent bg-clip-text">
-                ₹{discountedPrice.toLocaleString()}
+                {settings?.currencySymbol || "₹"}{discountedPrice.toLocaleString()}
               </span>
               <span className="text-xs text-slate-400 line-through">
-                ₹{product.price.toLocaleString()}
+                {settings?.currencySymbol || "₹"}{product.price.toLocaleString()}
               </span>
               <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded-md">
                 {discountPct}% OFF
@@ -119,7 +121,7 @@ const ProductCard = ({ product }) => {
           ) : (
             <div className="min-h-[1.75rem] flex items-center">
               <p className="font-extrabold text-xl bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] text-transparent bg-clip-text">
-                ₹{product.price.toLocaleString()}
+                {settings?.currencySymbol || "₹"}{product.price.toLocaleString()}
               </p>
             </div>
           )}

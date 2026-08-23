@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "../utils/axiosInstance.js";
 import Loader from "../components/Loader";
+import { useSettings } from "../context/SettingsProvider";
 import { Eye, Package, ArrowRight, Clock, CheckCircle, Calendar } from "lucide-react";
 
 const UserOrders = () => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
+  const brandName = settings?.platformName || "ZyCart";
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,9 +26,9 @@ const UserOrders = () => {
   };
 
   useEffect(() => {
-    document.title = "My Orders | ZyCart";
+    document.title = `My Orders | ${brandName}`;
     fetchOrders();
-  }, []);
+  }, [brandName]);
 
   if (loading) {
     return (
@@ -139,10 +143,10 @@ const UserOrders = () => {
                         <div key={idx} className="flex justify-between items-center text-sm">
                           <div>
                             <span className="font-medium text-slate-800 block">{item.title}</span>
-                            <span className="text-xs text-slate-500 font-medium">Per Item Price: ₹{item.price?.toLocaleString()} × {item.qty} unit(s)</span>
+                            <span className="text-xs text-slate-500 font-medium">Per Item Price: {currency}{item.price?.toLocaleString()} × {item.qty} unit(s)</span>
                           </div>
                           <span className="font-extrabold text-slate-900 shrink-0 ml-4">
-                            ₹{item.subtotal?.toLocaleString()}
+                            {currency}{item.subtotal?.toLocaleString()}
                           </span>
                         </div>
                       ))}
@@ -150,7 +154,7 @@ const UserOrders = () => {
 
                     <div className="pt-2 border-t border-slate-200/60 flex justify-between items-baseline text-xs">
                       <span className="text-slate-500 font-bold">Package Amount</span>
-                      <span className="text-base font-black text-[#1B2A41]">₹{child.amount?.toLocaleString()}</span>
+                      <span className="text-base font-black text-[#1B2A41]">{currency}{child.amount?.toLocaleString()}</span>
                     </div>
                   </div>
                 ))}

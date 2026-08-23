@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../utils/axiosInstance";
 import Loader from "../components/Loader";
+import { useSettings } from "../context/SettingsProvider";
 import { ArrowLeft, Calendar, MapPin, CreditCard, CheckCircle, Clock } from "lucide-react";
 import toast from "react-hot-toast";
 
 const UserOrderDetails = () => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
+  const brandName = settings?.platformName || "ZyCart";
   const { orderId } = useParams();
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
@@ -13,8 +17,8 @@ const UserOrderDetails = () => {
 
   useEffect(() => {
     fetchOrderDetails();
-    document.title = "Order Details | ZyCart";
-  }, [orderId]);
+    document.title = `Order Details | ${brandName}`;
+  }, [orderId, brandName]);
 
   const fetchOrderDetails = async () => {
     try {
@@ -132,9 +136,9 @@ const UserOrderDetails = () => {
                     <div className="flex-1">
                       <h3 className="font-semibold text-[#1B2A41] text-lg">{item.title}</h3>
                       <p className="text-gray-600 text-sm mt-1">Quantity: {item.qty}</p>
-                      <p className="text-gray-600 text-sm">Price: ₹{item.price?.toLocaleString()}</p>
+                      <p className="text-gray-600 text-sm">Price: {currency}{item.price?.toLocaleString()}</p>
                       <p className="text-[#1B2A41] font-bold mt-2">
-                        Subtotal: ₹{item.subtotal?.toLocaleString()}
+                        Subtotal: {currency}{item.subtotal?.toLocaleString()}
                       </p>
                     </div>
                     <div className="text-right">
@@ -175,7 +179,7 @@ const UserOrderDetails = () => {
                   <div key={idx} className="flex justify-between text-sm">
                     <span className="text-gray-600">{item.title} x{item.qty}</span>
                     <span className="font-semibold text-[#1B2A41]">
-                      ₹{item.subtotal?.toLocaleString()}
+                      {currency}{item.subtotal?.toLocaleString()}
                     </span>
                   </div>
                 ))
@@ -186,7 +190,7 @@ const UserOrderDetails = () => {
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Subtotal:</span>
                 <span className="font-semibold text-[#1B2A41]">
-                  ₹{order?.totalAmount?.toLocaleString()}
+                  {currency}{order?.totalAmount?.toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between items-center">
@@ -196,7 +200,7 @@ const UserOrderDetails = () => {
               <div className="border-t pt-3 flex justify-between items-center">
                 <span className="text-lg font-bold text-[#1B2A41]">Total:</span>
                 <span className="text-2xl font-bold text-[#3F51F4]">
-                  ₹{order?.totalAmount?.toLocaleString()}
+                  {currency}{order?.totalAmount?.toLocaleString()}
                 </span>
               </div>
             </div>

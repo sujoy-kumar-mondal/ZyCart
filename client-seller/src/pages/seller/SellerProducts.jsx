@@ -1141,7 +1141,7 @@ const SellerProducts = () => {
                           <span>{form.subSubCategory} Specifications & Attributes</span>
                         </h4>
                         <p className="text-[11px] font-medium text-slate-500">
-                          Provide specific hardware, technical parameters, and catalog details
+                          Provide specific catalog details
                         </p>
                       </div>
                       <span className="text-[10px] font-black uppercase px-2.5 py-1 bg-blue-100 text-[#3F51F4] rounded-lg border border-blue-200/60">

@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "../../utils/axiosInstance";
 import Loader from "../../components/Loader";
+import { useSettings } from "../../context/SettingsProvider";
 import { ArrowLeft, Calendar, MapPin, CreditCard, CheckCircle, TrendingUp, ShoppingBag, Package } from "lucide-react";
 import toast from "react-hot-toast";
 
 const AdminOrderDetails = () => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
+  const brandName = settings?.platformName || "ZyCart";
+  const commissionRate = settings?.platformCommissionRate ?? 5;
   const { orderId } = useParams();
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
@@ -14,8 +19,8 @@ const AdminOrderDetails = () => {
 
   useEffect(() => {
     fetchOrderDetails();
-    document.title = "Order Audit Details | ZyCart Admin";
-  }, [orderId]);
+    document.title = `Order Audit Details | ${brandName} Admin`;
+  }, [orderId, brandName]);
 
   const fetchOrderDetails = async () => {
     try {
@@ -54,8 +59,8 @@ const AdminOrderDetails = () => {
   if (!order) return null;
 
   const totalRevenue = order.totalAmount || 0;
-  const platformFee = totalRevenue * 0.2;
-  const sellerRevenue = totalRevenue * 0.8;
+  const platformFee = totalRevenue * (commissionRate / 100);
+  const sellerRevenue = totalRevenue - platformFee;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] py-8 sm:py-12">
@@ -119,11 +124,11 @@ const AdminOrderDetails = () => {
                           <div>
                             <p className="font-bold text-slate-900">{item.title}</p>
                             <p className="text-[11px] text-slate-500 font-semibold mt-0.5">
-                              Per Item Price: <span className="font-bold text-slate-800">₹{item.price?.toLocaleString()}</span> × {item.qty} unit(s)
+                              Per Item Price: <span className="font-bold text-slate-800">{currency}{item.price?.toLocaleString()}</span> × {item.qty} unit(s)
                             </p>
                           </div>
                           <span className="font-black text-slate-900 text-sm shrink-0 ml-4">
-                            ₹{item.subtotal?.toLocaleString()}
+                            {currency}{item.subtotal?.toLocaleString()}
                           </span>
                         </div>
                       ))}
@@ -131,7 +136,7 @@ const AdminOrderDetails = () => {
 
                     <div className="border-t border-slate-200/60 pt-2 flex justify-between font-black text-xs text-slate-900">
                       <span>Package Amount:</span>
-                      <span>₹{child.amount?.toLocaleString()}</span>
+                      <span>{currency}{child.amount?.toLocaleString()}</span>
                     </div>
                   </div>
                 ))}
@@ -168,17 +173,17 @@ const AdminOrderDetails = () => {
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
                   <div className="flex justify-between">
                     <span className="text-slate-500">Gross Total Amount</span>
-                    <span className="font-black text-slate-900">₹{totalRevenue?.toLocaleString()}</span>
+                    <span className="font-black text-slate-900">{currency}{totalRevenue?.toLocaleString()}</span>
                   </div>
 
                   <div className="flex justify-between text-emerald-600">
-                    <span>ZyCart Platform Fee (20%)</span>
-                    <span className="font-black">₹{platformFee?.toLocaleString()}</span>
+                    <span>{brandName} Platform Fee ({commissionRate}%)</span>
+                    <span className="font-black">{currency}{platformFee?.toLocaleString()}</span>
                   </div>
 
                   <div className="flex justify-between text-purple-600">
-                    <span>Net Seller Cut (80%)</span>
-                    <span className="font-black">₹{sellerRevenue?.toLocaleString()}</span>
+                    <span>Net Seller Payout ({100 - commissionRate}%)</span>
+                    <span className="font-black">{currency}{sellerRevenue?.toLocaleString()}</span>
                   </div>
                 </div>
 

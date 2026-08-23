@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 const CartPage = () => {
   const { cartItems, totalPrice, totalQuantity } = useCart();
   const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -26,7 +27,7 @@ const CartPage = () => {
 
   const handleProceedToCheckout = () => {
     if (minOrderVal > 0 && totalPrice < minOrderVal) {
-      toast.error(`Minimum order value for checkout is ₹${minOrderVal}. Please add more items.`);
+      toast.error(`Minimum order value for checkout is ${currency}${minOrderVal}. Please add more items.`);
       return;
     }
     navigate("/checkout");
@@ -91,7 +92,7 @@ const CartPage = () => {
             <div className="flex items-center gap-3">
               <Truck className="w-5 h-5 text-[#3F51F4] shrink-0" />
               <p className="text-xs sm:text-sm font-bold text-slate-800">
-                Add <span className="text-[#3F51F4] font-black">₹{amountNeededForFree.toLocaleString()}</span> more to your cart to qualify for <span className="text-emerald-700 font-black">100% FREE Delivery</span>!
+                Add <span className="text-[#3F51F4] font-black">{currency}{amountNeededForFree.toLocaleString()}</span> more to your cart to qualify for <span className="text-emerald-700 font-black">100% FREE Delivery</span>!
               </p>
             </div>
             <Link
@@ -128,20 +129,20 @@ const CartPage = () => {
               <div className="space-y-3.5 text-sm">
                 <div className="flex justify-between text-slate-600 font-semibold">
                   <span>Subtotal ({totalQuantity} items)</span>
-                  <span className="text-slate-900 font-bold">₹{totalPrice.toLocaleString()}</span>
+                  <span className="text-slate-900 font-bold">{currency}{totalPrice.toLocaleString()}</span>
                 </div>
 
                 {totalOriginalPrice > totalPrice && (
                   <div className="flex justify-between text-slate-600 font-semibold">
                     <span>Original Price</span>
-                    <span className="line-through text-slate-400">₹{totalOriginalPrice.toLocaleString()}</span>
+                    <span className="line-through text-slate-400">{currency}{totalOriginalPrice.toLocaleString()}</span>
                   </div>
                 )}
 
                 {totalSavings > 0 && (
                   <div className="flex justify-between text-emerald-700 font-bold bg-emerald-50 p-2.5 rounded-xl border border-emerald-100">
                     <span>Instant Discount Savings</span>
-                    <span>- ₹{totalSavings.toLocaleString()}</span>
+                    <span>- {currency}{totalSavings.toLocaleString()}</span>
                   </div>
                 )}
 
@@ -150,7 +151,7 @@ const CartPage = () => {
                   {deliveryFee === 0 ? (
                     <span className="text-emerald-600 font-bold uppercase tracking-wider">FREE</span>
                   ) : (
-                    <span className="text-slate-900 font-bold">₹{deliveryFee}</span>
+                    <span className="text-slate-900 font-bold">{currency}{deliveryFee}</span>
                   )}
                 </div>
 
@@ -158,14 +159,14 @@ const CartPage = () => {
                 {minOrderVal > 0 && totalPrice < minOrderVal && (
                   <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-2 text-xs text-amber-800 font-semibold">
                     <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                    <span>Minimum purchase amount of ₹{minOrderVal} required for checkout.</span>
+                    <span>Minimum purchase amount of {currency}{minOrderVal} required for checkout.</span>
                   </div>
                 )}
 
                 <div className="pt-4 border-t border-slate-200/80 flex justify-between items-baseline">
                   <span className="text-base font-extrabold text-[#1B2A41]">Total Amount</span>
                   <span className="text-3xl font-black bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
-                    ₹{finalTotal.toLocaleString()}
+                    {currency}{finalTotal.toLocaleString()}
                   </span>
                 </div>
               </div>

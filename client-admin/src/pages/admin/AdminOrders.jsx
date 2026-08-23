@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../utils/axiosInstance.js";
 import Loader from "../../components/Loader";
+import { useSettings } from "../../context/SettingsProvider";
 import { Eye, ShoppingBag, Package, Truck, CheckCircle2, Search } from "lucide-react";
 import toast from "react-hot-toast";
 
 const AdminOrders = () => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
+  const brandName = settings?.platformName || "ZyCart";
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,8 +42,8 @@ const AdminOrders = () => {
   };
 
   useEffect(() => {
-    document.title = "Global Orders | ZyCart Admin";
-  }, []);
+    document.title = `Global Orders | ${brandName} Admin`;
+  }, [brandName]);
 
   if (loading) {
     return (
@@ -114,7 +118,7 @@ const AdminOrders = () => {
                       </span>
                     </div>
                     <p className="text-xs font-semibold text-slate-500">
-                      Customer: <span className="font-bold text-slate-800">{order.user?.name || "Customer"}</span> ({order.user?.email}) • Placed: <span className="font-bold text-slate-800">{order.createdAt ? new Date(order.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : "N/A"}</span> • Total: <span className="font-black text-slate-900">₹{order.totalAmount?.toLocaleString()}</span>
+                      Customer: <span className="font-bold text-slate-800">{order.user?.name || "Customer"}</span> ({order.user?.email}) • Placed: <span className="font-bold text-slate-800">{order.createdAt ? new Date(order.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : "N/A"}</span> • Total: <span className="font-black text-slate-900">{currency}{order.totalAmount?.toLocaleString()}</span>
                     </p>
                   </div>
 
@@ -149,15 +153,15 @@ const AdminOrders = () => {
                         <div className="space-y-1">
                           {child.items?.map((item) => (
                             <div key={item.productId} className="flex justify-between text-slate-600">
-                              <span className="truncate max-w-[220px]">{item.title} (₹{item.price?.toLocaleString()} × {item.qty})</span>
-                              <span className="font-bold text-slate-900">₹{item.subtotal?.toLocaleString()}</span>
+                              <span className="truncate max-w-[220px]">{item.title} ({currency}{item.price?.toLocaleString()} × {item.qty})</span>
+                              <span className="font-bold text-slate-900">{currency}{item.subtotal?.toLocaleString()}</span>
                             </div>
                           ))}
                         </div>
 
                         <div className="border-t border-slate-200/60 pt-2 flex justify-between font-black text-slate-900">
                           <span>Subtotal:</span>
-                          <span>₹{child.amount}</span>
+                          <span>{currency}{child.amount?.toLocaleString()}</span>
                         </div>
                       </div>
                     ))}

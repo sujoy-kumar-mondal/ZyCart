@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "../../utils/axiosInstance.js";
 import Loader from "../../components/Loader";
+import { useSettings } from "../../context/SettingsProvider";
 import { toast } from "react-hot-toast";
 import { Eye, Package, ShoppingBag, Truck, CheckCircle2, ArrowRight, Calendar } from "lucide-react";
 
 const SellerOrders = () => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
+  const commissionRate = settings?.platformCommissionRate ?? 5;
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -136,10 +140,10 @@ const SellerOrders = () => {
                   <div key={idx} className="flex justify-between items-center p-3 rounded-2xl bg-slate-50 border border-slate-100">
                     <div>
                       <span className="font-semibold text-slate-900 block">{item.title}</span>
-                      <span className="text-xs text-slate-500 font-medium">Per Item Price: ₹{item.price?.toLocaleString()} × {item.qty} unit(s)</span>
+                      <span className="text-xs text-slate-500 font-medium">Per Item Price: {currency}{item.price?.toLocaleString()} × {item.qty} unit(s)</span>
                     </div>
                     <span className="font-black text-slate-900 shrink-0 ml-4">
-                      ₹{item.subtotal?.toLocaleString()}
+                      {currency}{item.subtotal?.toLocaleString()}
                     </span>
                   </div>
                 ))}
@@ -149,8 +153,10 @@ const SellerOrders = () => {
               <div className="pt-2 flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <span className="text-xs font-bold text-slate-400">Package Subtotal: </span>
-                  <span className="text-lg font-black text-[#1B2A41]">₹{order.amount?.toLocaleString()}</span>
-                  <span className="text-xs font-bold text-emerald-600 ml-2">(Your Cut: ₹{(order.amount * 0.8)?.toLocaleString()})</span>
+                  <span className="text-lg font-black text-[#1B2A41]">{currency}{order.amount?.toLocaleString()}</span>
+                  <span className="text-xs font-bold text-emerald-600 ml-2">
+                    (Your Net Payout: {currency}{(order.amount * (1 - commissionRate / 100))?.toLocaleString()} after {commissionRate}% platform fee)
+                  </span>
                 </div>
 
                 {/* Status Action Buttons */}

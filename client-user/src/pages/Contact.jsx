@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
+import { useSettings } from "../context/SettingsProvider";
 
 const Contact = () => {
+  const { settings } = useSettings();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -13,8 +15,8 @@ const Contact = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    document.title = "Contact Us | ZyCart";
-  }, []);
+    document.title = `Contact Us | ${settings?.platformName || "ZyCart"}`;
+  }, [settings?.platformName]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -93,8 +95,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-[#1B2A41]">Email</h4>
-                  <p className="text-gray-600">support@zycart.com</p>
-                  <p className="text-gray-600">info@zycart.com</p>
+                  <p className="text-gray-600">{settings?.supportEmail || "support@zycart.com"}</p>
                 </div>
               </div>
 
@@ -105,8 +106,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-[#1B2A41]">Phone</h4>
-                  <p className="text-gray-600">+91 1234 567 890</p>
-                  <p className="text-gray-600">+91 0987 654 321</p>
+                  <p className="text-gray-600">{settings?.supportPhone || "+91 98765 43210"}</p>
                 </div>
               </div>
 

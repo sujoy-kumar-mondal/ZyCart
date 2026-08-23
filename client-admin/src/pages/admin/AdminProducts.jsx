@@ -26,8 +26,12 @@ import {
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSettings } from "../../context/SettingsProvider";
 
 const AdminProducts = () => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
+  const brandName = settings?.platformName || "ZyCart";
   const [products, setProducts] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
   const [stats, setStats] = useState({
@@ -74,9 +78,9 @@ const AdminProducts = () => {
   };
 
   useEffect(() => {
-    document.title = "Manage Products | ZyCart Admin";
+    document.title = `Manage Products | ${brandName} Admin`;
     fetchProducts();
-  }, [selectedCategory, selectedAvailability, selectedStockStatus]);
+  }, [selectedCategory, selectedAvailability, selectedStockStatus, brandName]);
 
   // Debounced search
   useEffect(() => {
@@ -373,12 +377,12 @@ const AdminProducts = () => {
                         <td className="py-4 px-6 text-center">
                           <div className="space-y-0.5">
                             <p className="font-black text-slate-900 text-sm">
-                              ₹{effectivePrice.toLocaleString()}
+                              {currency}{effectivePrice.toLocaleString()}
                             </p>
                             {hasDiscount && (
                               <div className="flex items-center justify-center gap-1">
                                 <span className="line-through text-slate-400 text-[10px]">
-                                  ₹{prod.price.toLocaleString()}
+                                  {currency}{prod.price.toLocaleString()}
                                 </span>
                                 <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.2 rounded">
                                   -{prod.discount}%
@@ -520,7 +524,7 @@ const AdminProducts = () => {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
                 <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
                   <span className="text-[10px] font-extrabold uppercase text-slate-400">MRP Base Price</span>
-                  <p className="font-black text-slate-900 text-sm">₹{selectedProduct.price?.toLocaleString()}</p>
+                  <p className="font-black text-slate-900 text-sm">{currency}{selectedProduct.price?.toLocaleString()}</p>
                 </div>
 
                 <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
@@ -533,7 +537,7 @@ const AdminProducts = () => {
                 <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
                   <span className="text-[10px] font-extrabold uppercase text-slate-400">Selling Price</span>
                   <p className="font-black text-[#3F51F4] text-sm">
-                    ₹{getEffectivePrice(selectedProduct).toLocaleString()}
+                    {currency}{getEffectivePrice(selectedProduct).toLocaleString()}
                   </p>
                 </div>
 

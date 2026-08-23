@@ -12,6 +12,7 @@ const CheckoutPage = () => {
   const { cartItems, totalPrice } = useCart();
   const { user } = useAuth();
   const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
   const navigate = useNavigate();
 
   const [address, setAddress] = useState({
@@ -54,7 +55,7 @@ const CheckoutPage = () => {
 
   const handlePlaceOrder = async () => {
     if (minOrderVal > 0 && totalPrice < minOrderVal) {
-      toast.error(`Minimum order value for checkout is ₹${minOrderVal}. Please add more items.`);
+      toast.error(`Minimum order value for checkout is ${currency}${minOrderVal}. Please add more items.`);
       return;
     }
 
@@ -250,7 +251,7 @@ const CheckoutPage = () => {
 
                 <div className="flex justify-between text-slate-600 font-semibold">
                   <span>Subtotal</span>
-                  <span className="text-slate-900 font-bold">₹{totalPrice.toLocaleString()}</span>
+                  <span className="text-slate-900 font-bold">{currency}{totalPrice.toLocaleString()}</span>
                 </div>
 
                 <div className="flex justify-between text-slate-600 font-semibold">
@@ -258,21 +259,21 @@ const CheckoutPage = () => {
                   {deliveryFee === 0 ? (
                     <span className="text-emerald-600 font-bold uppercase tracking-wider">FREE</span>
                   ) : (
-                    <span className="text-slate-900 font-bold">₹{deliveryFee}</span>
+                    <span className="text-slate-900 font-bold">{currency}{deliveryFee}</span>
                   )}
                 </div>
 
                 {minOrderVal > 0 && totalPrice < minOrderVal && (
                   <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-2 text-xs text-amber-800 font-semibold">
                     <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                    <span>Minimum purchase amount is ₹{minOrderVal}.</span>
+                    <span>Minimum purchase amount is {currency}{minOrderVal}.</span>
                   </div>
                 )}
 
                 <div className="pt-4 border-t border-slate-100 flex justify-between items-baseline">
                   <span className="text-base font-extrabold text-[#1B2A41]">Total Payable</span>
                   <span className="text-3xl font-black bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
-                    ₹{finalTotal.toLocaleString()}
+                    {currency}{finalTotal.toLocaleString()}
                   </span>
                 </div>
               </div>
