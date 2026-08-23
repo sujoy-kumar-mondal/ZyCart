@@ -11,7 +11,8 @@ import {
   ArrowRight,
   ShieldCheck,
   Sparkles,
-  Store
+  Store,
+  Layers
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";

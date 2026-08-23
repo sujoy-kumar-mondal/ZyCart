@@ -11,7 +11,12 @@ import {
   ArrowRight,
   Star,
   Sparkles,
-  Store
+  Store,
+  Truck,
+  DollarSign,
+  Layers,
+  ShieldCheck,
+  Lock
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
