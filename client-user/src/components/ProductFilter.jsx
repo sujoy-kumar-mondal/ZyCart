@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axiosInstance from '../utils/axiosInstance';
+import { useSettings } from '../context/SettingsProvider';
 import { ChevronDown, Search, X } from 'lucide-react';
 
 const ProductFilter = ({ onFilterChange, onPriceChange, productCount = 0 }) => {
+  const { settings } = useSettings();
+  const currency = settings?.currencySymbol || "₹";
   const [mainCategories, setMainCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [subSubCategories, setSubSubCategories] = useState([]);
@@ -322,7 +325,7 @@ const ProductFilter = ({ onFilterChange, onPriceChange, productCount = 0 }) => {
           onClick={() => toggleSection('price')}
           className="flex items-center justify-between w-full"
         >
-          <span className="text-sm font-semibold text-gray-800">Price</span>
+          <span className="text-sm font-semibold text-gray-800">Price ({currency})</span>
           <ChevronDown
             className={`w-4 h-4 text-gray-600 transition-transform ${
               expandedSections.price ? 'rotate-180' : ''
@@ -334,14 +337,14 @@ const ProductFilter = ({ onFilterChange, onPriceChange, productCount = 0 }) => {
           <div className="mt-3 flex gap-2">
             <input
               type="number"
-              placeholder="Min"
+              placeholder={`Min (${currency})`}
               value={filters.priceMin}
               onChange={(e) => handlePriceChange(parseInt(e.target.value) || 0, filters.priceMax)}
               className="w-1/2 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
               type="number"
-              placeholder="Max"
+              placeholder={`Max (${currency})`}
               value={filters.priceMax}
               onChange={(e) => handlePriceChange(filters.priceMin, parseInt(e.target.value) || 999999)}
               className="w-1/2 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
