@@ -370,7 +370,117 @@ export const getAttributes = async (req, res) => {
   }
 };
 
-// Search category pathways across 3 tiers (e.g. searching "watch" returns "Electronics > Wearable Smart Devices > Smart Watches")
+// Helper for tokenizing and cleaning title / search query
+const extractMeaningfulTokens = (text) => {
+  if (!text) return [];
+  const cleaned = text.replace(/[^a-zA-Z0-9\s]/g, " ").toLowerCase();
+  const rawTokens = cleaned.split(/\s+/).filter((t) => t.length > 1);
+
+  const stopWords = new Set([
+    "for", "and", "the", "with", "in", "of", "to", "a", "an", "by", "on", "at",
+    "pack", "combo", "set", "piece", "pieces", "black", "white", "blue", "red", "green", "color",
+    "new", "latest", "best", "top", "premium", "original", "gen", "pro", "max", "plus", "ultra"
+  ]);
+
+  const meaningful = [];
+  for (const token of rawTokens) {
+    if (!stopWords.has(token) && !/^\d+$/.test(token)) {
+      meaningful.push(token);
+    }
+  }
+
+  for (const token of rawTokens) {
+    if (["men", "women", "kids", "boys", "girls"].includes(token)) {
+      meaningful.push(token);
+    }
+  }
+
+  return Array.from(new Set(meaningful));
+};
+
+const SYNONYMS = {
+  watch: ["watch", "watches", "timepiece", "analog", "analogue", "dial", "smartwatch", "wrist"],
+  watches: ["watch", "watches", "timepiece", "analog", "analogue", "dial", "smartwatch", "wrist"],
+  analog: ["analog", "analogue", "dial", "wrist", "watch", "watches"],
+  analogue: ["analog", "analogue", "dial", "wrist", "watch", "watches"],
+  smartwatch: ["smartwatch", "smart", "watch", "wearable", "band"],
+  phone: ["phone", "mobile", "smartphone", "cellphone"],
+  mobile: ["mobile", "phone", "smartphone", "cellphone"],
+  smartphone: ["smartphone", "mobile", "phone"],
+  iphone: ["iphone", "mobile", "smartphone", "apple"],
+  shoe: ["shoe", "shoes", "footwear", "sneaker", "sneakers", "boots", "sandals", "slippers"],
+  shoes: ["shoe", "shoes", "footwear", "sneaker", "sneakers", "boots", "sandals", "slippers"],
+  sneaker: ["sneaker", "sneakers", "shoe", "shoes", "footwear"],
+  sneakers: ["sneaker", "sneakers", "shoe", "shoes", "footwear"],
+  shirt: ["shirt", "shirts", "tshirt", "t-shirt", "topwear", "clothing", "apparel"],
+  tshirt: ["tshirt", "t-shirt", "shirt", "topwear", "clothing"],
+  tshirts: ["tshirt", "t-shirt", "shirt", "topwear", "clothing"],
+  laptop: ["laptop", "laptops", "notebook", "computer", "pc"],
+  earphone: ["earphone", "earphones", "earbuds", "headphone", "headphones", "headset", "audio"],
+  earbuds: ["earbuds", "earphone", "earphones", "headphone", "headphones", "headset", "audio", "tws"],
+  headphone: ["headphone", "headphones", "headset", "earphone", "audio"],
+  dress: ["dress", "dresses", "gown", "clothing", "women"],
+  jeans: ["jeans", "denim", "pants", "trousers", "bottomwear"],
+  pant: ["pant", "pants", "trousers", "bottomwear", "jeans"],
+  bag: ["bag", "bags", "backpack", "handbag", "luggage", "wallet"],
+  wallet: ["wallet", "wallets", "purse", "accessories", "leather"],
+  perfume: ["perfume", "fragrance", "deodorant", "cologne", "body mist", "beauty"],
+  camera: ["camera", "cameras", "dslr", "lens", "photography"],
+  television: ["television", "tv", "smart tv", "led tv", "display"],
+  tv: ["tv", "television", "smart tv", "led tv"],
+};
+
+const scorePathway = (cat, queryStr, tokens) => {
+  let score = 0;
+  const mainLower = (cat.mainCategory || "").toLowerCase();
+  const subLower = (cat.subCategory || "").toLowerCase();
+  const subSubLower = (cat.subSubCategory || "").toLowerCase();
+
+  const queryLower = queryStr.toLowerCase();
+
+  // 1. Direct whole phrase or substring match
+  if (queryLower.includes(subSubLower)) score += 100;
+  if (subSubLower.includes(queryLower)) score += 80;
+  if (queryLower.includes(subLower)) score += 50;
+  if (subLower.includes(queryLower)) score += 40;
+
+  // 2. Token matches with synonym expansion
+  tokens.forEach((token) => {
+    const related = new Set([token]);
+    if (token.endsWith("es")) related.add(token.slice(0, -2));
+    if (token.endsWith("s")) related.add(token.slice(0, -1));
+    if (SYNONYMS[token]) SYNONYMS[token].forEach((syn) => related.add(syn));
+
+    related.forEach((term) => {
+      // SubSubCategory (Product Type)
+      if (subSubLower === term) {
+        score += 60;
+      } else if (subSubLower.split(/\s+/).includes(term)) {
+        score += 45;
+      } else if (subSubLower.includes(term)) {
+        score += 30;
+      }
+
+      // SubCategory
+      if (subLower === term) {
+        score += 35;
+      } else if (subLower.split(/\s+/).includes(term)) {
+        score += 25;
+      } else if (subLower.includes(term)) {
+        score += 15;
+      }
+
+      // MainCategory
+      if (mainLower.includes(term)) {
+        score += 10;
+      }
+    });
+  });
+
+  return score;
+};
+
+// Search category pathways across 3 tiers with title pasted NLP ranking
 export const searchCategoryPathways = async (req, res) => {
   try {
     const { q } = req.query;
@@ -378,29 +488,31 @@ export const searchCategoryPathways = async (req, res) => {
       return res.status(200).json({ success: true, count: 0, results: [] });
     }
 
-    const searchRegex = new RegExp(q.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+    const rawQuery = q.trim();
+    const tokens = extractMeaningfulTokens(rawQuery);
 
-    const categories = await Category.find({
-      isActive: true,
-      $or: [
-        { subSubCategory: searchRegex },
-        { subCategory: searchRegex },
-        { mainCategory: searchRegex },
-      ],
-    }).limit(25);
+    const categories = await Category.find({ isActive: true });
 
-    const results = categories.map((cat) => ({
-      _id: cat._id,
-      mainCategory: cat.mainCategory,
-      subCategory: cat.subCategory,
-      subSubCategory: cat.subSubCategory,
-      path: `${cat.mainCategory} > ${cat.subCategory} > ${cat.subSubCategory}`,
-    }));
+    const scored = categories
+      .map((cat) => {
+        const score = scorePathway(cat, rawQuery, tokens);
+        return {
+          _id: cat._id,
+          mainCategory: cat.mainCategory,
+          subCategory: cat.subCategory,
+          subSubCategory: cat.subSubCategory,
+          path: `${cat.mainCategory} > ${cat.subCategory} > ${cat.subSubCategory}`,
+          score,
+        };
+      })
+      .filter((item) => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 25);
 
     res.status(200).json({
       success: true,
-      count: results.length,
-      results,
+      count: scored.length,
+      results: scored,
     });
   } catch (error) {
     console.error("Search category pathways error:", error);

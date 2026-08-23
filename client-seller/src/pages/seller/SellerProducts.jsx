@@ -128,22 +128,146 @@ const SellerProducts = () => {
     fetchAllPathways();
   }, []);
 
-  // Filter category pathways as user types in category search input
+  // Helper for tokenizing and cleaning title / search query
+  const extractMeaningfulTokens = (text) => {
+    if (!text) return [];
+    const cleaned = text.replace(/[^a-zA-Z0-9\s]/g, " ").toLowerCase();
+    const rawTokens = cleaned.split(/\s+/).filter((t) => t.length > 1);
+
+    const stopWords = new Set([
+      "for", "and", "the", "with", "in", "of", "to", "a", "an", "by", "on", "at",
+      "pack", "combo", "set", "piece", "pieces", "black", "white", "blue", "red", "green", "color",
+      "new", "latest", "best", "top", "premium", "original", "gen", "pro", "max", "plus", "ultra"
+    ]);
+
+    const meaningful = [];
+    for (const token of rawTokens) {
+      if (!stopWords.has(token) && !/^\d+$/.test(token)) {
+        meaningful.push(token);
+      }
+    }
+
+    for (const token of rawTokens) {
+      if (["men", "women", "kids", "boys", "girls"].includes(token)) {
+        meaningful.push(token);
+      }
+    }
+
+    return Array.from(new Set(meaningful));
+  };
+
+  const SYNONYMS = {
+    watch: ["watch", "watches", "timepiece", "analog", "analogue", "dial", "smartwatch", "wrist"],
+    watches: ["watch", "watches", "timepiece", "analog", "analogue", "dial", "smartwatch", "wrist"],
+    analog: ["analog", "analogue", "dial", "wrist", "watch", "watches"],
+    analogue: ["analog", "analogue", "dial", "wrist", "watch", "watches"],
+    smartwatch: ["smartwatch", "smart", "watch", "wearable", "band"],
+    phone: ["phone", "mobile", "smartphone", "cellphone"],
+    mobile: ["mobile", "phone", "smartphone", "cellphone"],
+    smartphone: ["smartphone", "mobile", "phone"],
+    iphone: ["iphone", "mobile", "smartphone", "apple"],
+    shoe: ["shoe", "shoes", "footwear", "sneaker", "sneakers", "boots", "sandals", "slippers"],
+    shoes: ["shoe", "shoes", "footwear", "sneaker", "sneakers", "boots", "sandals", "slippers"],
+    sneaker: ["sneaker", "sneakers", "shoe", "shoes", "footwear"],
+    sneakers: ["sneaker", "sneakers", "shoe", "shoes", "footwear"],
+    shirt: ["shirt", "shirts", "tshirt", "t-shirt", "topwear", "clothing", "apparel"],
+    tshirt: ["tshirt", "t-shirt", "shirt", "topwear", "clothing"],
+    tshirts: ["tshirt", "t-shirt", "shirt", "topwear", "clothing"],
+    laptop: ["laptop", "laptops", "notebook", "computer", "pc"],
+    earphone: ["earphone", "earphones", "earbuds", "headphone", "headphones", "headset", "audio"],
+    earbuds: ["earbuds", "earphone", "earphones", "headphone", "headphones", "headset", "audio", "tws"],
+    headphone: ["headphone", "headphones", "headset", "earphone", "audio"],
+    dress: ["dress", "dresses", "gown", "clothing", "women"],
+    jeans: ["jeans", "denim", "pants", "trousers", "bottomwear"],
+    pant: ["pant", "pants", "trousers", "bottomwear", "jeans"],
+    bag: ["bag", "bags", "backpack", "handbag", "luggage", "wallet"],
+    wallet: ["wallet", "wallets", "purse", "accessories", "leather"],
+    perfume: ["perfume", "fragrance", "deodorant", "cologne", "body mist", "beauty"],
+    camera: ["camera", "cameras", "dslr", "lens", "photography"],
+    television: ["television", "tv", "smart tv", "led tv", "display"],
+    tv: ["tv", "television", "smart tv", "led tv"],
+  };
+
+  const scorePathway = (cat, queryStr, tokens) => {
+    let score = 0;
+    const mainLower = (cat.mainCategory || "").toLowerCase();
+    const subLower = (cat.subCategory || "").toLowerCase();
+    const subSubLower = (cat.subSubCategory || "").toLowerCase();
+
+    const queryLower = queryStr.toLowerCase();
+
+    // 1. Direct whole phrase or substring match
+    if (queryLower.includes(subSubLower)) score += 100;
+    if (subSubLower.includes(queryLower)) score += 80;
+    if (queryLower.includes(subLower)) score += 50;
+    if (subLower.includes(queryLower)) score += 40;
+
+    // 2. Token matches with synonym expansion
+    tokens.forEach((token) => {
+      const related = new Set([token]);
+      if (token.endsWith("es")) related.add(token.slice(0, -2));
+      if (token.endsWith("s")) related.add(token.slice(0, -1));
+      if (SYNONYMS[token]) SYNONYMS[token].forEach((syn) => related.add(syn));
+
+      related.forEach((term) => {
+        if (subSubLower === term) {
+          score += 60;
+        } else if (subSubLower.split(/\s+/).includes(term)) {
+          score += 45;
+        } else if (subSubLower.includes(term)) {
+          score += 30;
+        }
+
+        if (subLower === term) {
+          score += 35;
+        } else if (subLower.split(/\s+/).includes(term)) {
+          score += 25;
+        } else if (subLower.includes(term)) {
+          score += 15;
+        }
+
+        if (mainLower.includes(term)) {
+          score += 10;
+        }
+      });
+    });
+
+    return score;
+  };
+
+  // Filter category pathways as user types in category search input with NLP scoring
   useEffect(() => {
     if (!categorySearchQuery.trim()) {
       setCategorySearchResults([]);
       return;
     }
 
-    const q = categorySearchQuery.toLowerCase().trim();
-    const terms = q.split(/\s+/).filter(Boolean);
+    const rawQuery = categorySearchQuery.trim();
+    const tokens = extractMeaningfulTokens(rawQuery);
 
-    const matches = allPathways.filter((item) => {
-      const fullText = `${item.mainCategory} ${item.subCategory} ${item.subSubCategory}`.toLowerCase();
-      return terms.every((term) => fullText.includes(term));
-    });
+    if (allPathways.length > 0) {
+      const scored = allPathways
+        .map((item) => ({
+          ...item,
+          score: scorePathway(item, rawQuery, tokens),
+        }))
+        .filter((item) => item.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 25);
 
-    setCategorySearchResults(matches);
+      setCategorySearchResults(scored);
+    } else {
+      // Fallback to backend API search
+      const timer = setTimeout(async () => {
+        try {
+          const res = await axios.get(`/products/categories/search?q=${encodeURIComponent(rawQuery)}`);
+          if (res.data.success) {
+            setCategorySearchResults(res.data.results || []);
+          }
+        } catch (e) {}
+      }, 200);
+      return () => clearTimeout(timer);
+    }
   }, [categorySearchQuery, allPathways]);
 
   useEffect(() => {
@@ -823,7 +947,7 @@ const SellerProducts = () => {
                         setShowCategorySearchSuggestions(true);
                       }}
                       onFocus={() => setShowCategorySearchSuggestions(true)}
-                      placeholder="Type to search (e.g. watch, shoes, mobile, t-shirt, laptop, headphone)..."
+                      placeholder="Paste product title or search type (e.g. ANALOGUE Analog Watch - For Men, shoes, smartphone)..."
                       className="w-full pl-10 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#3F51F4] focus:ring-2 focus:ring-blue-500/20 outline-none transition"
                     />
                     {categorySearchQuery && (
