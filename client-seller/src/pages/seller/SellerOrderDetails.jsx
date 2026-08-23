@@ -187,9 +187,9 @@ const SellerOrderDetails = () => {
 
             {/* Financial Cut Summary */}
             {(() => {
-              const commRate = order?.commissionRate !== undefined && order?.commissionRate !== null ? order.commissionRate : globalCommissionRate;
-              const commAmt = order?.commissionAmount !== undefined && order?.commissionAmount !== null ? order.commissionAmount : Math.round(((order?.amount || 0) * commRate) / 100);
-              const earnings = order?.sellerEarnings !== undefined && order?.sellerEarnings !== null ? order.sellerEarnings : ((order?.amount || 0) - commAmt);
+              const commRate = settings?.platformCommissionRate ?? order?.commissionRate ?? globalCommissionRate;
+              const commAmt = Math.round(((order?.amount || 0) * commRate) / 100);
+              const earnings = (order?.amount || 0) - commAmt;
 
               return (
                 <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
