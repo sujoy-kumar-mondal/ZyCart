@@ -14,6 +14,8 @@ import {
   Building2,
   ShieldCheck,
   TrendingUp,
+  AlertTriangle,
+  X,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -23,6 +25,14 @@ const AdminSellers = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [actionLoading, setActionLoading] = useState(false);
+
+  // Modal State for Confirmations
+  const [confirmModal, setConfirmModal] = useState({
+    open: false,
+    type: "", // 'ban', 'unban', 'approve'
+    seller: null,
+  });
 
   const fetchSellers = async () => {
     try {
@@ -40,35 +50,57 @@ const AdminSellers = () => {
     fetchSellers();
   }, []);
 
-  const approveSeller = async (id) => {
-    if (!window.confirm("Approve this seller account?")) return;
+  const handleApproveSeller = async (seller) => {
     try {
-      await axios.patch(`/admin/sellers/approve/${id}`);
-      toast.success("Seller approved successfully!");
-      fetchSellers();
+      setActionLoading(true);
+      const res = await axios.patch(`/admin/sellers/approve/${seller._id}`);
+      toast.success(res.data.message || `Store '${seller.shopName || seller.name}' approved!`);
+      setSellers((prev) =>
+        prev.map((s) =>
+          s._id === seller._id ? { ...s, isApproved: true, isBanned: false } : s
+        )
+      );
+      setConfirmModal({ open: false, type: "", seller: null });
     } catch (err) {
-      toast.error("Failed to approve seller.");
+      toast.error(err.response?.data?.message || "Failed to approve seller.");
+    } finally {
+      setActionLoading(false);
     }
   };
 
-  const banSeller = async (id) => {
-    if (!window.confirm("Ban this seller? All listed items will be hidden.")) return;
+  const handleBanSeller = async (seller) => {
     try {
-      await axios.patch(`/admin/sellers/ban/${id}`);
-      toast.success("Seller banned successfully!");
-      fetchSellers();
+      setActionLoading(true);
+      const res = await axios.patch(`/admin/sellers/ban/${seller._id}`);
+      toast.success(res.data.message || `Store '${seller.shopName || seller.name}' has been banned.`);
+      setSellers((prev) =>
+        prev.map((s) =>
+          s._id === seller._id ? { ...s, isBanned: true, isApproved: false } : s
+        )
+      );
+      setConfirmModal({ open: false, type: "", seller: null });
     } catch (err) {
-      toast.error("Failed to ban seller.");
+      toast.error(err.response?.data?.message || "Failed to ban seller.");
+    } finally {
+      setActionLoading(false);
     }
   };
 
-  const unbanSeller = async (id) => {
+  const handleUnbanSeller = async (seller) => {
     try {
-      await axios.patch(`/admin/sellers/unban/${id}`);
-      toast.success("Seller unbanned successfully!");
-      fetchSellers();
+      setActionLoading(true);
+      const res = await axios.patch(`/admin/sellers/unban/${seller._id}`);
+      toast.success(res.data.message || `Store '${seller.shopName || seller.name}' unbanned!`);
+      setSellers((prev) =>
+        prev.map((s) =>
+          s._id === seller._id ? { ...s, isBanned: false, isApproved: true } : s
+        )
+      );
+      setConfirmModal({ open: false, type: "", seller: null });
     } catch (err) {
-      toast.error("Failed to unban seller.");
+      toast.error(err.response?.data?.message || "Failed to unban seller.");
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -79,7 +111,7 @@ const AdminSellers = () => {
   const stats = useMemo(() => {
     const total = sellers.length;
     const approved = sellers.filter((s) => s.isApproved && !s.isBanned).length;
-    const pending = sellers.filter((s) => !s.isApproved).length;
+    const pending = sellers.filter((s) => !s.isApproved && !s.isBanned).length;
     const banned = sellers.filter((s) => s.isBanned).length;
     return { total, approved, pending, banned };
   }, [sellers]);
@@ -94,7 +126,7 @@ const AdminSellers = () => {
       const matchesStatus =
         statusFilter === "all" ||
         (statusFilter === "approved" && s.isApproved && !s.isBanned) ||
-        (statusFilter === "pending" && !s.isApproved) ||
+        (statusFilter === "pending" && !s.isApproved && !s.isBanned) ||
         (statusFilter === "banned" && s.isBanned);
 
       return matchesSearch && matchesStatus;
@@ -275,15 +307,15 @@ const AdminSellers = () => {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => navigate(`/admin/sellers/${s._id}`)}
-                            className="px-3.5 py-1.5 rounded-xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-extrabold text-xs transition flex items-center gap-1 cursor-pointer active:scale-95"
+                            className="px-3.5 py-1.5 rounded-xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-extrabold text-xs transition flex items-center gap-1 cursor-pointer active:scale-95 shadow-xs"
                           >
                             <Eye className="w-3.5 h-3.5" /> Inspect
                           </button>
 
                           {!s.isApproved && !s.isBanned && (
                             <button
-                              onClick={() => approveSeller(s._id)}
-                              className="px-3.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-extrabold text-xs transition cursor-pointer active:scale-95"
+                              onClick={() => setConfirmModal({ open: true, type: "approve", seller: s })}
+                              className="px-3.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-extrabold text-xs transition cursor-pointer active:scale-95 shadow-xs"
                             >
                               Approve
                             </button>
@@ -291,15 +323,15 @@ const AdminSellers = () => {
 
                           {!s.isBanned ? (
                             <button
-                              onClick={() => banSeller(s._id)}
-                              className="px-3.5 py-1.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 font-extrabold text-xs transition cursor-pointer active:scale-95"
+                              onClick={() => setConfirmModal({ open: true, type: "ban", seller: s })}
+                              className="px-3.5 py-1.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 font-extrabold text-xs transition cursor-pointer active:scale-95 shadow-xs"
                             >
                               Ban
                             </button>
                           ) : (
                             <button
-                              onClick={() => unbanSeller(s._id)}
-                              className="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 font-extrabold text-xs transition cursor-pointer active:scale-95"
+                              onClick={() => setConfirmModal({ open: true, type: "unban", seller: s })}
+                              className="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 font-extrabold text-xs transition cursor-pointer active:scale-95 shadow-xs"
                             >
                               Unban
                             </button>
@@ -315,6 +347,82 @@ const AdminSellers = () => {
         </div>
 
       </div>
+
+      {/* Action Confirmation Modal */}
+      {confirmModal.open && confirmModal.seller && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-5 relative">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold ${
+                  confirmModal.type === "ban"
+                    ? "bg-red-100 text-red-600"
+                    : "bg-emerald-100 text-emerald-600"
+                }`}>
+                  {confirmModal.type === "ban" ? <AlertTriangle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-[#1B2A41]">
+                    {confirmModal.type === "ban"
+                      ? "Ban Merchant Store"
+                      : confirmModal.type === "unban"
+                      ? "Unban Merchant Store"
+                      : "Approve Merchant Store"}
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">Store: {confirmModal.seller.shopName || confirmModal.seller.name}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setConfirmModal({ open: false, type: "", seller: null })}
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-xl"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">
+              {confirmModal.type === "ban"
+                ? "Are you sure you want to ban this merchant store? All their active product listings will be hidden from customer search immediately."
+                : confirmModal.type === "unban"
+                ? "Are you sure you want to unban this merchant store? Their storefront and products will be restored to active status."
+                : "Are you sure you want to approve this merchant account? They will gain full access to publish and sell products on ZyCart."}
+            </p>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setConfirmModal({ open: false, type: "", seller: null })}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={actionLoading}
+                onClick={() => {
+                  if (confirmModal.type === "ban") handleBanSeller(confirmModal.seller);
+                  else if (confirmModal.type === "unban") handleUnbanSeller(confirmModal.seller);
+                  else if (confirmModal.type === "approve") handleApproveSeller(confirmModal.seller);
+                }}
+                className={`px-5 py-2.5 rounded-xl text-white font-extrabold text-xs shadow-md transition disabled:opacity-50 cursor-pointer ${
+                  confirmModal.type === "ban"
+                    ? "bg-red-600 hover:bg-red-700 shadow-red-500/20"
+                    : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20"
+                }`}
+              >
+                {actionLoading
+                  ? "Processing..."
+                  : confirmModal.type === "ban"
+                  ? "Confirm Ban"
+                  : confirmModal.type === "unban"
+                  ? "Confirm Unban"
+                  : "Confirm Approval"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

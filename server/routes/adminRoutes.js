@@ -64,9 +64,21 @@ router.patch(
   requirePermission("manage_users"),
   banUser
 );
+router.patch(
+  "/users/:id/ban",
+  protectAdmin,
+  requirePermission("manage_users"),
+  banUser
+);
 
 router.patch(
   "/users/unban/:id",
+  protectAdmin,
+  requirePermission("manage_users"),
+  unbanUser
+);
+router.patch(
+  "/users/:id/unban",
   protectAdmin,
   requirePermission("manage_users"),
   unbanUser
@@ -102,6 +114,12 @@ router.patch(
   requirePermission("manage_sellers"),
   approveSeller
 );
+router.patch(
+  "/sellers/:id/approve",
+  protectAdmin,
+  requirePermission("manage_sellers"),
+  approveSeller
+);
 
 router.patch(
   "/sellers/ban/:id",
@@ -109,9 +127,21 @@ router.patch(
   requirePermission("manage_sellers"),
   banSeller
 );
+router.patch(
+  "/sellers/:id/ban",
+  protectAdmin,
+  requirePermission("manage_sellers"),
+  banSeller
+);
 
 router.patch(
   "/sellers/unban/:id",
+  protectAdmin,
+  requirePermission("manage_sellers"),
+  unbanSeller
+);
+router.patch(
+  "/sellers/:id/unban",
   protectAdmin,
   requirePermission("manage_sellers"),
   unbanSeller

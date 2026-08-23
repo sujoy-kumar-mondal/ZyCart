@@ -15,6 +15,8 @@ import {
   UserX,
   ShieldCheck,
   TrendingUp,
+  AlertTriangle,
+  X,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -24,6 +26,14 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [actionLoading, setActionLoading] = useState(false);
+
+  // In-App Confirmation Modal
+  const [confirmModal, setConfirmModal] = useState({
+    open: false,
+    type: "", // 'ban', 'unban', 'delete'
+    user: null,
+  });
 
   const fetchUsers = async () => {
     try {
@@ -41,35 +51,49 @@ const AdminUsers = () => {
     fetchUsers();
   }, []);
 
-  const banUser = async (id) => {
-    if (!window.confirm("Ban this customer account?")) return;
+  const handleBanUser = async (user) => {
     try {
-      await axios.patch(`/admin/users/ban/${id}`);
-      toast.success("User banned successfully!");
-      fetchUsers();
+      setActionLoading(true);
+      const res = await axios.patch(`/admin/users/ban/${user._id}`);
+      toast.success(res.data.message || `Customer '${user.name || user.email}' banned successfully!`);
+      setUsers((prev) =>
+        prev.map((u) => (u._id === user._id ? { ...u, isBanned: true } : u))
+      );
+      setConfirmModal({ open: false, type: "", user: null });
     } catch (error) {
-      toast.error("Failed to ban user.");
+      toast.error(error.response?.data?.message || "Failed to ban user.");
+    } finally {
+      setActionLoading(false);
     }
   };
 
-  const unbanUser = async (id) => {
+  const handleUnbanUser = async (user) => {
     try {
-      await axios.patch(`/admin/users/unban/${id}`);
-      toast.success("User unbanned successfully!");
-      fetchUsers();
+      setActionLoading(true);
+      const res = await axios.patch(`/admin/users/unban/${user._id}`);
+      toast.success(res.data.message || `Customer '${user.name || user.email}' unbanned successfully!`);
+      setUsers((prev) =>
+        prev.map((u) => (u._id === user._id ? { ...u, isBanned: false } : u))
+      );
+      setConfirmModal({ open: false, type: "", user: null });
     } catch (error) {
-      toast.error("Failed to unban user.");
+      toast.error(error.response?.data?.message || "Failed to unban user.");
+    } finally {
+      setActionLoading(false);
     }
   };
 
-  const deleteUser = async (id) => {
-    if (!window.confirm("Delete user permanently? This action cannot be undone.")) return;
+  const handleDeleteUser = async (user) => {
     try {
-      await axios.delete(`/admin/users/${id}`);
-      toast.success("User deleted successfully!");
-      fetchUsers();
+      setActionLoading(true);
+      const res = await axios.delete(`/admin/users/${user._id}`);
+      toast.success(res.data.message || `Customer account deleted successfully!`);
+      setUsers((prev) => prev.filter((u) => u._id !== user._id));
+      setConfirmModal({ open: false, type: "", user: null });
     } catch (error) {
-      toast.error("Failed to delete user.");
+      toast.error(error.response?.data?.message || "Failed to delete user.");
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -262,30 +286,30 @@ const AdminUsers = () => {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => navigate(`/admin/users/${u._id}`)}
-                            className="px-3.5 py-1.5 rounded-xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-extrabold text-xs transition flex items-center gap-1.5 cursor-pointer active:scale-95"
+                            className="px-3.5 py-1.5 rounded-xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-extrabold text-xs transition flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-xs"
                           >
                             <Eye className="w-3.5 h-3.5" /> Inspect
                           </button>
 
                           {!u.isBanned ? (
                             <button
-                              onClick={() => banUser(u._id)}
-                              className="px-3.5 py-1.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 font-extrabold text-xs transition cursor-pointer active:scale-95"
+                              onClick={() => setConfirmModal({ open: true, type: "ban", user: u })}
+                              className="px-3.5 py-1.5 rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 font-extrabold text-xs transition cursor-pointer active:scale-95 shadow-xs"
                             >
                               Ban
                             </button>
                           ) : (
                             <button
-                              onClick={() => unbanUser(u._id)}
-                              className="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 font-extrabold text-xs transition cursor-pointer active:scale-95"
+                              onClick={() => setConfirmModal({ open: true, type: "unban", user: u })}
+                              className="px-3.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-extrabold text-xs transition cursor-pointer active:scale-95 shadow-xs"
                             >
                               Unban
                             </button>
                           )}
 
                           <button
-                            onClick={() => deleteUser(u._id)}
-                            className="px-3.5 py-1.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 font-extrabold text-xs transition cursor-pointer active:scale-95"
+                            onClick={() => setConfirmModal({ open: true, type: "delete", user: u })}
+                            className="px-3.5 py-1.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 font-extrabold text-xs transition cursor-pointer active:scale-95 shadow-xs"
                           >
                             Delete
                           </button>
@@ -300,6 +324,88 @@ const AdminUsers = () => {
         </div>
 
       </div>
+
+      {/* Confirmation Modal */}
+      {confirmModal.open && confirmModal.user && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-5 relative">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-bold ${
+                  confirmModal.type === "delete" || confirmModal.type === "ban"
+                    ? "bg-red-100 text-red-600"
+                    : "bg-emerald-100 text-emerald-600"
+                }`}>
+                  {confirmModal.type === "delete" ? (
+                    <Trash2 className="w-5 h-5" />
+                  ) : confirmModal.type === "ban" ? (
+                    <AlertTriangle className="w-5 h-5" />
+                  ) : (
+                    <CheckCircle2 className="w-5 h-5" />
+                  )}
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-[#1B2A41]">
+                    {confirmModal.type === "delete"
+                      ? "Delete Customer"
+                      : confirmModal.type === "ban"
+                      ? "Ban Customer Account"
+                      : "Unban Customer Account"}
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">{confirmModal.user.name || confirmModal.user.email}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setConfirmModal({ open: false, type: "", user: null })}
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-xl"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed font-medium">
+              {confirmModal.type === "delete"
+                ? "Are you sure you want to permanently delete this customer account? All associated profile data will be permanently removed."
+                : confirmModal.type === "ban"
+                ? "Are you sure you want to ban this customer? They will be locked out from signing in and placing orders."
+                : "Are you sure you want to unban this customer? Their access to sign in and place orders will be immediately restored."}
+            </p>
+
+            <div className="flex justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setConfirmModal({ open: false, type: "", user: null })}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={actionLoading}
+                onClick={() => {
+                  if (confirmModal.type === "ban") handleBanUser(confirmModal.user);
+                  else if (confirmModal.type === "unban") handleUnbanUser(confirmModal.user);
+                  else if (confirmModal.type === "delete") handleDeleteUser(confirmModal.user);
+                }}
+                className={`px-5 py-2.5 rounded-xl text-white font-extrabold text-xs shadow-md transition disabled:opacity-50 cursor-pointer ${
+                  confirmModal.type === "delete" || confirmModal.type === "ban"
+                    ? "bg-red-600 hover:bg-red-700 shadow-red-500/20"
+                    : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/20"
+                }`}
+              >
+                {actionLoading
+                  ? "Processing..."
+                  : confirmModal.type === "delete"
+                  ? "Confirm Delete"
+                  : confirmModal.type === "ban"
+                  ? "Confirm Ban"
+                  : "Confirm Unban"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

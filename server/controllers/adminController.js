@@ -109,19 +109,18 @@ export const approveSeller = async (req, res) => {
   try {
     const sellerId = req.params.id;
 
-    const seller = await Seller.findById(sellerId);
+    const seller = await Seller.findByIdAndUpdate(
+      sellerId,
+      { isApproved: true, isBanned: false, approvalDate: new Date() },
+      { new: true }
+    );
 
-    if (!seller)
+    if (!seller) {
       return res.status(404).json({
         success: false,
         message: "Seller not found",
       });
-
-    seller.isApproved = true;
-    seller.isBanned = false;
-    seller.approvalDate = new Date();
-
-    await seller.save();
+    }
 
     res.status(200).json({
       success: true,
@@ -141,18 +140,18 @@ export const banSeller = async (req, res) => {
   try {
     const sellerId = req.params.id;
 
-    const seller = await Seller.findById(sellerId);
+    const seller = await Seller.findByIdAndUpdate(
+      sellerId,
+      { isBanned: true, isApproved: false },
+      { new: true }
+    );
 
-    if (!seller)
+    if (!seller) {
       return res.status(404).json({
         success: false,
         message: "Seller not found",
       });
-
-    seller.isBanned = true;
-    seller.isApproved = false;
-
-    await seller.save();
+    }
 
     // Mark all products unavailable
     await Product.updateMany(
@@ -163,6 +162,7 @@ export const banSeller = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Seller banned & products marked unavailable",
+      seller,
     });
   } catch (error) {
     console.error("Ban seller error:", error);
@@ -171,25 +171,35 @@ export const banSeller = async (req, res) => {
 };
 
 // ----------------------------------------------------------
-// UNBAN SELLER (needs re-approval)
+// UNBAN SELLER
 // ----------------------------------------------------------
 export const unbanSeller = async (req, res) => {
   try {
-    const seller = await Seller.findById(req.params.id);
+    const sellerId = req.params.id;
 
-    if (!seller)
+    const seller = await Seller.findByIdAndUpdate(
+      sellerId,
+      { isBanned: false, isApproved: true },
+      { new: true }
+    );
+
+    if (!seller) {
       return res.status(404).json({
         success: false,
         message: "Seller not found",
       });
+    }
 
-    seller.isBanned = false;
-    // Still admin must APPROVE manually
-    await seller.save();
+    // Restore products availability
+    await Product.updateMany(
+      { seller: sellerId },
+      { isAvailable: true }
+    );
 
     res.status(200).json({
       success: true,
-      message: "Seller unbanned. Must be approved again.",
+      message: "Seller unbanned and activated successfully.",
+      seller,
     });
   } catch (error) {
     console.error("Unban seller error:", error);
@@ -658,12 +668,13 @@ export const updateAdminAccount = async (req, res) => {
   }
 };
 
-// 4. DELETE ADMIN ACCOUNT (Super Admin only)
+// 4. DELETE ADMIN ACCOUNT (Super Admin or Sub-Admin with manage_admins)
 export const deleteAdminAccount = async (req, res) => {
   try {
     const { id } = req.params;
+    const requesterId = req.user._id ? req.user._id.toString() : req.user.userId?.toString();
 
-    if (id === req.user._id.toString()) {
+    if (id === requesterId) {
       return res.status(400).json({
         success: false,
         message: "You cannot delete your own admin account.",
@@ -678,11 +689,19 @@ export const deleteAdminAccount = async (req, res) => {
       });
     }
 
+    // Protect Super Admins from being deleted by non-super admins
+    if (admin.role === "super_admin" && req.user.role !== "super_admin") {
+      return res.status(403).json({
+        success: false,
+        message: "You do not have permission to delete a Super Administrator.",
+      });
+    }
+
     await Admin.findByIdAndDelete(id);
 
     res.status(200).json({
       success: true,
-      message: "Admin account deleted successfully",
+      message: `Admin account '${admin.name}' deleted successfully.`,
     });
   } catch (error) {
     console.error("Delete admin error:", error);
