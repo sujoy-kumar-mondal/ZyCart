@@ -16,6 +16,34 @@ const generateToken = (userId) => {
   });
 };
 
+// Helper functions to strip sensitive fields from payloads
+const sanitizeUser = (user) => {
+  if (!user) return null;
+  const obj = user.toObject ? user.toObject() : { ...user };
+  delete obj.password;
+  delete obj.otp;
+  delete obj.otpExpires;
+  return obj;
+};
+
+const sanitizeSeller = (seller) => {
+  if (!seller) return null;
+  const obj = seller.toObject ? seller.toObject() : { ...seller };
+  delete obj.password;
+  delete obj.otp;
+  delete obj.otpExpires;
+  return obj;
+};
+
+const sanitizeAdmin = (admin) => {
+  if (!admin) return null;
+  const obj = admin.toObject ? admin.toObject() : { ...admin };
+  delete obj.password;
+  delete obj.otp;
+  delete obj.otpExpires;
+  return obj;
+};
+
 // ===========================================================
 // USER REGISTRATION & LOGIN
 // ===========================================================
@@ -199,7 +227,7 @@ export const loginUser = async (req, res) => {
         success: true,
         requireOtp: false,
         token,
-        user,
+        user: sanitizeUser(user),
         message: "Login successful",
       });
     }
@@ -257,7 +285,7 @@ export const verifyLoginOtpUser = async (req, res) => {
       success: true,
       message: "Login successful",
       token,
-      user,
+      user: sanitizeUser(user),
     });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
@@ -528,7 +556,7 @@ export const submitSellerDetails = async (req, res) => {
       message: seller.isApproved
         ? "Seller account approved and activated successfully!"
         : "Seller details submitted successfully. Awaiting admin approval.",
-      seller,
+      seller: sanitizeSeller(seller),
     });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
@@ -583,7 +611,7 @@ export const loginSeller = async (req, res) => {
         success: true,
         requireOtp: false,
         token,
-        seller,
+        seller: sanitizeSeller(seller),
         message: "Login successful",
       });
     }
@@ -642,7 +670,7 @@ export const verifyLoginOtpSeller = async (req, res) => {
       success: true,
       message: "Login successful",
       token,
-      seller,
+      seller: sanitizeSeller(seller),
     });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
@@ -653,16 +681,24 @@ export const verifyLoginOtpSeller = async (req, res) => {
 // ADMIN REGISTRATION & LOGIN
 // ===========================================================
 
-// 8. ADMIN REGISTRATION (POSTMAN ONLY)
+// 8. ADMIN REGISTRATION (BOOTSTRAP ONLY)
 export const registerAdmin = async (req, res) => {
   try {
+    const adminCount = await Admin.countDocuments();
+    if (adminCount > 0) {
+      return res.status(403).json({
+        success: false,
+        message: "Direct admin registration is disabled. Please create administrators via the Admin Management portal.",
+      });
+    }
+
     const { name, email, mobile, password, address, permissions } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: "Name, email, and password required" });
     }
 
-    let admin = await Admin.findOne({ email });
+    let admin = await Admin.findOne({ email: email.toLowerCase().trim() });
 
     if (admin)
       return res
@@ -670,9 +706,9 @@ export const registerAdmin = async (req, res) => {
         .json({ success: false, message: "Admin with this email already exists" });
 
     admin = await Admin.create({
-      name,
-      email,
-      mobile,
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      mobile: String(mobile || "").trim(),
       password,
       address,
       permissions: permissions || ["manage_users", "manage_sellers"],
@@ -681,7 +717,7 @@ export const registerAdmin = async (req, res) => {
     res.status(201).json({
       success: true,
       message: "Admin created successfully",
-      admin,
+      admin: sanitizeAdmin(admin),
     });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
@@ -744,7 +780,7 @@ export const loginAdmin = async (req, res) => {
         success: true,
         requireOtp: false,
         token,
-        admin,
+        admin: sanitizeAdmin(admin),
         message: "Admin login successful",
       });
     }
@@ -805,7 +841,7 @@ export const verifyLoginOtpAdmin = async (req, res) => {
       success: true,
       message: "Login successful",
       token,
-      admin,
+      admin: sanitizeAdmin(admin),
     });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });

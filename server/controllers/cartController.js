@@ -24,9 +24,15 @@ export const addToCart = async (req, res) => {
   try {
     const { productId, qty } = req.body;
 
+    if (!productId) {
+      return res.status(400).json({ success: false, message: "Product ID is required" });
+    }
+
+    const validQty = Math.max(1, parseInt(qty, 10) || 1);
+
     const product = await Product.findById(productId);
-    if (!product)
-      return res.status(404).json({ success: false, message: "Product not found" });
+    if (!product || !product.isAvailable)
+      return res.status(404).json({ success: false, message: "Product not available" });
 
     const maxAllowed = product.maxQuantityPerPurchase
       ? Math.min(product.stock, product.maxQuantityPerPurchase)
@@ -34,10 +40,12 @@ export const addToCart = async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    const existing = user.cart.find((item) => item.product.toString() === productId);
+    const existing = user.cart.find(
+      (item) => item.product && (item.product._id?.toString() || item.product.toString()) === productId
+    );
 
     if (existing) {
-      const newQty = existing.qty + qty;
+      const newQty = existing.qty + validQty;
       if (newQty > maxAllowed) {
         return res.status(400).json({
           success: false,
@@ -46,7 +54,7 @@ export const addToCart = async (req, res) => {
       }
       existing.qty = newQty;
     } else {
-      if (qty > maxAllowed) {
+      if (validQty > maxAllowed) {
         return res.status(400).json({
           success: false,
           message: `Maximum ${maxAllowed} unit(s) allowed per purchase for this product.`,
@@ -54,7 +62,7 @@ export const addToCart = async (req, res) => {
       }
       user.cart.push({
         product: productId,
-        qty: qty,
+        qty: validQty,
       });
     }
 
@@ -78,16 +86,22 @@ export const updateCartItem = async (req, res) => {
     const { productId } = req.params;
     const { qty } = req.body;
 
+    if (!productId) {
+      return res.status(400).json({ success: false, message: "Product ID is required" });
+    }
+
+    const validQty = Math.max(1, parseInt(qty, 10) || 1);
+
     const product = await Product.findById(productId);
-    if (!product) {
-      return res.status(404).json({ success: false, message: "Product not found" });
+    if (!product || !product.isAvailable) {
+      return res.status(404).json({ success: false, message: "Product not available" });
     }
 
     const maxAllowed = product.maxQuantityPerPurchase
       ? Math.min(product.stock, product.maxQuantityPerPurchase)
       : product.stock;
 
-    if (qty > maxAllowed) {
+    if (validQty > maxAllowed) {
       return res.status(400).json({
         success: false,
         message: `Maximum ${maxAllowed} unit(s) allowed per purchase for this product.`,
@@ -96,12 +110,14 @@ export const updateCartItem = async (req, res) => {
 
     const user = await User.findById(req.user._id);
 
-    const item = user.cart.find((i) => i.product.toString() === productId);
+    const item = user.cart.find(
+      (i) => i.product && (i.product._id?.toString() || i.product.toString()) === productId
+    );
 
     if (!item)
-      return res.status(404).json({ success: false, message: "Item not found" });
+      return res.status(404).json({ success: false, message: "Item not found in cart" });
 
-    item.qty = qty;
+    item.qty = validQty;
 
     await user.save();
 

@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Order from "../models/Order.js";
 
 // ===========================================================
 // GET LOGGED IN USER PROFILE
@@ -67,16 +68,33 @@ export const updateAddressOnOrder = async (userId, address) => {
 };
 
 // ===========================================================
-// GET USER STATS
+// GET USER STATS (REALTIME ORDERS & SPENDING)
 // ===========================================================
 export const getUserStats = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId);
+    const userId = req.user._id || req.user.userId;
+    const [user, userOrders] = await Promise.all([
+      User.findById(userId),
+      Order.find({ user: userId }),
+    ]);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const totalOrders = userOrders.length;
+    const totalSpent = userOrders
+      .filter((o) => o.status !== "Cancelled")
+      .reduce((sum, o) => sum + (Number(o.totalAmount) || 0), 0);
+
+    const cartItems = user.cart
+      ? user.cart.reduce((sum, item) => sum + (Number(item.qty) || 1), 0)
+      : 0;
 
     const stats = {
-      totalOrders: 0, // Would need to query Orders collection
-      totalSpent: 0,
-      cartItems: user.cart.length,
+      totalOrders,
+      totalSpent,
+      cartItems,
     };
 
     res.status(200).json({
@@ -84,6 +102,7 @@ export const getUserStats = async (req, res) => {
       stats,
     });
   } catch (error) {
+    console.error("getUserStats error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };

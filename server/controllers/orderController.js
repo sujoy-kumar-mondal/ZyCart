@@ -226,20 +226,28 @@ export const updateOrder = async (req, res) => {
       
       // If payment is confirmed/completed, finalize the order
       if (paymentStatus === "completed" || paymentStatus === "pending") {
+        const wasPending = order.status === "Pending";
+
         // Mark order as confirmed
         order.status = "Confirmed";
         
         // Update child order statuses
         for (let i = 0; i < order.childOrders.length; i++) {
-          order.childOrders[i].status = "Confirmed";
+          if (order.childOrders[i].status === "Pending") {
+            order.childOrders[i].status = "Confirmed";
+          }
         }
         
-        // NOW reduce stock for all items
-        for (const childOrder of order.childOrders) {
-          for (const item of childOrder.items) {
-            await Product.findByIdAndUpdate(item.productId, {
-              $inc: { stock: -item.qty },
-            });
+        // Reduce stock for all items ONLY ONCE upon initial confirmation
+        if (wasPending) {
+          for (const childOrder of order.childOrders) {
+            for (const item of childOrder.items) {
+              if (item.productId) {
+                await Product.findByIdAndUpdate(item.productId, {
+                  $inc: { stock: -item.qty },
+                });
+              }
+            }
           }
         }
       }

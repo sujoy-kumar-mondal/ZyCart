@@ -30,9 +30,9 @@ const isStrongPassword = (pwd) => {
 };
 
 async function createSuperAdmin() {
-  const email = (process.argv[2] || process.env.SUPER_ADMIN_EMAIL || "admin@zycart.com").toLowerCase().trim();
-  const password = process.argv[3] || process.env.SUPER_ADMIN_PASSWORD || "Admin@ZyCart2026";
-  const mobile = process.argv[4] || process.env.SUPER_ADMIN_MOBILE || "9876543210";
+  const email = (process.argv[2] || process.env.SUPER_ADMIN_EMAIL || "").toLowerCase().trim();
+  const password = process.argv[3] || process.env.SUPER_ADMIN_PASSWORD || "";
+  const mobile = process.argv[4] || process.env.SUPER_ADMIN_MOBILE || "";
   const name = process.argv[5] || "Super Admin";
 
   console.log("=========================================");
@@ -41,11 +41,19 @@ async function createSuperAdmin() {
 
   if (!email || !email.includes("@")) {
     console.error("❌ Error: A valid email address is required.");
+    console.error("👉 Usage: node server/scripts/createSuperAdmin.js <email> <password> <mobile> [name]");
     process.exit(1);
   }
 
-  if (!/^[0-9]{10}$/.test(String(mobile).trim())) {
+  if (!password) {
+    console.error("❌ Error: Password is required (via argument or SUPER_ADMIN_PASSWORD environment variable).");
+    console.error("👉 Usage: node server/scripts/createSuperAdmin.js <email> <password> <mobile> [name]");
+    process.exit(1);
+  }
+
+  if (!mobile || !/^[0-9]{10}$/.test(String(mobile).trim())) {
     console.error("❌ Error: Mobile number must be a valid 10-digit number.");
+    console.error("👉 Usage: node server/scripts/createSuperAdmin.js <email> <password> <mobile> [name]");
     process.exit(1);
   }
 
