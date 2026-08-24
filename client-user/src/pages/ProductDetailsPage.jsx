@@ -505,14 +505,14 @@ const ProductDetailsPage = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <button
                     onClick={handleAddToCart}
-                    className="w-full py-4 px-6 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-lg shadow-blue-500/20 transition transform active:scale-95 flex items-center justify-center gap-2"
+                    className="w-full py-4 px-6 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#1D4ED8] hover:to-[#1E40AF] shadow-lg shadow-blue-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <ShoppingCart className="w-5 h-5" /> Add to Cart
                   </button>
 
                   <button
                     onClick={handleBuyNow}
-                    className="w-full py-4 px-6 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-orange-500 to-red-600 hover:opacity-95 shadow-lg shadow-orange-500/20 transition transform active:scale-95 flex items-center justify-center gap-2"
+                    className="w-full py-4 px-6 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] shadow-lg shadow-orange-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     ⚡ Buy Now
                   </button>

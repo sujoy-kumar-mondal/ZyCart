@@ -63,13 +63,13 @@ const Navbar = () => {
     <header className="sticky top-0 z-50 w-full">
       {/* Global Announcement Banner */}
       {settings.announcementBanner?.enabled && (
-        <div className="w-full bg-gradient-to-r from-[#1B2A41] via-[#3F51F4] to-[#1B2A41] text-white py-2 px-3 sm:px-4 text-center text-xs font-bold shadow-xs relative z-50 flex items-center justify-center gap-2 overflow-hidden">
-          <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+        <div className="w-full bg-black text-white py-2 px-3 sm:px-4 text-center text-xs font-bold shadow-xs relative z-50 flex items-center justify-center gap-2 overflow-hidden border-b border-slate-800">
+          <Sparkles className="w-3.5 h-3.5 text-[#F97316] shrink-0" />
           <span className="truncate">{settings.announcementBanner.message}</span>
         </div>
       )}
 
-      <nav className="bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition-all w-full max-w-full">
+      <nav className="bg-white/95 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition-all w-full max-w-full">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20 gap-2 sm:gap-4">
           
@@ -78,11 +78,11 @@ const Navbar = () => {
             to="/"
             className="flex items-center gap-2 sm:gap-3 group shrink-0"
           >
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] p-2 sm:p-2.5 shadow-md shadow-blue-500/20 group-hover:scale-105 transition transform flex items-center justify-center">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-[#2563EB] via-[#3B82F6] to-[#F97316] p-2 sm:p-2.5 shadow-md shadow-blue-500/20 group-hover:scale-105 transition transform flex items-center justify-center">
               <img src="/logo_cart.svg" alt="ZyCart Logo" className="w-full h-full object-contain filter brightness-0 invert" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-black tracking-tight text-[#1B2A41] leading-none">
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 leading-none">
                 {settings.platformName || "ZyCart"}
               </span>
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5 truncate max-w-[100px] sm:max-w-[150px]">
@@ -99,7 +99,7 @@ const Navbar = () => {
                 placeholder="Search thousands of products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-11 pr-10 py-2.5 bg-slate-100/80 border border-slate-200 rounded-full text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white transition"
+                className="w-full pl-11 pr-10 py-2.5 bg-slate-100/80 border border-slate-200 rounded-full text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#2563EB]/50 focus:bg-white transition"
               />
               <Search className="w-4 h-4 text-slate-400 absolute left-4 pointer-events-none" />
               {searchQuery && (
@@ -120,7 +120,7 @@ const Navbar = () => {
               to="/"
               className={({ isActive }) =>
                 `text-sm font-bold transition px-3 py-2 rounded-xl ${
-                  isActive ? "text-[#3F51F4] bg-blue-50/80" : "text-slate-700 hover:text-[#3F51F4] hover:bg-slate-50"
+                  isActive ? "text-[#2563EB] bg-blue-50/80" : "text-slate-700 hover:text-[#2563EB] hover:bg-slate-50"
                 }`
               }
             >
@@ -131,7 +131,7 @@ const Navbar = () => {
               to="/products"
               className={({ isActive }) =>
                 `text-sm font-bold transition px-3 py-2 rounded-xl ${
-                  isActive ? "text-[#3F51F4] bg-blue-50/80" : "text-slate-700 hover:text-[#3F51F4] hover:bg-slate-50"
+                  isActive ? "text-[#2563EB] bg-blue-50/80" : "text-slate-700 hover:text-[#2563EB] hover:bg-slate-50"
                 }`
               }
             >
@@ -142,7 +142,7 @@ const Navbar = () => {
               to="/about"
               className={({ isActive }) =>
                 `text-sm font-bold transition px-3 py-2 rounded-xl ${
-                  isActive ? "text-[#3F51F4] bg-blue-50/80" : "text-slate-700 hover:text-[#3F51F4] hover:bg-slate-50"
+                  isActive ? "text-[#2563EB] bg-blue-50/80" : "text-slate-700 hover:text-[#2563EB] hover:bg-slate-50"
                 }`
               }
             >
@@ -153,7 +153,7 @@ const Navbar = () => {
               to="/contact"
               className={({ isActive }) =>
                 `text-sm font-bold transition px-3 py-2 rounded-xl ${
-                  isActive ? "text-[#3F51F4] bg-blue-50/80" : "text-slate-700 hover:text-[#3F51F4] hover:bg-slate-50"
+                  isActive ? "text-[#2563EB] bg-blue-50/80" : "text-slate-700 hover:text-[#2563EB] hover:bg-slate-50"
                 }`
               }
             >
@@ -183,12 +183,12 @@ const Navbar = () => {
                 {/* Cart Icon */}
                 <NavLink
                   to="/cart"
-                  className="relative p-2.5 rounded-full text-slate-700 hover:text-[#3F51F4] hover:bg-blue-50 transition transform active:scale-95"
+                  className="relative p-2.5 rounded-full text-slate-700 hover:text-[#2563EB] hover:bg-blue-50 transition transform active:scale-95"
                   title="My Cart"
                 >
                   <ShoppingCart className="w-5 h-5" />
                   {totalItems > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] text-white text-[11px] font-extrabold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow-xs animate-pulse">
+                    <span className="absolute -top-1 -right-1 bg-[#F97316] text-white text-[11px] font-extrabold rounded-full w-5 h-5 flex items-center justify-center border-2 border-white shadow-xs animate-pulse">
                       {totalItems}
                     </span>
                   )}
@@ -200,7 +200,7 @@ const Navbar = () => {
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     className="flex items-center gap-2 p-1.5 rounded-full hover:bg-slate-100/80 border border-slate-200/80 transition"
                   >
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] text-white font-extrabold text-sm flex items-center justify-center shadow-md shadow-blue-500/20">
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#2563EB] to-[#F97316] text-white font-extrabold text-sm flex items-center justify-center shadow-md shadow-blue-500/20">
                       {getInitials()}
                     </div>
                     <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-200 hidden sm:block ${dropdownOpen ? "rotate-180" : ""}`} />
@@ -216,14 +216,14 @@ const Navbar = () => {
                         className="absolute right-0 mt-3 w-56 bg-white rounded-3xl shadow-xl border border-slate-200/80 overflow-hidden z-50 p-2 space-y-1"
                       >
                         <div className="px-4 py-3 bg-slate-50 rounded-2xl mb-1">
-                          <p className="font-extrabold text-sm text-[#1B2A41] truncate">{user?.name}</p>
+                          <p className="font-extrabold text-sm text-slate-900 truncate">{user?.name}</p>
                           <p className="text-xs text-slate-500 truncate">{user?.email}</p>
                         </div>
                         
                         <Link
                           to="/profile"
                           onClick={() => setDropdownOpen(false)}
-                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-100 transition"
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:text-[#2563EB] hover:bg-blue-50/60 transition"
                         >
                           <User className="w-4 h-4 text-slate-500" />
                           My Profile
@@ -232,7 +232,7 @@ const Navbar = () => {
                         <Link
                           to="/my-orders"
                           onClick={() => setDropdownOpen(false)}
-                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-100 transition"
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:text-[#2563EB] hover:bg-blue-50/60 transition"
                         >
                           <Package className="w-4 h-4 text-slate-500" />
                           My Orders
@@ -240,7 +240,7 @@ const Navbar = () => {
 
                         <button
                           onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition text-left mt-1"
+                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition text-left mt-1 cursor-pointer"
                         >
                           <LogOut className="w-4 h-4 text-red-500" />
                           Logout
@@ -254,14 +254,14 @@ const Navbar = () => {
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <button
                   onClick={() => navigate("/login")}
-                  className="hidden sm:inline-flex px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-700 hover:bg-slate-100 transition"
+                  className="hidden sm:inline-flex px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-700 hover:text-[#2563EB] hover:bg-slate-100 transition cursor-pointer"
                 >
                   Login
                 </button>
 
                 <button
                   onClick={() => navigate("/register")}
-                  className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-extrabold text-white bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-md shadow-blue-500/20 transition transform active:scale-95 whitespace-nowrap"
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-extrabold text-white bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] shadow-md shadow-orange-500/25 transition transform active:scale-95 whitespace-nowrap cursor-pointer"
                 >
                   Register
                 </button>
@@ -353,7 +353,7 @@ const Navbar = () => {
                   </button>
                   <button
                     onClick={() => { navigate("/register"); setMenuOpen(false); }}
-                    className="w-full py-2.5 rounded-xl font-extrabold text-sm text-white bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] shadow-md shadow-blue-500/20 transition text-center"
+                    className="w-full py-2.5 rounded-xl font-extrabold text-sm text-white bg-gradient-to-r from-[#F97316] to-[#EA580C] shadow-md shadow-orange-500/25 transition text-center cursor-pointer"
                   >
                     Register
                   </button>

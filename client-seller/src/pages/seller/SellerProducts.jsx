@@ -1323,7 +1323,7 @@ const SellerProducts = () => {
                 <button
                   onClick={isEditing ? handleUpdate : handleAdd}
                   disabled={isSubmitting}
-                  className="flex-1 py-4 rounded-2xl font-extrabold text-white text-sm bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-md transition disabled:opacity-50"
+                  className="flex-1 py-4 rounded-2xl font-extrabold text-white text-sm bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-md shadow-emerald-500/20 transition disabled:opacity-50 cursor-pointer"
                 >
                   {isSubmitting ? "Saving Product..." : isEditing ? "Update Product" : "Publish Product"}
                 </button>

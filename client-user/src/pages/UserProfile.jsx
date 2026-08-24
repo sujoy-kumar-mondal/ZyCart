@@ -272,7 +272,7 @@ const UserProfile = () => {
           <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t border-slate-100">
             <button
               onClick={handleUpdate}
-              className="w-full sm:flex-1 py-3.5 rounded-2xl font-extrabold text-white text-sm bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-md transition flex items-center justify-center gap-2"
+              className="w-full sm:flex-1 py-3.5 rounded-2xl font-extrabold text-white text-sm bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#1D4ED8] hover:to-[#1E40AF] shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer"
             >
               <Save className="w-4 h-4" /> Save Profile Updates
             </button>

@@ -416,7 +416,7 @@ const Register = () => {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-4 rounded-2xl font-extrabold text-white text-sm sm:text-base bg-gradient-to-r from-[#3F51F4] via-[#4D62F8] to-[#6A8EF0] shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:opacity-95 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                      className="w-full py-4 rounded-2xl font-extrabold text-white text-sm sm:text-base bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] shadow-lg shadow-orange-500/25 hover:opacity-95 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2"
                     >
                       {loading ? (
                         <div className="flex items-center gap-2">
@@ -632,7 +632,7 @@ const Register = () => {
                       <button
                         type="submit"
                         disabled={loading || !isPasswordValid || !agreeTerms}
-                        className="w-full py-3.5 rounded-2xl font-extrabold text-white text-sm sm:text-base bg-gradient-to-r from-[#3F51F4] via-[#4D62F8] to-[#6A8EF0] shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:opacity-95 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full py-3.5 rounded-2xl font-extrabold text-white text-sm sm:text-base bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] shadow-lg shadow-orange-500/25 hover:opacity-95 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {loading ? (
                           <div className="flex items-center gap-2">

@@ -102,7 +102,7 @@ const ProductCard = ({ product }) => {
 
           {/* Product Title */}
           <Link to={`/product/${product._id}`}>
-            <h3 className="font-bold text-sm sm:text-base text-[#1B2A41] line-clamp-2 min-h-[2.5rem] mt-3 group-hover:text-[#3F51F4] transition leading-snug">
+            <h3 className="font-bold text-sm sm:text-base text-slate-900 line-clamp-2 min-h-[2.5rem] mt-3 group-hover:text-[#2563EB] transition leading-snug">
               {product.title}
             </h3>
           </Link>
@@ -112,19 +112,19 @@ const ProductCard = ({ product }) => {
         <div className="space-y-1.5 pt-2">
           {hasActiveDiscount ? (
             <div className="flex items-baseline gap-2 flex-wrap min-h-[1.75rem]">
-              <span className="font-extrabold text-lg sm:text-xl text-[#1B2A41]">
+              <span className="font-extrabold text-lg sm:text-xl text-slate-950">
                 {settings?.currencySymbol || "₹"}{discountedPrice.toLocaleString()}
               </span>
               <span className="text-xs text-slate-400 line-through">
                 {settings?.currencySymbol || "₹"}{product.price.toLocaleString()}
               </span>
-              <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-extrabold text-[#EA580C] bg-orange-100 border border-orange-200 px-2 py-0.5 rounded-full">
                 {discountPct}% OFF
               </span>
             </div>
           ) : (
             <div className="min-h-[1.75rem] flex items-center">
-              <p className="font-extrabold text-lg sm:text-xl text-[#1B2A41]">
+              <p className="font-extrabold text-lg sm:text-xl text-slate-950">
                 {settings?.currencySymbol || "₹"}{product.price.toLocaleString()}
               </p>
             </div>
@@ -133,7 +133,7 @@ const ProductCard = ({ product }) => {
           {/* Stock Scarcity */}
           <div className="min-h-[1.25rem]">
             {product.stock > 0 && product.stock < 10 && (
-              <p className="text-[11px] font-bold text-amber-600">
+              <p className="text-[11px] font-bold text-[#F97316]">
                 {product.stock < 5 ? `Only ${product.stock} left in stock!` : "Limited stock available"}
               </p>
             )}
@@ -158,9 +158,9 @@ const ProductCard = ({ product }) => {
           }}
           disabled={!product.isAvailable || product.stock === 0}
           className={`
-            w-full py-3 rounded-2xl font-extrabold text-white transition shadow-sm text-xs sm:text-sm flex items-center justify-center gap-2
+            w-full py-3 rounded-2xl font-extrabold text-white transition shadow-sm text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer
             ${product.isAvailable && product.stock > 0
-              ? "bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-md shadow-blue-500/20 active:scale-[0.98]"
+              ? "bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] shadow-md shadow-orange-500/20 active:scale-[0.98]"
               : "bg-slate-200 text-slate-400 cursor-not-allowed"
             }
           `}

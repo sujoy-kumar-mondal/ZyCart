@@ -69,7 +69,7 @@ const AdminDashboard = () => {
           {isSuperAdmin && (
             <Link
               to="/admin/admins"
-              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-extrabold text-xs shadow-md hover:opacity-95 transition flex items-center gap-2 shrink-0"
+              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-extrabold text-xs shadow-md shadow-red-500/25 hover:opacity-95 transition flex items-center gap-2 shrink-0 cursor-pointer"
             >
               <ShieldCheck className="w-4 h-4" /> Manage Sub-Admins
             </Link>
@@ -83,11 +83,11 @@ const AdminDashboard = () => {
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Total Users</span>
-              <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#3F51F4] flex items-center justify-center">
+              <div className="w-9 h-9 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
                 <Users className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-3xl font-black text-[#1B2A41]">{data.users}</p>
+            <p className="text-3xl font-black text-slate-900">{data.users}</p>
             <p className="text-[10px] font-bold text-slate-400">Registered Customer Accounts</p>
           </div>
 
@@ -95,11 +95,11 @@ const AdminDashboard = () => {
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Total Sellers</span>
-              <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
                 <Store className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-3xl font-black text-purple-600">{data.sellers}</p>
+            <p className="text-3xl font-black text-rose-600">{data.sellers}</p>
             <p className="text-[10px] font-bold text-slate-400">Onboarded Merchant Stores</p>
           </div>
 
@@ -107,11 +107,11 @@ const AdminDashboard = () => {
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Total Orders</span>
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
                 <ShoppingBag className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-3xl font-black text-emerald-600">{data.orders}</p>
+            <p className="text-3xl font-black text-red-600">{data.orders}</p>
             <p className="text-[10px] font-bold text-slate-400">Platform Purchases Fulfilled</p>
           </div>
 
@@ -132,7 +132,7 @@ const AdminDashboard = () => {
         {/* Quick Operations Navigation */}
         <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-6">
           <div className="border-b border-slate-100 pb-3">
-            <h2 className="text-lg font-extrabold text-[#1B2A41]">Administrative Control Center</h2>
+            <h2 className="text-lg font-extrabold text-slate-900">Administrative Control Center</h2>
             <p className="text-xs text-slate-500 font-semibold">Select an operational module to review records or modify settings.</p>
           </div>
 
@@ -140,11 +140,11 @@ const AdminDashboard = () => {
             {hasPerm("manage_sellers") && (
               <Link
                 to="/admin/sellers"
-                className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:bg-blue-50/50 hover:border-blue-200 transition group space-y-2"
+                className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:bg-red-50/50 hover:border-red-200 transition group space-y-2"
               >
-                <Store className="w-6 h-6 text-[#3F51F4]" />
+                <Store className="w-6 h-6 text-red-600" />
                 <div className="flex items-center justify-between">
-                  <h3 className="font-extrabold text-sm text-[#1B2A41] group-hover:text-[#3F51F4] transition">Manage Merchants</h3>
+                  <h3 className="font-extrabold text-sm text-slate-900 group-hover:text-red-600 transition">Manage Merchants</h3>
                   <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition" />
                 </div>
                 <p className="text-[10px] text-slate-500 font-semibold">Verify GSTIN, PAN, and review store approval requests.</p>
@@ -154,11 +154,11 @@ const AdminDashboard = () => {
             {hasPerm("manage_users") && (
               <Link
                 to="/admin/users"
-                className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:bg-blue-50/50 hover:border-blue-200 transition group space-y-2"
+                className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:bg-red-50/50 hover:border-red-200 transition group space-y-2"
               >
-                <Users className="w-6 h-6 text-blue-600" />
+                <Users className="w-6 h-6 text-red-600" />
                 <div className="flex items-center justify-between">
-                  <h3 className="font-extrabold text-sm text-[#1B2A41] group-hover:text-[#3F51F4] transition">Manage Users</h3>
+                  <h3 className="font-extrabold text-sm text-slate-900 group-hover:text-red-600 transition">Manage Users</h3>
                   <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition" />
                 </div>
                 <p className="text-[10px] text-slate-500 font-semibold">Review registered accounts, order count, and ban controls.</p>
@@ -168,11 +168,11 @@ const AdminDashboard = () => {
             {hasPerm("manage_orders") && (
               <Link
                 to="/admin/orders"
-                className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:bg-emerald-50/50 hover:border-emerald-200 transition group space-y-2"
+                className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:bg-rose-50/50 hover:border-rose-200 transition group space-y-2"
               >
-                <ShoppingBag className="w-6 h-6 text-emerald-600" />
+                <ShoppingBag className="w-6 h-6 text-rose-600" />
                 <div className="flex items-center justify-between">
-                  <h3 className="font-extrabold text-sm text-[#1B2A41] group-hover:text-emerald-600 transition">Global Order Audits</h3>
+                  <h3 className="font-extrabold text-sm text-slate-900 group-hover:text-rose-600 transition">Global Order Audits</h3>
                   <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition" />
                 </div>
                 <p className="text-[10px] text-slate-500 font-semibold">Audit platform commissions, multi-seller packages, and payouts.</p>
@@ -182,11 +182,11 @@ const AdminDashboard = () => {
             {(isSuperAdmin || hasPerm("manage_admins")) && (
               <Link
                 to="/admin/admins"
-                className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:bg-purple-50/50 hover:border-purple-200 transition group space-y-2"
+                className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 hover:bg-rose-50/50 hover:border-rose-200 transition group space-y-2"
               >
-                <ShieldCheck className="w-6 h-6 text-purple-600" />
+                <ShieldCheck className="w-6 h-6 text-rose-600" />
                 <div className="flex items-center justify-between">
-                  <h3 className="font-extrabold text-sm text-[#1B2A41] group-hover:text-purple-600 transition">Sub-Admin Roles</h3>
+                  <h3 className="font-extrabold text-sm text-slate-900 group-hover:text-rose-600 transition">Sub-Admin Roles</h3>
                   <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition" />
                 </div>
                 <p className="text-[10px] text-slate-500 font-semibold">Configure sub-admin accounts and assign permission flags.</p>

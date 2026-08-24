@@ -7,13 +7,13 @@ const Footer = () => {
   const sellerUrl = import.meta.env.VITE_SELLER_URL || "http://localhost:5174";
 
   return (
-    <footer className="bg-[#0F172A] text-slate-400 py-16 mt-20 border-t border-slate-800">
+    <footer className="bg-black text-slate-400 py-16 mt-20 border-t border-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* System Operations Status Bar */}
-        <div className="bg-slate-900/80 border border-slate-800 p-6 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="bg-slate-950 border border-slate-800 p-6 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3 text-white">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-2xl bg-red-500/15 text-red-500 border border-red-500/20 flex items-center justify-center">
               <Cpu className="w-5 h-5" />
             </div>
             <div>
@@ -27,7 +27,7 @@ const Footer = () => {
               href={userUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-extrabold transition flex items-center gap-1.5"
+              className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 text-xs font-extrabold transition flex items-center gap-1.5"
             >
               Shopper Portal <ArrowUpRight className="w-3.5 h-3.5 text-blue-400" />
             </a>
@@ -36,9 +36,9 @@ const Footer = () => {
               href={sellerUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-extrabold transition flex items-center gap-1.5"
+              className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-200 text-xs font-extrabold transition flex items-center gap-1.5"
             >
-              Merchant Portal <ArrowUpRight className="w-3.5 h-3.5 text-purple-400" />
+              Merchant Portal <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400" />
             </a>
           </div>
         </div>
@@ -49,7 +49,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-white">
-              <ShieldCheck className="w-6 h-6 text-[#3F51F4]" />
+              <ShieldCheck className="w-6 h-6 text-red-500" />
               <span className="text-xl font-black tracking-tight">ZyCart Admin</span>
             </div>
             <p className="text-xs text-slate-400 font-medium leading-relaxed">

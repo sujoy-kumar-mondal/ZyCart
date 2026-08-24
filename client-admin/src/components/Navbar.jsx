@@ -40,15 +40,15 @@ const Navbar = () => {
     toast.success("Logged out from Admin Operations");
   };
 
-  const linkClass = "px-4 py-2 rounded-xl text-xs font-extrabold text-slate-600 hover:text-[#3F51F4] hover:bg-blue-50/80 transition flex items-center gap-1.5";
-  const activeClass = "px-4 py-2 rounded-xl text-xs font-black text-[#3F51F4] bg-blue-50 border border-blue-100 shadow-xs flex items-center gap-1.5";
+  const linkClass = "px-4 py-2 rounded-xl text-xs font-extrabold text-slate-600 hover:text-red-600 hover:bg-red-50/80 transition flex items-center gap-1.5";
+  const activeClass = "px-4 py-2 rounded-xl text-xs font-black text-red-600 bg-red-50 border border-red-200 shadow-xs flex items-center gap-1.5";
 
   const isSuperAdmin = user?.role === "super_admin";
   const hasPerm = (perm) => isSuperAdmin || (user?.permissions && user.permissions.includes(perm));
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      <nav className="backdrop-blur-xl bg-white/90 border-b border-slate-200/80 shadow-xs">
+      <nav className="backdrop-blur-xl bg-white/95 border-b border-slate-200/80 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20">
         
         {/* Brand Logo & Operations Badge */}
@@ -57,18 +57,18 @@ const Navbar = () => {
             to={user ? "/admin/dashboard" : "/"}
             className="flex items-center gap-2.5 group"
           >
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#EF4444] to-[#BE123C] flex items-center justify-center text-white shadow-md shadow-red-500/20 group-hover:scale-105 transition">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-black tracking-tight text-[#1B2A41]">{settings?.platformName || "ZyCart"}</span>
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#3F51F4]">Admin Portal</span>
+              <span className="text-xl font-black tracking-tight text-slate-900">{settings?.platformName || "ZyCart"}</span>
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-red-600">Admin Portal</span>
             </div>
           </Link>
 
           {user && (
             <span className={`hidden sm:inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-              isSuperAdmin ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"
+              isSuperAdmin ? "bg-rose-100 text-rose-800 border border-rose-200" : "bg-red-100 text-red-800 border border-red-200"
             }`}>
               {isSuperAdmin ? "Super Admin" : "Sub-Admin"}
             </span>
@@ -129,7 +129,7 @@ const Navbar = () => {
               <div ref={dropdownRef} className="relative ml-3">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="w-10 h-10 rounded-full font-black text-xs text-white bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] hover:opacity-90 transition shadow-md shadow-blue-500/20 flex items-center justify-center cursor-pointer"
+                  className="w-10 h-10 rounded-full font-black text-xs text-white bg-gradient-to-tr from-[#EF4444] to-[#BE123C] hover:opacity-90 transition shadow-md shadow-red-500/20 flex items-center justify-center cursor-pointer"
                 >
                   {getInitials()}
                 </button>
@@ -143,31 +143,31 @@ const Navbar = () => {
                       className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200/80 overflow-hidden space-y-1 p-2"
                     >
                       <div className="px-3 py-2.5 bg-slate-50 rounded-xl">
-                        <p className="font-extrabold text-xs text-[#1B2A41] truncate">{user?.name}</p>
+                        <p className="font-extrabold text-xs text-slate-900 truncate">{user?.name}</p>
                         <p className="text-[10px] font-semibold text-slate-500 truncate">{user?.email}</p>
                       </div>
 
                       <Link
                         to="/admin/profile"
                         onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition"
+                        className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-700 hover:text-red-600 hover:bg-red-50 rounded-xl transition"
                       >
-                        <User className="w-4 h-4 text-[#3F51F4]" />
+                        <User className="w-4 h-4 text-red-500" />
                         My Profile
                       </Link>
 
                       <Link
                         to="/changepassword"
                         onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl transition"
+                        className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-slate-700 hover:text-red-600 hover:bg-red-50 rounded-xl transition"
                       >
-                        <Settings className="w-4 h-4 text-[#3F51F4]" />
+                        <Settings className="w-4 h-4 text-red-500" />
                         Change Password
                       </Link>
 
                       <button
                         onClick={handleLogout}
-                        className="w-full text-left flex items-center gap-2 px-3 py-2 text-xs font-extrabold text-red-600 hover:bg-red-50 rounded-xl transition"
+                        className="w-full text-left flex items-center gap-2 px-3 py-2 text-xs font-extrabold text-red-600 hover:bg-red-50 rounded-xl transition cursor-pointer"
                       >
                         <LogOut className="w-4 h-4" />
                         Sign Out
@@ -180,7 +180,7 @@ const Navbar = () => {
           ) : (
             <button
               onClick={() => navigate("/login")}
-              className="px-5 py-2.5 rounded-xl font-extrabold text-xs text-white bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-md shadow-blue-500/20 transition"
+              className="px-5 py-2.5 rounded-xl font-extrabold text-xs text-white bg-gradient-to-r from-[#EF4444] to-[#DC2626] hover:from-[#DC2626] hover:to-[#B91C1C] shadow-md shadow-red-500/25 transition cursor-pointer"
             >
               Admin Sign In
             </button>

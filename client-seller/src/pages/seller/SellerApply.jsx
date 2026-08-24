@@ -292,7 +292,7 @@ const SellerApply = () => {
                 <button
                   onClick={handleSendOtp}
                   disabled={loading}
-                  className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-lg shadow-blue-500/20 transition transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-lg shadow-emerald-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                 >
                   {loading ? "Sending OTP..." : "Send Verification OTP"} <ArrowRight className="w-5 h-5" />
                 </button>
@@ -326,7 +326,7 @@ const SellerApply = () => {
                     type="button"
                     onClick={handleRegister}
                     disabled={loading}
-                    className="w-2/3 py-3.5 rounded-2xl font-extrabold text-white bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] shadow-md hover:opacity-95 transition text-sm"
+                    className="w-2/3 py-3.5 rounded-2xl font-extrabold text-white bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-md shadow-emerald-500/25 transition text-sm cursor-pointer"
                   >
                     {loading ? "Registering..." : "Verify OTP & Continue"}
                   </button>
@@ -454,7 +454,7 @@ const SellerApply = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-lg shadow-blue-500/20 transition transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-lg shadow-emerald-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               {loading ? "Submitting..." : "Submit Merchant Application"}
             </button>

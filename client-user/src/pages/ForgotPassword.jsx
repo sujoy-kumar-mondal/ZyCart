@@ -327,7 +327,7 @@ const ForgotPassword = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:from-[#5C72FF] hover:to-[#2F3EE0] text-white text-sm font-black shadow-lg shadow-blue-500/25 transition-all transform active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-2"
+                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] text-white text-sm font-black shadow-lg shadow-orange-500/25 transition-all transform active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-2"
                   >
                     {loading ? (
                       <>
@@ -491,7 +491,7 @@ const ForgotPassword = () => {
                   <button
                     type="submit"
                     disabled={loading || (form.password && !isAllRulesMet)}
-                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:from-[#5C72FF] hover:to-[#2F3EE0] text-white text-sm font-black shadow-lg shadow-blue-500/25 transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer mt-2"
+                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] text-white text-sm font-black shadow-lg shadow-orange-500/25 transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer mt-2"
                   >
                     {loading ? (
                       <>

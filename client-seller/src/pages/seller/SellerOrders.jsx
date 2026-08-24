@@ -64,7 +64,7 @@ const SellerOrders = () => {
           </p>
           <Link
             to="/seller/products"
-            className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-[#3F51F4] text-white font-extrabold text-sm"
+            className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white font-extrabold text-sm shadow-md shadow-emerald-500/20 transition cursor-pointer"
           >
             Manage Catalog Products <ArrowRight className="w-4 h-4" />
           </Link>

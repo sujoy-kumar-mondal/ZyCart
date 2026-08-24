@@ -43,8 +43,8 @@ const Navbar = () => {
   const navLinkClass = ({ isActive }) =>
     `flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-extrabold transition ${
       isActive
-        ? "bg-blue-50 text-[#3F51F4] shadow-xs"
-        : "text-slate-600 hover:text-[#3F51F4] hover:bg-slate-50"
+        ? "bg-emerald-50 text-emerald-600 shadow-xs"
+        : "text-slate-600 hover:text-emerald-600 hover:bg-slate-50"
     }`;
 
   return (
@@ -57,7 +57,7 @@ const Navbar = () => {
         </div>
       )}
 
-      <nav className="backdrop-blur-xl bg-white/90 border-b border-slate-200/80 shadow-xs">
+      <nav className="backdrop-blur-xl bg-white/95 border-b border-slate-200/80 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
         
         {/* Brand Logo & Merchant Badge */}
@@ -66,18 +66,18 @@ const Navbar = () => {
             to={user ? "/seller/dashboard" : "/"}
             className="flex items-center gap-2.5 group"
           >
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition transform">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#10B981] to-[#059669] flex items-center justify-center text-white shadow-md shadow-emerald-500/20 group-hover:scale-105 transition transform">
               <Store className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-xl font-black text-[#1B2A41] tracking-tight">{settings.platformName || "ZyCart"}</span>
-              <span className="text-[10px] font-black text-[#3F51F4] uppercase tracking-wider block -mt-1">Merchant Portal</span>
+              <span className="text-xl font-black text-slate-900 tracking-tight">{settings.platformName || "ZyCart"}</span>
+              <span className="text-[10px] font-black text-emerald-600 uppercase tracking-wider block -mt-1">Merchant Portal</span>
             </div>
           </Link>
 
           {user && (
-            <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase bg-emerald-100/80 text-emerald-800 border border-emerald-200/80">
-              <Sparkles className="w-3 h-3 text-emerald-600" /> Verified Merchant
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase bg-amber-100/90 text-amber-900 border border-amber-300 shadow-xs">
+              <Sparkles className="w-3 h-3 text-amber-600" /> Verified Merchant
             </span>
           )}
         </div>
@@ -102,13 +102,13 @@ const Navbar = () => {
               <div ref={dropdownRef} className="relative ml-2">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="flex items-center gap-3 p-1.5 rounded-2xl hover:bg-slate-100/80 transition"
+                  className="flex items-center gap-3 p-1.5 rounded-2xl hover:bg-slate-100/80 transition cursor-pointer"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#6A8EF0] to-[#3F51F4] text-white font-black text-sm flex items-center justify-center shadow-md shadow-blue-500/20">
+                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#10B981] to-[#F59E0B] text-white font-black text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
                     {getInitials()}
                   </div>
                   <div className="text-left hidden lg:block">
-                    <p className="text-xs font-extrabold text-[#1B2A41] line-clamp-1">{user?.name}</p>
+                    <p className="text-xs font-extrabold text-slate-900 line-clamp-1">{user?.name}</p>
                     <p className="text-[10px] font-semibold text-slate-500">{user?.email}</p>
                   </div>
                 </button>
@@ -122,14 +122,14 @@ const Navbar = () => {
                       className="absolute right-0 mt-3 w-56 bg-white rounded-3xl shadow-xl border border-slate-200/80 p-2 space-y-1 z-50"
                     >
                       <div className="px-3 py-2.5 border-b border-slate-100">
-                        <p className="text-xs font-black text-[#1B2A41]">{user?.name}</p>
+                        <p className="text-xs font-black text-slate-900">{user?.name}</p>
                         <p className="text-[10px] text-slate-500 font-medium truncate">{user?.email}</p>
                       </div>
 
                       <Link
                         to="/seller/profile"
                         onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[#3F51F4] transition"
+                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-600 transition"
                       >
                         <User className="w-4 h-4 text-slate-400" /> Store Profile &amp; Settings
                       </Link>
@@ -137,14 +137,14 @@ const Navbar = () => {
                       <Link
                         to="/changepassword"
                         onClick={() => setDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-[#3F51F4] transition"
+                        className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-600 transition"
                       >
                         <Settings className="w-4 h-4 text-slate-400" /> Change Password
                       </Link>
 
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition border-t border-slate-100"
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-red-600 hover:bg-red-50 transition border-t border-slate-100 cursor-pointer"
                       >
                         <LogOut className="w-4 h-4" /> Sign Out
                       </button>
@@ -157,14 +157,14 @@ const Navbar = () => {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => navigate("/login")}
-                className="px-5 py-2.5 rounded-2xl text-xs font-extrabold text-slate-700 hover:bg-slate-100 transition"
+                className="px-5 py-2.5 rounded-2xl text-xs font-extrabold text-slate-700 hover:text-emerald-600 hover:bg-slate-100 transition cursor-pointer"
               >
                 Sign In
               </button>
 
               <button
                 onClick={() => navigate("/seller/apply")}
-                className="px-5 py-2.5 rounded-2xl text-xs font-extrabold text-white bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] shadow-md shadow-blue-500/20 hover:opacity-95 transition transform active:scale-95"
+                className="px-5 py-2.5 rounded-2xl text-xs font-extrabold text-white bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-md shadow-emerald-500/25 transition transform active:scale-95 cursor-pointer"
               >
                 Apply as Merchant
               </button>

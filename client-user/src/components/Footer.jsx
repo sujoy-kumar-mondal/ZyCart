@@ -9,13 +9,13 @@ const Footer = () => {
   const adminUrl = import.meta.env.VITE_ADMIN_URL || "http://localhost:5175";
 
   return (
-    <footer className="bg-gradient-to-b from-slate-900 to-slate-950 text-slate-300 pt-16 pb-8 border-t border-slate-800">
+    <footer className="bg-black text-slate-300 pt-16 pb-8 border-t border-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Top Feature Highlights Bar */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-12 border-b border-slate-800">
-          <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-800/40 border border-slate-800">
-            <div className="p-3 rounded-xl bg-blue-500/10 text-blue-400">
+          <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+            <div className="p-3 rounded-xl bg-blue-500/15 text-blue-400">
               <Truck className="w-6 h-6" />
             </div>
             <div>
@@ -24,18 +24,18 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-800/40 border border-slate-800">
-            <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+          <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+            <div className="p-3 rounded-xl bg-orange-500/15 text-[#F97316]">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
               <h4 className="font-extrabold text-white text-sm">100% Genuine</h4>
-              <p className="text-xs text-slate-400">Directly from sellers</p>
+              <p className="text-xs text-slate-400">Directly from verified sellers</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-800/40 border border-slate-800">
-            <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400">
+          <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+            <div className="p-3 rounded-xl bg-blue-500/15 text-blue-400">
               <ShoppingBag className="w-6 h-6" />
             </div>
             <div>
@@ -44,8 +44,8 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-800/40 border border-slate-800">
-            <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
+          <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+            <div className="p-3 rounded-xl bg-orange-500/15 text-[#F97316]">
               <Headphones className="w-6 h-6" />
             </div>
             <div>
@@ -61,7 +61,7 @@ const Footer = () => {
           {/* Brand Bio */}
           <div className="lg:col-span-4 space-y-4">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] p-2 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#2563EB] to-[#F97316] p-2 flex items-center justify-center shadow-lg shadow-blue-500/20">
                 <img src="/logo_cart.svg" alt="ZyCart Logo" className="w-full h-full object-contain filter brightness-0 invert" />
               </div>
               <span className="text-2xl font-black text-white">
@@ -79,9 +79,9 @@ const Footer = () => {
                 <input
                   type="email"
                   placeholder="Enter your email..."
-                  className="px-4 py-2.5 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-blue-500/50 flex-1"
+                  className="px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:ring-2 focus:ring-[#2563EB]/60 flex-1"
                 />
-                <button className="p-2.5 bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] text-white rounded-xl hover:opacity-90 transition">
+                <button className="p-2.5 bg-gradient-to-r from-[#F97316] to-[#EA580C] text-white rounded-xl hover:opacity-90 transition cursor-pointer">
                   <ArrowRight className="w-5 h-5" />
                 </button>
               </div>
@@ -93,16 +93,16 @@ const Footer = () => {
             <h3 className="text-sm font-extrabold text-white uppercase tracking-wider">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/" className="hover:text-blue-400 transition">Home</Link>
+                <Link to="/" className="hover:text-[#F97316] transition">Home</Link>
               </li>
               <li>
-                <Link to="/products" className="hover:text-blue-400 transition">All Products</Link>
+                <Link to="/products" className="hover:text-[#F97316] transition">All Products</Link>
               </li>
               <li>
-                <Link to="/cart" className="hover:text-blue-400 transition">Shopping Cart</Link>
+                <Link to="/cart" className="hover:text-[#F97316] transition">Shopping Cart</Link>
               </li>
               <li>
-                <Link to="/wishlist" className="hover:text-blue-400 transition">Wishlist</Link>
+                <Link to="/wishlist" className="hover:text-[#F97316] transition">Wishlist</Link>
               </li>
             </ul>
           </div>
@@ -112,19 +112,19 @@ const Footer = () => {
             <h3 className="text-sm font-extrabold text-white uppercase tracking-wider">Customer Care</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/my-orders" className="hover:text-blue-400 transition">Track Orders</Link>
+                <Link to="/my-orders" className="hover:text-[#F97316] transition">Track Orders</Link>
               </li>
               <li>
-                <Link to="/profile" className="hover:text-blue-400 transition">My Account</Link>
+                <Link to="/profile" className="hover:text-[#F97316] transition">My Account</Link>
               </li>
               <li>
-                <Link to="/changepassword" className="hover:text-blue-400 transition">Change Password</Link>
+                <Link to="/changepassword" className="hover:text-[#F97316] transition">Change Password</Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-blue-400 transition">Help &amp; Support</Link>
+                <Link to="/contact" className="hover:text-[#F97316] transition">Help &amp; Support</Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-blue-400 transition">About {settings.platformName || "ZyCart"}</Link>
+                <Link to="/about" className="hover:text-[#F97316] transition">About {settings.platformName || "ZyCart"}</Link>
               </li>
             </ul>
           </div>
@@ -139,7 +139,7 @@ const Footer = () => {
                 href={sellerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-sm font-bold text-blue-300 hover:text-white transition group"
+                className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-sm font-bold text-emerald-400 hover:text-white transition group"
               >
                 <span>🛍️ Seller Portal</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -149,7 +149,7 @@ const Footer = () => {
                 href={adminUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-sm font-bold text-red-300 hover:text-white transition group"
+                className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-sm font-bold text-rose-400 hover:text-white transition group"
               >
                 <span>⚙️ Admin Portal</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -160,10 +160,10 @@ const Footer = () => {
         </div>
 
         {/* Bottom Copyright & Credit Bar */}
-        <div className="pt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+        <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <p>© {new Date().getFullYear()} {settings.platformName || "ZyCart"} Marketplace. All rights reserved.</p>
           <div className="flex items-center gap-1 font-medium">
-            Crafted with <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500 inline" /> for a seamless shopping experience
+            Crafted with <Heart className="w-3.5 h-3.5 text-[#F97316] fill-[#F97316] inline" /> for a seamless shopping experience
           </div>
         </div>
 

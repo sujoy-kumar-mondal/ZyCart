@@ -445,16 +445,16 @@ const Login = () => {
                       </label>
                     </div>
 
-                    {/* Sign In Primary Action Button */}
+                    {/* Submit Button */}
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full py-4 rounded-2xl font-extrabold text-white text-sm sm:text-base bg-gradient-to-r from-[#3F51F4] via-[#4D62F8] to-[#6A8EF0] shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:opacity-95 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                      className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] shadow-lg shadow-orange-500/25 transition transform active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                     >
                       {loading ? (
                         <div className="flex items-center gap-2">
-                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                          <span>Authenticating credentials...</span>
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          <span>Authenticating...</span>
                         </div>
                       ) : (
                         <>
@@ -549,7 +549,7 @@ const Login = () => {
                       <button
                         type="submit"
                         disabled={loading || otpValues.join("").length !== 6}
-                        className="w-2/3 py-3.5 rounded-2xl font-extrabold text-white text-sm bg-gradient-to-r from-[#3F51F4] via-[#4D62F8] to-[#6A8EF0] shadow-md shadow-blue-500/20 hover:opacity-95 active:scale-[0.99] transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-2/3 py-3.5 rounded-2xl font-extrabold text-white text-sm bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] shadow-md shadow-orange-500/25 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {loading ? "Verifying..." : "Verify & Complete Login"}
                       </button>

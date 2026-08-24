@@ -50,23 +50,23 @@ const SellerDashboard = () => {
       title: "Total Catalog Products",
       value: data.totalProducts || 0,
       icon: Package,
-      gradient: "from-blue-500 to-indigo-600",
-      bg: "bg-blue-50/50",
+      gradient: "from-emerald-500 to-teal-600",
+      bg: "bg-emerald-50/50",
       link: "/seller/products",
     },
     {
       title: "Total Customer Orders",
       value: data.totalOrders || 0,
       icon: ShoppingBag,
-      gradient: "from-emerald-500 to-teal-600",
-      bg: "bg-emerald-50/50",
+      gradient: "from-green-500 to-emerald-600",
+      bg: "bg-green-50/50",
       link: "/seller/orders",
     },
     {
       title: "Pending Dispatch Shipments",
       value: data.pendingShipments || 0,
       icon: Truck,
-      gradient: "from-amber-500 to-orange-600",
+      gradient: "from-amber-500 to-yellow-500",
       bg: "bg-amber-50/50",
       link: "/seller/orders",
     },
@@ -79,13 +79,13 @@ const SellerDashboard = () => {
         {/* Banner Welcome Card */}
         <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
           <div className="space-y-2 z-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-100/80 text-blue-900 text-xs font-black uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5 text-blue-600" /> Active Merchant Session
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-black uppercase tracking-wider">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-600" /> Active Merchant Session
             </div>
 
-            <h1 className="text-3xl sm:text-4xl font-black text-[#1B2A41]">
+            <h1 className="text-3xl sm:text-4xl font-black text-slate-900">
               Welcome Back,{" "}
-              <span className="bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
+              <span className="bg-gradient-to-r from-[#10B981] to-[#F59E0B] text-transparent bg-clip-text">
                 {data.seller?.shopName || "Merchant Store"}
               </span>
             </h1>
@@ -98,7 +98,7 @@ const SellerDashboard = () => {
           <div className="flex items-center gap-3 shrink-0 z-10">
             <Link
               to="/seller/products?add=true"
-              className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] text-white font-extrabold text-sm shadow-lg shadow-blue-500/20 hover:opacity-95 transition transform active:scale-95 flex items-center gap-2"
+              className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white font-extrabold text-sm shadow-lg shadow-emerald-500/25 transition transform active:scale-95 flex items-center gap-2 cursor-pointer"
             >
               <PlusCircle className="w-4 h-4" /> Add New Product
             </Link>

@@ -158,9 +158,9 @@ const AdminSettings = () => {
               type="button"
               onClick={handleSaveSettings}
               disabled={saving}
-              className="px-6 py-3 rounded-2xl bg-white text-[#1B2A41] font-black text-xs shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="px-6 py-3 rounded-2xl bg-white text-red-600 font-black text-xs shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-2 cursor-pointer disabled:opacity-50"
             >
-              <Save className="w-4 h-4 text-[#3F51F4]" />
+              <Save className="w-4 h-4 text-red-600" />
               {saving ? "Saving..." : "Save Changes"}
             </button>
           </div>
@@ -185,8 +185,8 @@ const AdminSettings = () => {
             onClick={() => setActiveTab("general")}
             className={`px-5 py-3 rounded-2xl text-xs font-black transition flex items-center gap-2 shrink-0 cursor-pointer ${
               activeTab === "general"
-                ? "bg-[#3F51F4] text-white shadow-md shadow-blue-500/20"
-                : "bg-white text-slate-600 hover:bg-slate-50 border border-slate-200/80"
+                ? "bg-red-600 text-white shadow-md shadow-red-500/20"
+                : "bg-white text-slate-600 hover:text-red-600 hover:bg-slate-50 border border-slate-200/80"
             }`}
           >
             <Globe className="w-4 h-4" /> General &amp; Brand
@@ -196,8 +196,8 @@ const AdminSettings = () => {
             onClick={() => setActiveTab("logistics")}
             className={`px-5 py-3 rounded-2xl text-xs font-black transition flex items-center gap-2 shrink-0 cursor-pointer ${
               activeTab === "logistics"
-                ? "bg-[#3F51F4] text-white shadow-md shadow-blue-500/20"
-                : "bg-white text-slate-600 hover:bg-slate-50 border border-slate-200/80"
+                ? "bg-red-600 text-white shadow-md shadow-red-500/20"
+                : "bg-white text-slate-600 hover:text-red-600 hover:bg-slate-50 border border-slate-200/80"
             }`}
           >
             <Truck className="w-4 h-4" /> Logistics &amp; Shipping
@@ -207,8 +207,8 @@ const AdminSettings = () => {
             onClick={() => setActiveTab("sellers")}
             className={`px-5 py-3 rounded-2xl text-xs font-black transition flex items-center gap-2 shrink-0 cursor-pointer ${
               activeTab === "sellers"
-                ? "bg-[#3F51F4] text-white shadow-md shadow-blue-500/20"
-                : "bg-white text-slate-600 hover:bg-slate-50 border border-slate-200/80"
+                ? "bg-red-600 text-white shadow-md shadow-red-500/20"
+                : "bg-white text-slate-600 hover:text-red-600 hover:bg-slate-50 border border-slate-200/80"
             }`}
           >
             <Store className="w-4 h-4" /> Merchant &amp; Commissions
@@ -218,8 +218,8 @@ const AdminSettings = () => {
             onClick={() => setActiveTab("security")}
             className={`px-5 py-3 rounded-2xl text-xs font-black transition flex items-center gap-2 shrink-0 cursor-pointer ${
               activeTab === "security"
-                ? "bg-[#3F51F4] text-white shadow-md shadow-blue-500/20"
-                : "bg-white text-slate-600 hover:bg-slate-50 border border-slate-200/80"
+                ? "bg-red-600 text-white shadow-md shadow-red-500/20"
+                : "bg-white text-slate-600 hover:text-red-600 hover:bg-slate-50 border border-slate-200/80"
             }`}
           >
             <ShieldCheck className="w-4 h-4" /> Security &amp; Maintenance

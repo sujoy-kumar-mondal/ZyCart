@@ -180,8 +180,8 @@ const PaymentPage = () => {
                 </div>
 
                 <div className="pt-4 border-t border-slate-100 flex justify-between items-baseline">
-                  <span className="text-base font-extrabold text-[#1B2A41]">Payable Amount</span>
-                  <span className="text-3xl font-black bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
+                  <span className="text-base font-extrabold text-slate-900">Payable Amount</span>
+                  <span className="text-3xl font-black text-slate-950">
                     {currency}{totalAmount?.toLocaleString()}
                   </span>
                 </div>
@@ -189,7 +189,7 @@ const PaymentPage = () => {
 
               <button
                 onClick={handlePayment}
-                className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-95 shadow-lg shadow-emerald-500/20 transition transform active:scale-95 flex items-center justify-center gap-2"
+                className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] shadow-lg shadow-orange-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
               >
                 Confirm Order &amp; Pay
               </button>

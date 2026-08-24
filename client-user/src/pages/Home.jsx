@@ -100,12 +100,12 @@ const Home = () => {
                 {tagline.includes(",") ? (
                   <>
                     {tagline.split(",")[0]},{" "}
-                    <span className="bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
+                    <span className="bg-gradient-to-r from-[#2563EB] to-[#F97316] text-transparent bg-clip-text">
                       {tagline.split(",").slice(1).join(",")}
                     </span>
                   </>
                 ) : (
-                  <span className="bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
+                  <span className="bg-gradient-to-r from-[#2563EB] to-[#F97316] text-transparent bg-clip-text">
                     {tagline}
                   </span>
                 )}
@@ -118,16 +118,16 @@ const Home = () => {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2">
                 <Link
                   to="/products"
-                  className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-extrabold text-white text-sm sm:text-base bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-xl shadow-blue-500/25 transition transform active:scale-95 flex items-center justify-center gap-2"
+                  className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-extrabold text-white text-sm sm:text-base bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:opacity-95 shadow-xl shadow-blue-500/25 transition transform active:scale-95 flex items-center justify-center gap-2"
                 >
                   Explore Catalog <ArrowRight className="w-5 h-5" />
                 </Link>
 
                 <button
                   onClick={() => document.getElementById("trending")?.scrollIntoView({ behavior: "smooth" })}
-                  className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-extrabold text-[#3F51F4] bg-white border-2 border-blue-200/80 hover:bg-blue-50 hover:border-blue-300 transition shadow-xs flex items-center justify-center gap-2 text-sm sm:text-base"
+                  className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-extrabold text-[#EA580C] bg-white border-2 border-orange-200 hover:bg-orange-50 hover:border-orange-300 transition shadow-xs flex items-center justify-center gap-2 text-sm sm:text-base cursor-pointer"
                 >
-                  <TrendingUp className="w-5 h-5" /> Hot Trends
+                  <TrendingUp className="w-5 h-5 text-[#F97316]" /> Hot Trends
                 </button>
               </div>
 
@@ -152,22 +152,22 @@ const Home = () => {
                       <Award className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <div>
-                      <h3 className="font-extrabold text-xs sm:text-sm text-[#1B2A41]">Featured Store Highlights</h3>
+                      <h3 className="font-extrabold text-xs sm:text-sm text-slate-900">Featured Store Highlights</h3>
                       <p className="text-[10px] sm:text-xs text-slate-500">Live inventory analytics</p>
                     </div>
                   </div>
-                  <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 bg-emerald-100 text-emerald-800 text-[10px] font-extrabold rounded-full uppercase shrink-0">
+                  <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 bg-orange-100 text-[#EA580C] text-[10px] font-extrabold rounded-full uppercase shrink-0 border border-orange-200">
                     Live
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 text-center">
-                    <p className="text-2xl sm:text-3xl font-black text-[#3F51F4]">{stats?.activeProducts?.toLocaleString() || 0}</p>
+                    <p className="text-2xl sm:text-3xl font-black text-[#2563EB]">{stats?.activeProducts?.toLocaleString() || 0}</p>
                     <p className="text-[11px] sm:text-xs font-semibold text-slate-600 mt-1">Products Listed</p>
                   </div>
-                  <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-100 text-center">
-                    <p className="text-2xl sm:text-3xl font-black text-emerald-600">{stats?.verifiedSellers?.toLocaleString() || 0}</p>
+                  <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-100 text-center">
+                    <p className="text-2xl sm:text-3xl font-black text-[#EA580C]">{stats?.verifiedSellers?.toLocaleString() || 0}</p>
                     <p className="text-[11px] sm:text-xs font-semibold text-slate-600 mt-1">Brand Merchants</p>
                   </div>
                 </div>
@@ -175,12 +175,12 @@ const Home = () => {
                 <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                     <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${
-                      stats?.reviewCount > 0 ? "bg-amber-100 text-amber-600" : "bg-slate-200 text-slate-500"
+                      stats?.reviewCount > 0 ? "bg-orange-100 text-[#F97316]" : "bg-slate-200 text-slate-500"
                     }`}>
                       ★
                     </div>
                     <div className="min-w-0">
-                      <p className="text-xs font-bold text-[#1B2A41] truncate">Buyer Satisfaction Score</p>
+                      <p className="text-xs font-bold text-slate-900 truncate">Buyer Satisfaction Score</p>
                       <p className="text-[10px] text-slate-500 truncate">
                         {stats?.reviewCount > 0
                           ? `Based on ${stats.reviewCount.toLocaleString()} verified review${stats.reviewCount > 1 ? "s" : ""}`
@@ -213,8 +213,8 @@ const Home = () => {
               const IconComponent = stat.icon;
               return (
                 <div key={idx} className="text-center space-y-2">
-                  <IconComponent className="w-6 h-6 mx-auto text-[#3F51F4]" />
-                  <p className="text-2xl sm:text-3xl font-black text-[#1B2A41]">{stat.value}</p>
+                  <IconComponent className="w-6 h-6 mx-auto text-[#2563EB]" />
+                  <p className="text-2xl sm:text-3xl font-black text-slate-900">{stat.value}</p>
                   <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</p>
                 </div>
               );
@@ -226,7 +226,7 @@ const Home = () => {
       {/* WHY SHOP WITH US */}
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="text-center space-y-3 max-w-2xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#1B2A41]">Why Shop With {brandName}?</h2>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Why Shop With {brandName}?</h2>
           <p className="text-slate-600 text-sm sm:text-base">
             Designed for buyers who value transparent pricing, verified merchants, and quick delivery.
           </p>
@@ -243,7 +243,7 @@ const Home = () => {
                 <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${feature.color} text-white flex items-center justify-center shadow-md`}>
                   <IconComponent className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-extrabold text-[#1B2A41] group-hover:text-[#3F51F4] transition">
+                <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-[#2563EB] transition">
                   {feature.title}
                 </h3>
                 <p className="text-slate-600 text-sm leading-relaxed">
@@ -257,17 +257,17 @@ const Home = () => {
 
       {/* CALL TO ACTION BANNER */}
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] rounded-3xl p-10 sm:p-16 text-center text-white shadow-2xl space-y-6 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-black via-slate-900 to-black border border-slate-800 rounded-3xl p-10 sm:p-16 text-center text-white shadow-2xl space-y-6 relative overflow-hidden">
           <h2 className="text-3xl sm:text-5xl font-black leading-tight">
-            Ready to Find Your Next Favorite Product?
+            Ready to Find Your Next <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] to-[#F97316]">Favorite Product?</span>
           </h2>
-          <p className="text-blue-100 text-base sm:text-lg max-w-2xl mx-auto">
+          <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto">
             Explore thousands of products across electronics, fashion, home decor, and smart gadgets.
           </p>
           <div className="pt-2">
             <Link
               to="/products"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#3F51F4] rounded-2xl font-extrabold text-base hover:bg-blue-50 shadow-lg transition transform active:scale-95"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] text-white rounded-2xl font-extrabold text-base shadow-lg shadow-orange-500/25 transition transform active:scale-95"
             >
               Start Shopping Now <ArrowRight className="w-5 h-5" />
             </Link>
