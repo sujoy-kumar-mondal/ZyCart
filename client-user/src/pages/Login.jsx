@@ -606,13 +606,6 @@ const Login = () => {
                     Create free account
                   </Link>
                 </p>
-
-                <Link
-                  to="/seller/apply"
-                  className="font-extrabold text-slate-700 hover:text-[#3F51F4] transition flex items-center gap-1"
-                >
-                  Merchant Portal <ExternalLink className="w-3 h-3" />
-                </Link>
               </div>
 
             </div>
