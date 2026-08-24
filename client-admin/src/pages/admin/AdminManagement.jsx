@@ -290,12 +290,12 @@ const AdminManagement = () => {
       <div className="max-w-7xl mx-auto space-y-5">
         
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-[#1B2A41] via-[#243B5A] to-[#3F51F4] rounded-3xl p-5 sm:p-7 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+        <div className="bg-gradient-to-r from-black via-slate-900 to-[#BE123C] rounded-3xl p-5 sm:p-7 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="space-y-1.5 relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-white/10 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-              <ShieldCheck className="w-3.5 h-3.5 text-blue-300" /> Platform Security &amp; Access Control
+              <ShieldCheck className="w-3.5 h-3.5 text-rose-400" /> Platform Security &amp; Access Control
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
               Sub-Admin Roles &amp; Permissions
@@ -314,9 +314,9 @@ const AdminManagement = () => {
             </button>
             <button
               onClick={openAddModal}
-              className="px-4 py-2.5 rounded-2xl bg-white text-[#1B2A41] font-black text-xs shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-1.5 cursor-pointer"
+              className="px-4 py-2.5 rounded-2xl bg-white text-slate-900 font-black text-xs shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-1.5 cursor-pointer"
             >
-              <UserPlus className="w-4 h-4 text-[#3F51F4]" /> Add Sub-Admin
+              <UserPlus className="w-4 h-4 text-rose-600" /> Add Sub-Admin
             </button>
           </div>
         </div>
@@ -326,9 +326,9 @@ const AdminManagement = () => {
           <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-400">
               <span className="text-[11px] font-bold uppercase tracking-wider">Total Administrators</span>
-              <ShieldCheck className="w-4 h-4 text-[#3F51F4]" />
+              <ShieldCheck className="w-4 h-4 text-rose-600" />
             </div>
-            <p className="text-2xl font-black text-[#1B2A41]">{admins.length}</p>
+            <p className="text-2xl font-black text-slate-900">{admins.length}</p>
             <p className="text-[10px] text-slate-500 font-semibold">Registered staff profiles</p>
           </div>
 
@@ -347,16 +347,16 @@ const AdminManagement = () => {
               <Shield className="w-4 h-4 text-purple-500" />
             </div>
             <p className="text-2xl font-black text-purple-600">{superAdminCount}</p>
-            <p className="text-[10px] text-slate-500 font-semibold">Full root privileges</p>
+            <p className="text-[10px] text-slate-500 font-semibold">Master keyholders</p>
           </div>
 
           <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-400">
               <span className="text-[11px] font-bold uppercase tracking-wider">Sub-Admins</span>
-              <Users className="w-4 h-4 text-blue-500" />
+              <Users className="w-4 h-4 text-rose-500" />
             </div>
-            <p className="text-2xl font-black text-blue-600">{admins.length - superAdminCount}</p>
-            <p className="text-[10px] text-slate-500 font-semibold">Role-based restricted staff</p>
+            <p className="text-2xl font-black text-rose-600">{admins.length - superAdminCount}</p>
+            <p className="text-[10px] text-slate-500 font-semibold">Role-scoped personnel</p>
           </div>
         </div>
 
@@ -368,7 +368,7 @@ const AdminManagement = () => {
               placeholder="Search admin name, email, or mobile..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+              className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-rose-500/40 outline-none transition"
             />
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5 pointer-events-none" />
           </div>
@@ -403,14 +403,14 @@ const AdminManagement = () => {
                           <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-extrabold text-xs text-white shrink-0 ${
                             isSuper
                               ? "bg-gradient-to-tr from-purple-600 to-indigo-600 shadow-xs shadow-purple-500/20"
-                              : "bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] shadow-xs shadow-blue-500/20"
+                              : "bg-gradient-to-tr from-[#F87171] to-[#E11D48] shadow-xs shadow-red-500/20"
                           }`}>
                             {adm.name ? adm.name[0].toUpperCase() : "A"}
                           </div>
                           <div>
                             <span className="font-extrabold text-slate-900 block leading-tight">{adm.name}</span>
                             {isSelf && (
-                              <span className="inline-block mt-0.5 text-[8px] font-black text-[#3F51F4] bg-blue-50 px-1.5 py-0.2 rounded-full border border-blue-100">
+                              <span className="inline-block mt-0.5 text-[8px] font-black text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded-full border border-rose-100">
                                 You
                               </span>
                             )}
@@ -428,7 +428,7 @@ const AdminManagement = () => {
 
                       <td className="px-2.5 py-3 text-center whitespace-nowrap">
                         <span className={`px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${
-                          isSuper ? "bg-purple-100 text-purple-800 border border-purple-200" : "bg-blue-100 text-blue-800 border border-blue-200"
+                          isSuper ? "bg-purple-100 text-purple-800 border border-purple-200" : "bg-rose-100 text-rose-800 border border-rose-200"
                         }`}>
                           {isSuper ? "Super Admin" : "Sub-Admin"}
                         </span>
@@ -476,7 +476,7 @@ const AdminManagement = () => {
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => openInspectModal(adm)}
-                            className="px-2.5 py-1 rounded-xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-extrabold text-[11px] transition flex items-center gap-1 cursor-pointer active:scale-95 shadow-xs"
+                            className="px-2.5 py-1 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 font-extrabold text-[11px] transition flex items-center gap-1 cursor-pointer active:scale-95 shadow-xs"
                             title="Inspect Sub-Admin"
                           >
                             <Eye className="w-3 h-3" /> Inspect
@@ -521,15 +521,15 @@ const AdminManagement = () => {
                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl text-white shadow-lg ${
                   inspectingAdmin.role === "super_admin"
                     ? "bg-gradient-to-tr from-purple-600 to-indigo-600 shadow-purple-500/20"
-                    : "bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] shadow-blue-500/20"
+                    : "bg-gradient-to-tr from-[#F87171] to-[#E11D48] shadow-red-500/20"
                 }`}>
                   {inspectingAdmin.name ? inspectingAdmin.name[0].toUpperCase() : "A"}
                 </div>
                 <div>
                   <div className="flex items-center gap-2.5">
-                    <h3 className="text-xl font-black text-[#1B2A41]">{inspectingAdmin.name}</h3>
+                    <h3 className="text-xl font-black text-slate-900">{inspectingAdmin.name}</h3>
                     <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                      inspectingAdmin.role === "super_admin" ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"
+                      inspectingAdmin.role === "super_admin" ? "bg-purple-100 text-purple-800" : "bg-rose-100 text-rose-800"
                     }`}>
                       {inspectingAdmin.role === "super_admin" ? "Super Admin" : "Sub-Admin"}
                     </span>
@@ -550,53 +550,40 @@ const AdminManagement = () => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
                 <span className="text-[10px] font-black uppercase text-slate-400">Account Status</span>
-                <p className="font-extrabold text-slate-900">
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black ${
-                    inspectingAdmin.isActive ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"
-                  }`}>
-                    {inspectingAdmin.isActive ? "Active Staff" : "Inactive / Suspended"}
-                  </span>
+                <p className={`font-black ${inspectingAdmin.isActive ? "text-emerald-600" : "text-red-600"}`}>
+                  {inspectingAdmin.isActive ? "Active Staff" : "Account Suspended"}
                 </p>
               </div>
 
               <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
-                <span className="text-[10px] font-black uppercase text-slate-400">Last Login</span>
-                <p className="font-extrabold text-slate-900">
-                  {inspectingAdmin.lastLogin
-                    ? new Date(inspectingAdmin.lastLogin).toLocaleString([], { dateStyle: "short", timeStyle: "short" })
-                    : "Never logged in"}
+                <span className="text-[10px] font-black uppercase text-slate-400">2FA Protection</span>
+                <p className="font-black text-slate-900">
+                  {inspectingAdmin.is2FAEnabled ? "Enforced & Active" : "Disabled"}
                 </p>
               </div>
 
               <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
-                <span className="text-[10px] font-black uppercase text-slate-400">Account Created</span>
-                <p className="font-extrabold text-slate-900">
-                  {inspectingAdmin.createdAt
-                    ? new Date(inspectingAdmin.createdAt).toLocaleDateString([], { dateStyle: "short" })
-                    : "N/A"}
+                <span className="text-[10px] font-black uppercase text-slate-400">Granted Scopes</span>
+                <p className="font-black text-slate-900">
+                  {inspectingAdmin.role === "super_admin" ? "All Platform" : `${inspectingAdmin.permissions?.length || 0} Modules`}
                 </p>
               </div>
 
               <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
-                <span className="text-[10px] font-black uppercase text-slate-400">Login Security</span>
-                <p className="font-extrabold text-emerald-600 flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5" /> 2FA Active
+                <span className="text-[10px] font-black uppercase text-slate-400">Created Timestamp</span>
+                <p className="font-black text-slate-900">
+                  {new Date(inspectingAdmin.createdAt).toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" })}
                 </p>
               </div>
             </div>
 
-            {/* Granted Capabilities Grid */}
+            {/* Permissions Matrix Inspection */}
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h4 className="text-sm font-black text-[#1B2A41]">Granted Platform Capabilities</h4>
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                  {inspectingAdmin.role === "super_admin"
-                    ? "Full Access (All 8 Modules)"
-                    : `${inspectingAdmin.permissions?.length || 0} of 8 Modules Active`}
-                </span>
-              </div>
+              <h4 className="font-black text-xs uppercase tracking-wider text-slate-400">
+                Operational Module Permissions
+              </h4>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-64 overflow-y-auto p-1 border border-slate-100 rounded-2xl">
                 {ALL_PERMISSIONS.map((p) => {
                   const Icon = p.icon;
                   const hasAccess = inspectingAdmin.role === "super_admin" || (Array.isArray(inspectingAdmin.permissions) && inspectingAdmin.permissions.includes(p.id));
@@ -606,18 +593,18 @@ const AdminManagement = () => {
                       key={p.id}
                       className={`p-3.5 rounded-2xl border transition flex items-start gap-3 ${
                         hasAccess
-                          ? "bg-blue-50/50 border-blue-200/80"
+                          ? "bg-rose-50/50 border-rose-200/80"
                           : "bg-slate-50 border-slate-200/60 opacity-50"
                       }`}
                     >
                       <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
-                        hasAccess ? "bg-blue-100 text-[#3F51F4]" : "bg-slate-200 text-slate-400"
+                        hasAccess ? "bg-rose-100 text-rose-600" : "bg-slate-200 text-slate-400"
                       }`}>
                         <Icon className="w-4 h-4" />
                       </div>
                       <div className="space-y-0.5 flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <p className={`text-xs font-black truncate ${hasAccess ? "text-[#1B2A41]" : "text-slate-500"}`}>
+                          <p className={`text-xs font-black truncate ${hasAccess ? "text-slate-900" : "text-slate-500"}`}>
                             {p.label}
                           </p>
                           {hasAccess ? (
@@ -660,7 +647,7 @@ const AdminManagement = () => {
                     setShowInspectModal(false);
                     openEditModal(inspectingAdmin);
                   }}
-                  className="px-5 py-2.5 rounded-xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 text-xs font-black transition flex items-center gap-1.5 cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 text-xs font-black transition flex items-center gap-1.5 cursor-pointer"
                 >
                   <Edit3 className="w-3.5 h-3.5" /> Edit Permissions
                 </button>
@@ -687,7 +674,7 @@ const AdminManagement = () => {
                   <Trash2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-black text-[#1B2A41]">Delete Administrator</h3>
+                  <h3 className="text-lg font-black text-slate-900">Delete Administrator</h3>
                   <p className="text-xs text-slate-500 font-medium">Admin: {deleteModal.admin.name}</p>
                 </div>
               </div>
@@ -729,7 +716,7 @@ const AdminManagement = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full my-8 space-y-6 shadow-2xl border border-slate-200">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-lg font-black text-[#1B2A41]">
+              <h3 className="text-lg font-black text-slate-900">
                 Create Sub-Admin Account
               </h3>
               <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600">
@@ -746,7 +733,7 @@ const AdminManagement = () => {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Admin Name"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-[#3F51F4]/40"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-rose-500/40"
                 />
               </div>
 
@@ -759,7 +746,7 @@ const AdminManagement = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="admin@zycart.com"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-[#3F51F4]/40"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-rose-500/40"
                   />
                 </div>
 
@@ -772,7 +759,7 @@ const AdminManagement = () => {
                     value={formData.mobile}
                     onChange={(e) => setFormData({ ...formData, mobile: e.target.value.replace(/\D/g, "") })}
                     placeholder="9876543210"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-[#3F51F4]/40"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-rose-500/40"
                   />
                 </div>
               </div>
@@ -785,7 +772,7 @@ const AdminManagement = () => {
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="Min 8 chars, Aa1@"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-[#3F51F4]/40"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-rose-500/40"
                 />
               </div>
 
@@ -794,7 +781,7 @@ const AdminManagement = () => {
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">
                     Assign Permission Flags
                   </label>
-                  <div className="flex gap-2 text-[10px] font-bold text-[#3F51F4]">
+                  <div className="flex gap-2 text-[10px] font-bold text-rose-600">
                     <button type="button" onClick={handleSelectAllPermissions} className="hover:underline cursor-pointer">Select All</button>
                     <span>•</span>
                     <button type="button" onClick={handleClearPermissions} className="hover:underline text-slate-400 cursor-pointer">Clear</button>
@@ -807,7 +794,7 @@ const AdminManagement = () => {
                       key={perm.id}
                       className={`flex items-start gap-2.5 p-2.5 rounded-xl border text-xs cursor-pointer transition ${
                         formData.permissions.includes(perm.id)
-                          ? "bg-blue-50 border-blue-200 text-[#1B2A41]"
+                          ? "bg-rose-50 border-rose-200 text-slate-900"
                           : "bg-slate-50 border-slate-200 text-slate-600 opacity-60"
                       }`}
                     >
@@ -815,7 +802,7 @@ const AdminManagement = () => {
                         type="checkbox"
                         checked={formData.permissions.includes(perm.id)}
                         onChange={() => handlePermissionToggle(perm.id)}
-                        className="mt-0.5 rounded text-[#3F51F4] focus:ring-0"
+                        className="mt-0.5 rounded text-rose-600 focus:ring-0"
                       />
                       <div>
                         <span className="font-extrabold text-[11px] block">{perm.label}</span>
@@ -837,7 +824,7 @@ const AdminManagement = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2.5 rounded-xl bg-[#3F51F4] hover:bg-[#3444C9] text-white font-black text-xs shadow-md shadow-blue-500/20 disabled:opacity-50 cursor-pointer"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#F87171] via-[#EF4444] to-[#E11D48] hover:from-[#EF4444] hover:to-[#BE123C] text-white font-black text-xs shadow-lg shadow-red-500/25 disabled:opacity-50 cursor-pointer"
                 >
                   {submitting ? "Creating..." : "Create Sub-Admin"}
                 </button>
@@ -852,7 +839,7 @@ const AdminManagement = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full my-8 space-y-6 shadow-2xl border border-slate-200">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-lg font-black text-[#1B2A41]">
+              <h3 className="text-lg font-black text-slate-900">
                 Edit Administrator: {selectedAdmin.name}
               </h3>
               <button onClick={() => setShowEditModal(false)} className="text-slate-400 hover:text-slate-600">
@@ -868,7 +855,7 @@ const AdminManagement = () => {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-[#3F51F4]/40"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-rose-500/40"
                 />
               </div>
 
@@ -880,7 +867,7 @@ const AdminManagement = () => {
                     required
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-[#3F51F4]/40"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-rose-500/40"
                   />
                 </div>
 
@@ -892,7 +879,7 @@ const AdminManagement = () => {
                     maxLength={10}
                     value={formData.mobile}
                     onChange={(e) => setFormData({ ...formData, mobile: e.target.value.replace(/\D/g, "") })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-[#3F51F4]/40"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-rose-500/40"
                   />
                 </div>
               </div>
@@ -906,7 +893,7 @@ const AdminManagement = () => {
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="Enter new password"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-[#3F51F4]/40"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 outline-none focus:ring-2 focus:ring-rose-500/40"
                 />
               </div>
 
@@ -916,7 +903,7 @@ const AdminManagement = () => {
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">
                       Configure Permission Flags
                     </label>
-                    <div className="flex gap-2 text-[10px] font-bold text-[#3F51F4]">
+                    <div className="flex gap-2 text-[10px] font-bold text-rose-600">
                       <button type="button" onClick={handleSelectAllPermissions} className="hover:underline cursor-pointer">Select All</button>
                       <span>•</span>
                       <button type="button" onClick={handleClearPermissions} className="hover:underline text-slate-400 cursor-pointer">Clear</button>
@@ -929,7 +916,7 @@ const AdminManagement = () => {
                         key={perm.id}
                         className={`flex items-start gap-2.5 p-2.5 rounded-xl border text-xs cursor-pointer transition ${
                           formData.permissions.includes(perm.id)
-                            ? "bg-blue-50 border-blue-200 text-[#1B2A41]"
+                            ? "bg-rose-50 border-rose-200 text-slate-900"
                             : "bg-slate-50 border-slate-200 text-slate-600 opacity-60"
                         }`}
                       >
@@ -937,7 +924,7 @@ const AdminManagement = () => {
                           type="checkbox"
                           checked={formData.permissions.includes(perm.id)}
                           onChange={() => handlePermissionToggle(perm.id)}
-                          className="mt-0.5 rounded text-[#3F51F4] focus:ring-0"
+                          className="mt-0.5 rounded text-rose-600 focus:ring-0"
                         />
                         <div>
                           <span className="font-extrabold text-[11px] block">{perm.label}</span>
@@ -960,7 +947,7 @@ const AdminManagement = () => {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-6 py-2.5 rounded-xl bg-[#3F51F4] hover:bg-[#3444C9] text-white font-black text-xs shadow-md shadow-blue-500/20 disabled:opacity-50 cursor-pointer"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#F87171] via-[#EF4444] to-[#E11D48] hover:from-[#EF4444] hover:to-[#BE123C] text-white font-black text-xs shadow-lg shadow-red-500/25 disabled:opacity-50 cursor-pointer"
                 >
                   {submitting ? "Saving..." : "Save Changes"}
                 </button>

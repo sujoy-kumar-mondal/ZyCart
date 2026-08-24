@@ -106,11 +106,11 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0E131F] text-slate-100 flex flex-col justify-center relative overflow-hidden font-sans selection:bg-[#3F51F4] selection:text-white py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#0E131F] text-slate-100 flex flex-col justify-center relative overflow-hidden font-sans selection:bg-blue-500 selection:text-white py-12 px-4 sm:px-6 lg:px-8">
       
       {/* Background Animated Ambient Lights & Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(#3F51F4_1px,transparent_1px)] [background-size:32px_32px] opacity-15 pointer-events-none"></div>
-      <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-[#3F51F4]/25 to-cyan-500/15 rounded-full blur-3xl pointer-events-none animate-pulse duration-1000"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(#3B82F6_1px,transparent_1px)] [background-size:32px_32px] opacity-15 pointer-events-none"></div>
+      <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-blue-500/25 to-cyan-500/15 rounded-full blur-3xl pointer-events-none animate-pulse duration-1000"></div>
       <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-gradient-to-tr from-indigo-600/20 to-purple-600/15 rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="relative z-10 max-w-5xl mx-auto w-full">
@@ -123,17 +123,17 @@ const ChangePassword = () => {
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
             <div className="space-y-6 relative z-10">
-              <Link to="/profile" className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition group">
+              <Link to="/profile" className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition group cursor-pointer">
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Profile
               </Link>
 
               <div className="space-y-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-[#8FD6F6]">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-300">
                   <Sparkles className="w-3.5 h-3.5 text-blue-400" /> Account Security Center
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug">
                   Protect Your <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6A8EF0] via-[#8FD6F6] to-cyan-300">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-cyan-300">
                     Shopping Credentials
                   </span>
                 </h2>
@@ -145,7 +145,7 @@ const ChangePassword = () => {
               {/* Security Guidelines */}
               <div className="space-y-3 pt-2">
                 <div className="p-3.5 rounded-2xl bg-slate-800/50 border border-slate-700/50 flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-blue-500/15 text-[#6A8EF0] flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="w-8 h-8 rounded-xl bg-blue-500/15 text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
                     <KeyRound className="w-4 h-4" />
                   </div>
                   <div>
@@ -185,11 +185,11 @@ const ChangePassword = () => {
               
               {/* Header */}
               <div className="space-y-1 text-center lg:text-left">
-                <div className="inline-flex lg:hidden items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-[#8FD6F6] mb-2">
+                <div className="inline-flex lg:hidden items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-300 mb-2">
                   <Shield className="w-3.5 h-3.5" /> Security
                 </div>
                 <h1 className="text-2xl font-black text-white tracking-tight flex items-center justify-center lg:justify-start gap-2.5">
-                  <KeyRound className="w-6 h-6 text-[#6A8EF0]" /> Change Password
+                  <KeyRound className="w-6 h-6 text-blue-400" /> Change Password
                 </h1>
                 <p className="text-xs text-slate-400 font-medium">
                   Enter your current password and choose a strong new one.
@@ -202,7 +202,7 @@ const ChangePassword = () => {
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-slate-300 flex items-center justify-between">
                     <span>Current Password</span>
-                    <Link to="/resetpassword" className="text-[11px] font-semibold text-[#6A8EF0] hover:text-blue-300 transition">
+                    <Link to="/resetpassword" className="text-[11px] font-semibold text-blue-400 hover:text-blue-300 transition cursor-pointer">
                       Forgot Password?
                     </Link>
                   </label>
@@ -216,7 +216,7 @@ const ChangePassword = () => {
                       value={form.password}
                       onChange={handleChange}
                       placeholder="••••••••••••"
-                      className="w-full pl-10 pr-10 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#3F51F4] focus:border-transparent transition"
+                      className="w-full pl-10 pr-10 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                       required
                     />
                     <button
@@ -242,7 +242,7 @@ const ChangePassword = () => {
                       value={form.nPassword}
                       onChange={handleChange}
                       placeholder="Enter strong new password"
-                      className="w-full pl-10 pr-10 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#3F51F4] focus:border-transparent transition"
+                      className="w-full pl-10 pr-10 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                       required
                     />
                     <button
@@ -281,7 +281,7 @@ const ChangePassword = () => {
                           ? isMatch
                             ? "border-emerald-500/60 focus:ring-emerald-500"
                             : "border-rose-500/60 focus:ring-rose-500"
-                          : "border-slate-700/80 focus:ring-[#3F51F4]"
+                          : "border-slate-700/80 focus:ring-blue-500"
                       }`}
                       required
                     />

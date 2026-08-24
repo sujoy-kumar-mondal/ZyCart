@@ -52,7 +52,7 @@ const AdminDashboard = () => {
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
                 Executive Command Center
               </h1>
               <span className={`px-3 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${

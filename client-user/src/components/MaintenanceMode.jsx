@@ -74,7 +74,7 @@ const MaintenanceMode = ({ settings, onRefresh }) => {
               if (onRefresh) onRefresh();
               window.location.reload();
             }}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] hover:opacity-95 text-white font-extrabold text-xs shadow-lg shadow-blue-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] hover:opacity-95 text-white font-extrabold text-xs shadow-lg shadow-blue-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
           >
             <RefreshCw className="w-4 h-4" /> Check System Status
           </button>

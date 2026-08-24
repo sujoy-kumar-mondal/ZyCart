@@ -101,11 +101,11 @@ const SellerOrderDetails = () => {
           <div className="space-y-1">
             <button
               onClick={() => navigate("/seller/orders")}
-              className="inline-flex items-center gap-2 text-xs font-bold text-[#3F51F4] hover:underline mb-1"
+              className="inline-flex items-center gap-2 text-xs font-bold text-emerald-600 hover:underline mb-1 cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" /> Back to Customer Orders
             </button>
-            <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
               Order Fulfillment Breakdown
             </h1>
             <p className="text-xs text-slate-500 font-mono font-bold">
@@ -114,7 +114,7 @@ const SellerOrderDetails = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <span className={`px-4 py-2 rounded-full text-xs font-black uppercase border ${order?.status === "Cancelled" ? "bg-red-100 text-red-800 border-red-200" : "bg-blue-100 text-blue-800 border-blue-200"}`}>
+            <span className={`px-4 py-2 rounded-full text-xs font-black uppercase border ${order?.status === "Cancelled" ? "bg-red-100 text-red-800 border-red-200" : "bg-emerald-100 text-emerald-800 border-emerald-200"}`}>
               Status: {order?.status}
             </span>
           </div>
@@ -155,7 +155,7 @@ const SellerOrderDetails = () => {
             
             {/* Items Card */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Package Purchased Items
               </h2>
 
@@ -184,8 +184,8 @@ const SellerOrderDetails = () => {
             {/* Delivery Address Card */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
               <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-                <MapPin className="w-5 h-5 text-[#3F51F4]" />
-                <h2 className="text-lg font-extrabold text-[#1B2A41]">
+                <MapPin className="w-5 h-5 text-emerald-600" />
+                <h2 className="text-lg font-extrabold text-slate-900">
                   Customer Shipping Address
                 </h2>
               </div>
@@ -209,7 +209,7 @@ const SellerOrderDetails = () => {
             
             {/* Actions Card */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Fulfillment Actions
               </h2>
 
@@ -228,7 +228,7 @@ const SellerOrderDetails = () => {
                       <button
                         onClick={() => updateOrderStatus("Packed")}
                         disabled={updating}
-                        className="w-full py-3.5 rounded-2xl font-extrabold text-white text-xs bg-purple-600 hover:bg-purple-700 transition disabled:opacity-50"
+                        className="w-full py-3.5 rounded-2xl font-extrabold text-white text-xs bg-purple-600 hover:bg-purple-700 transition disabled:opacity-50 cursor-pointer"
                       >
                         {updating ? "Updating..." : "Mark as Packed"}
                       </button>
@@ -237,7 +237,7 @@ const SellerOrderDetails = () => {
                     <button
                       onClick={() => updateOrderStatus("Shipped")}
                       disabled={updating}
-                      className="w-full py-3.5 rounded-2xl font-extrabold text-white text-xs bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] shadow-md shadow-blue-500/20 hover:opacity-95 transition disabled:opacity-50"
+                      className="w-full py-3.5 rounded-2xl font-extrabold text-white text-xs bg-gradient-to-r from-[#10B981] via-[#34D399] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-md shadow-emerald-500/20 transition disabled:opacity-50 cursor-pointer"
                     >
                       {updating ? "Updating..." : "Mark as Shipped"}
                     </button>
@@ -245,7 +245,7 @@ const SellerOrderDetails = () => {
                     {canCancel && (
                       <button
                         onClick={() => setShowCancelModal(true)}
-                        className="w-full py-3 rounded-2xl font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 text-xs transition"
+                        className="w-full py-3 rounded-2xl font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 text-xs transition cursor-pointer"
                       >
                         Cancel Package
                       </button>
@@ -271,7 +271,7 @@ const SellerOrderDetails = () => {
 
               return (
                 <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-                  <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                  <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                     Earnings Breakdown
                   </h2>
 
@@ -299,8 +299,8 @@ const SellerOrderDetails = () => {
 
             {/* Order Timestamps Card */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-[#3F51F4]" /> Order Status Timeline
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-emerald-600" /> Order Status Timeline
               </h2>
 
               <div className="space-y-3 text-xs">
@@ -325,8 +325,8 @@ const SellerOrderDetails = () => {
                   <>
                     {/* Show Packed only if it actually was packed before cancel */}
                     {(order?.packedAt || order?.parentOrderId?.packedAt) && (
-                      <div className="p-3 rounded-2xl bg-purple-50/50 border border-purple-100 space-y-1">
-                        <span className="text-[10px] font-extrabold text-purple-600 uppercase">Packed Date &amp; Time</span>
+                      <div className="p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100 space-y-1">
+                        <span className="text-[10px] font-extrabold text-emerald-600 uppercase">Packed Date &amp; Time</span>
                         <p className="font-extrabold text-slate-900">
                           {new Date(order.packedAt || order.parentOrderId.packedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })}
                         </p>
@@ -335,8 +335,8 @@ const SellerOrderDetails = () => {
 
                     {/* Show Shipped only if it actually was shipped before cancel */}
                     {(order?.shippedAt || order?.parentOrderId?.shippedAt) && (
-                      <div className="p-3 rounded-2xl bg-blue-50/50 border border-blue-100 space-y-1">
-                        <span className="text-[10px] font-extrabold text-blue-600 uppercase">Shipped Date &amp; Time</span>
+                      <div className="p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100 space-y-1">
+                        <span className="text-[10px] font-extrabold text-emerald-600 uppercase">Shipped Date &amp; Time</span>
                         <p className="font-extrabold text-slate-900">
                           {new Date(order.shippedAt || order.parentOrderId.shippedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })}
                         </p>
@@ -348,68 +348,55 @@ const SellerOrderDetails = () => {
                       <div className="flex items-center justify-between">
                         <span className="text-[10px] font-black text-red-600 uppercase tracking-wider">Cancelled Date &amp; Time</span>
                         {(order?.cancelledBy || order?.parentOrderId?.cancelledBy) && (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-red-100 text-red-700">
+                          <span className="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-red-200/60 text-red-800 uppercase">
                             By {order?.cancelledBy || order?.parentOrderId?.cancelledBy}
                           </span>
                         )}
                       </div>
-                      <p className="font-black text-red-950 text-sm">
+                      <p className="font-extrabold text-slate-900">
                         {order?.cancelledAt
                           ? new Date(order.cancelledAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
                           : order?.parentOrderId?.cancelledAt
                           ? new Date(order.parentOrderId.cancelledAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
-                          : order?.updatedAt
-                          ? new Date(order.updatedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
-                          : "Order Cancelled"}
+                          : "N/A"}
                       </p>
-                      {(order?.cancellationReason || order?.parentOrderId?.cancellationReason) && (
-                        <p className="text-[11px] text-red-700 font-semibold pt-1 border-t border-red-100">
-                          Reason: <span className="font-normal italic">"{order?.cancellationReason || order?.parentOrderId?.cancellationReason}"</span>
-                        </p>
-                      )}
                     </div>
                   </>
                 ) : (
                   <>
                     {/* Packed Date & Time */}
                     <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                      <span className="text-[10px] font-extrabold text-purple-600 uppercase">Packed Date &amp; Time</span>
+                      <span className="text-[10px] font-extrabold text-slate-400 uppercase">Packed Date &amp; Time</span>
                       <p className="font-extrabold text-slate-900">
                         {order?.packedAt
                           ? new Date(order.packedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
                           : order?.parentOrderId?.packedAt
                           ? new Date(order.parentOrderId.packedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
-                          : ["Packed", "Shipped", "Out for Delivery", "Delivered"].includes(order?.status)
-                          ? "Packed by merchant"
-                          : "Pending packaging"}
+                          : "Pending Packing"}
                       </p>
                     </div>
 
                     {/* Shipped Date & Time */}
                     <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                      <span className="text-[10px] font-extrabold text-blue-600 uppercase">Shipped Date &amp; Time</span>
+                      <span className="text-[10px] font-extrabold text-slate-400 uppercase">Shipped Date &amp; Time</span>
                       <p className="font-extrabold text-slate-900">
                         {order?.shippedAt
                           ? new Date(order.shippedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
                           : order?.parentOrderId?.shippedAt
                           ? new Date(order.parentOrderId.shippedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
-                          : ["Shipped", "Out for Delivery", "Delivered"].includes(order?.status)
-                          ? "Shipped to customer"
-                          : "Pending dispatch"}
+                          : "Pending Dispatch"}
                       </p>
                     </div>
 
                     {/* Delivered Date & Time */}
                     <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
-                      <span className="text-[10px] font-extrabold text-emerald-600 uppercase">Delivered Date &amp; Time</span>
+                      <span className="text-[10px] font-extrabold text-slate-400 uppercase">Delivered Date &amp; Time</span>
                       <p className="font-extrabold text-slate-900">
                         {order?.deliveredAt
                           ? new Date(order.deliveredAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
                           : order?.parentOrderId?.deliveredAt
                           ? new Date(order.parentOrderId.deliveredAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
-                          : order?.status === "Delivered"
-                          ? "Delivered to customer"
-                          : "Pending delivery"}
+                          : "In Transit / Not Delivered Yet"}
                       </p>
                     </div>
                   </>
@@ -422,18 +409,18 @@ const SellerOrderDetails = () => {
         </div>
       </div>
 
-      {/* CANCEL PACKAGE MODAL */}
+      {/* Cancellation Modal */}
       {showCancelModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6 relative animate-in fade-in zoom-in duration-150">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-100 animate-in fade-in zoom-in duration-200">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center font-bold">
-                  <AlertTriangle className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center font-bold">
+                  <XCircle size={20} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-extrabold text-[#1B2A41]">Cancel Merchant Package</h3>
-                  <p className="text-xs text-slate-500">Provide reason for cancelling #{order?.parentOrderId?.parentOrderNumber}</p>
+                  <h3 className="text-lg font-black text-slate-900">Cancel Package Fulfillment</h3>
+                  <p className="text-xs text-slate-400 font-semibold">Order #{order?.parentOrderId?.parentOrderNumber}</p>
                 </div>
               </div>
               <button
@@ -452,7 +439,7 @@ const SellerOrderDetails = () => {
                 <select
                   value={cancelReasonPreset}
                   onChange={(e) => setCancelReasonPreset(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-emerald-500 outline-none transition"
                 >
                   <option value="Item out of stock / damaged">Item out of stock / damaged</option>
                   <option value="Pricing or inventory discrepancy">Pricing or inventory discrepancy</option>
@@ -472,7 +459,7 @@ const SellerOrderDetails = () => {
                   onChange={(e) => setCancelReasonDetails(e.target.value)}
                   placeholder="Provide additional details regarding this package cancellation..."
                   required={cancelReasonPreset === "Other"}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-emerald-500 outline-none transition"
                 />
               </div>
 

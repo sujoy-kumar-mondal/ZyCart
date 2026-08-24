@@ -271,7 +271,7 @@ const ProductDetailsPage = () => {
     return (
       <div className="flex justify-center items-center min-h-[70vh]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#3F51F4] border-t-transparent mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
           <p className="text-slate-600 font-semibold">Loading product details...</p>
         </div>
       </div>
@@ -335,7 +335,7 @@ const ProductDetailsPage = () => {
                 <button
                   onClick={handleWishlist}
                   disabled={wishlistLoading}
-                  className="absolute top-4 right-4 bg-white/90 backdrop-blur-md p-3 rounded-full shadow-md hover:shadow-lg transition transform active:scale-90 border border-slate-200/60 z-10 disabled:opacity-50"
+                  className="absolute top-4 right-4 bg-white/90 backdrop-blur-md p-3 rounded-full shadow-md hover:shadow-lg transition transform active:scale-90 border border-slate-200/60 z-10 disabled:opacity-50 cursor-pointer"
                   title={isInWishlist ? "Remove from wishlist" : "Add to wishlist"}
                 >
                   <Heart
@@ -350,13 +350,13 @@ const ProductDetailsPage = () => {
                   <>
                     <button
                       onClick={() => setSelectedImage((prev) => (prev > 0 ? prev - 1 : product.images.length - 1))}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-md p-2.5 rounded-full shadow-md hover:bg-white transition text-slate-700 hover:scale-110 active:scale-95"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-md p-2.5 rounded-full shadow-md hover:bg-white transition text-slate-700 hover:scale-110 active:scale-95 cursor-pointer"
                     >
                       <ChevronLeft size={22} />
                     </button>
                     <button
                       onClick={() => setSelectedImage((prev) => (prev < product.images.length - 1 ? prev + 1 : 0))}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-md p-2.5 rounded-full shadow-md hover:bg-white transition text-slate-700 hover:scale-110 active:scale-95"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 backdrop-blur-md p-2.5 rounded-full shadow-md hover:bg-white transition text-slate-700 hover:scale-110 active:scale-95 cursor-pointer"
                     >
                       <ChevronRight size={22} />
                     </button>
@@ -371,9 +371,9 @@ const ProductDetailsPage = () => {
                     <button
                       key={idx}
                       onClick={() => setSelectedImage(idx)}
-                      className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition shrink-0 ${
+                      className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition shrink-0 cursor-pointer ${
                         selectedImage === idx
-                          ? "border-[#3F51F4] ring-2 ring-[#3F51F4]/20 shadow-md scale-105"
+                          ? "border-blue-500 ring-2 ring-blue-500/20 shadow-md scale-105"
                           : "border-slate-200 opacity-70 hover:opacity-100"
                       }`}
                     >
@@ -403,7 +403,7 @@ const ProductDetailsPage = () => {
             </div>
 
             {/* Title */}
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#1B2A41] leading-tight">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
               {product.title}
             </h1>
 
@@ -412,7 +412,7 @@ const ProductDetailsPage = () => {
               <div className="flex items-baseline gap-3 flex-wrap">
                 {hasActiveDiscount ? (
                   <>
-                    <span className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-[#3F51F4] to-[#6A8EF0] text-transparent bg-clip-text">
+                    <span className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] text-transparent bg-clip-text">
                       {currency}{discountedPrice.toLocaleString()}
                     </span>
                     <span className="text-lg text-slate-400 line-through font-semibold">
@@ -423,7 +423,7 @@ const ProductDetailsPage = () => {
                     </span>
                   </>
                 ) : (
-                  <span className="text-3xl sm:text-4xl font-black text-[#1B2A41]">
+                  <span className="text-3xl sm:text-4xl font-black text-slate-900">
                     {currency}{product.price.toLocaleString()}
                   </span>
                 )}
@@ -479,7 +479,7 @@ const ProductDetailsPage = () => {
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       disabled={quantity <= 1}
-                      className="px-3.5 py-2 text-slate-600 hover:bg-slate-200 font-bold transition disabled:opacity-30"
+                      className="px-3.5 py-2 text-slate-600 hover:bg-slate-200 font-bold transition disabled:opacity-30 cursor-pointer"
                     >
                       -
                     </button>
@@ -494,7 +494,7 @@ const ProductDetailsPage = () => {
                         }
                       }}
                       disabled={quantity >= Math.min(product.stock, product.maxQuantityPerPurchase || product.stock)}
-                      className="px-3.5 py-2 text-slate-600 hover:bg-slate-200 font-bold transition disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="px-3.5 py-2 text-slate-600 hover:bg-slate-200 font-bold transition disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer"
                     >
                       +
                     </button>
@@ -505,7 +505,7 @@ const ProductDetailsPage = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <button
                     onClick={handleAddToCart}
-                    className="w-full py-4 px-6 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#1D4ED8] hover:to-[#1E40AF] shadow-lg shadow-blue-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-4 px-6 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] hover:opacity-95 shadow-lg shadow-blue-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <ShoppingCart className="w-5 h-5" /> Add to Cart
                   </button>
@@ -546,7 +546,7 @@ const ProductDetailsPage = () => {
           
           {/* Description Card (FIRST) */}
           <div className={`${product.attributes && Object.keys(product.attributes).length > 0 ? "lg:col-span-6" : "lg:col-span-12"} flex flex-col bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4`}>
-            <h2 className="text-xl font-extrabold text-[#1B2A41] flex items-center gap-2 border-b border-slate-100 pb-4">
+            <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-4">
               <span>📝</span> Product Description
             </h2>
             <p className="text-slate-700 text-sm leading-relaxed whitespace-pre-line grow">
@@ -557,7 +557,7 @@ const ProductDetailsPage = () => {
           {/* Specifications Card (SECOND) */}
           {product.attributes && Object.keys(product.attributes).length > 0 && (
             <div className="lg:col-span-6 flex flex-col bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
-              <h2 className="text-xl font-extrabold text-[#1B2A41] flex items-center gap-2 border-b border-slate-100 pb-4">
+              <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-4">
                 <span>📋</span> Product Specifications
               </h2>
 
@@ -579,7 +579,7 @@ const ProductDetailsPage = () => {
 
         {/* "You Might Also Like" Recommendation Section */}
         <div className="pt-4 space-y-6">
-          <h2 className="text-2xl font-extrabold text-[#1B2A41]">You might also like</h2>
+          <h2 className="text-2xl font-extrabold text-slate-900">You might also like</h2>
 
           {relatedLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

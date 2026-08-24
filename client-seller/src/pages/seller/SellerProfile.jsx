@@ -138,13 +138,13 @@ const SellerProfile = () => {
         
         {/* Profile Card Header */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 flex flex-col sm:flex-row items-center gap-6">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] text-white font-black text-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#10B981] to-[#059669] text-white font-black text-2xl flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
             <Store className="w-8 h-8" />
           </div>
           
           <div className="space-y-1 text-center sm:text-left flex-1">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-              <h1 className="text-2xl font-black text-[#1B2A41]">{profile.shopName || profile.name}</h1>
+              <h1 className="text-2xl font-black text-slate-900">{profile.shopName || profile.name}</h1>
               <span className={`px-3 py-0.5 rounded-full text-[10px] font-black uppercase ${
                 profile.isApproved ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
               }`}>
@@ -156,9 +156,9 @@ const SellerProfile = () => {
 
           <Link
             to="/changepassword"
-            className="px-4 py-2.5 rounded-2xl border border-slate-200 text-slate-700 text-xs font-extrabold hover:bg-slate-50 transition flex items-center gap-1.5 shrink-0"
+            className="px-4 py-2.5 rounded-2xl border border-slate-200 text-slate-700 text-xs font-extrabold hover:text-emerald-600 hover:bg-slate-50 transition flex items-center gap-1.5 shrink-0"
           >
-            <KeyRound className="w-4 h-4 text-[#3F51F4]" /> Change Password
+            <KeyRound className="w-4 h-4 text-emerald-600" /> Change Password
           </Link>
         </div>
 
@@ -170,7 +170,7 @@ const SellerProfile = () => {
             
             {/* Basic Merchant Info */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Merchant Owner Details
               </h2>
 
@@ -184,7 +184,7 @@ const SellerProfile = () => {
                     name="name"
                     value={form.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 focus:bg-white outline-none transition"
                   />
                 </div>
 
@@ -209,7 +209,7 @@ const SellerProfile = () => {
                     name="mobile"
                     value={form.mobile}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 focus:bg-white outline-none transition"
                   />
                 </div>
               </div>
@@ -217,7 +217,7 @@ const SellerProfile = () => {
 
             {/* Shop Details */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Storefront Information
               </h2>
 
@@ -231,7 +231,7 @@ const SellerProfile = () => {
                     name="shopName"
                     value={form.shopName}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 focus:bg-white outline-none transition"
                   />
                 </div>
 
@@ -243,7 +243,7 @@ const SellerProfile = () => {
                     name="shopType"
                     value={form.shopType}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition cursor-pointer"
                   >
                     <option value="">Select Shop Category</option>
                     {shopTypes.map((type) => (
@@ -256,7 +256,7 @@ const SellerProfile = () => {
 
             {/* Business & Legal Credentials */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Taxation &amp; Payout Account Credentials
               </h2>
 
@@ -270,7 +270,7 @@ const SellerProfile = () => {
                     name="pan"
                     value={form.pan}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 uppercase focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 uppercase focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
 
@@ -283,7 +283,7 @@ const SellerProfile = () => {
                     name="aadhar"
                     value={form.aadhar}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
 
@@ -296,7 +296,7 @@ const SellerProfile = () => {
                     name="gst"
                     value={form.gst}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 uppercase focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 uppercase focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
 
@@ -309,7 +309,7 @@ const SellerProfile = () => {
                     name="bankAccount"
                     value={form.bankAccount}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
               </div>
@@ -320,14 +320,14 @@ const SellerProfile = () => {
               <button
                 onClick={handleUpdate}
                 disabled={updating}
-                className="w-full sm:flex-1 py-4 rounded-2xl font-extrabold text-white text-sm bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full sm:flex-1 py-4 rounded-2xl font-extrabold text-white text-sm bg-gradient-to-r from-[#10B981] via-[#34D399] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-md shadow-emerald-500/20 transition flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 <Save className="w-4 h-4" /> {updating ? "Saving..." : "Save Store Changes"}
               </button>
 
               <button
                 onClick={handleDelete}
-                className="w-full sm:w-auto px-6 py-4 rounded-2xl font-bold text-red-600 bg-red-50 hover:bg-red-100 transition text-sm flex items-center justify-center gap-1.5"
+                className="w-full sm:w-auto px-6 py-4 rounded-2xl font-bold text-red-600 bg-red-50 hover:bg-red-100 transition text-sm flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Trash2 className="w-4 h-4" /> Deactivate Account
               </button>
@@ -338,7 +338,7 @@ const SellerProfile = () => {
           {/* RIGHT: Status Sidebar Card */}
           <div className="lg:col-span-4 sticky top-24 space-y-4">
             <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-6">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Account Status
               </h2>
 

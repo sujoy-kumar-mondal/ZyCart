@@ -88,11 +88,11 @@ const SellerProductDetails = () => {
           <div className="space-y-1">
             <button
               onClick={() => navigate("/seller/products")}
-              className="inline-flex items-center gap-2 text-xs font-bold text-[#3F51F4] hover:underline mb-1"
+              className="inline-flex items-center gap-2 text-xs font-bold text-emerald-600 hover:underline mb-1 cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" /> Back to Products
             </button>
-            <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
               {product.title}
             </h1>
             <p className="text-xs text-slate-500 font-semibold">
@@ -103,7 +103,7 @@ const SellerProductDetails = () => {
           <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={() => navigate("/seller/products", { state: { editProductId: product._id } })}
-              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] text-white font-extrabold text-xs shadow-md shadow-blue-500/20 hover:opacity-95 transition flex items-center gap-2"
+              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#10B981] via-[#34D399] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white font-extrabold text-xs shadow-md shadow-emerald-500/20 transition flex items-center gap-2 cursor-pointer"
             >
               <Edit className="w-4 h-4" /> Edit Details
             </button>
@@ -111,7 +111,7 @@ const SellerProductDetails = () => {
             <button
               onClick={toggleAvailability}
               disabled={updatingStatus}
-              className={`px-5 py-3 rounded-2xl font-extrabold text-xs text-white shadow-sm transition flex items-center gap-2 ${
+              className={`px-5 py-3 rounded-2xl font-extrabold text-xs text-white shadow-sm transition flex items-center gap-2 cursor-pointer ${
                 product.isAvailable
                   ? "bg-amber-500 hover:bg-amber-600"
                   : "bg-emerald-600 hover:bg-emerald-700"
@@ -154,7 +154,7 @@ const SellerProductDetails = () => {
                     onClick={() => setSelectedImage(idx)}
                     className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition shrink-0 ${
                       selectedImage === idx
-                        ? "border-[#3F51F4] shadow-md scale-105"
+                        ? "border-emerald-500 ring-2 ring-emerald-500/20 shadow-md scale-105"
                         : "border-slate-200 opacity-60 hover:opacity-100"
                     }`}
                   >
@@ -171,8 +171,8 @@ const SellerProductDetails = () => {
             {/* Pricing & Discount Card */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
               <div className="flex items-center gap-2 border-b border-slate-100 pb-4">
-                <Tag className="w-5 h-5 text-[#3F51F4]" />
-                <h2 className="text-lg font-extrabold text-[#1B2A41]">
+                <Tag className="w-5 h-5 text-emerald-600" />
+                <h2 className="text-lg font-extrabold text-slate-900">
                   Pricing &amp; Active Discount
                 </h2>
               </div>
@@ -192,9 +192,9 @@ const SellerProductDetails = () => {
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-blue-50/60 border border-blue-100">
-                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-blue-600">Active Discount</p>
-                  <p className="text-2xl font-black text-blue-700 mt-1">
+                <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-100">
+                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-amber-600">Active Discount</p>
+                  <p className="text-2xl font-black text-amber-700 mt-1">
                     {hasDiscount ? `${product.discount}% OFF` : "None"}
                   </p>
                 </div>
@@ -202,7 +202,7 @@ const SellerProductDetails = () => {
 
               {hasDiscount && (
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center gap-3 text-xs">
-                  <Calendar className="w-5 h-5 text-blue-600 shrink-0" />
+                  <Calendar className="w-5 h-5 text-emerald-600 shrink-0" />
                   <div>
                     <p className="font-bold text-slate-500">Discount Expiry Timeline</p>
                     <p className="font-black text-slate-900 mt-0.5">
@@ -218,8 +218,8 @@ const SellerProductDetails = () => {
             {/* Inventory Card */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
               <div className="flex items-center gap-2 border-b border-slate-100 pb-4">
-                <Package className="w-5 h-5 text-[#3F51F4]" />
-                <h2 className="text-lg font-extrabold text-[#1B2A41]">
+                <Package className="w-5 h-5 text-emerald-600" />
+                <h2 className="text-lg font-extrabold text-slate-900">
                   Stock Inventory &amp; Order Constraints
                 </h2>
               </div>
@@ -232,9 +232,9 @@ const SellerProductDetails = () => {
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-100">
-                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-700">Max Purchase Limit Per Order</p>
-                  <p className="text-2xl font-black text-indigo-900 mt-1">
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80">
+                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Max Purchase Limit Per Order</p>
+                  <p className="text-2xl font-black text-slate-900 mt-1">
                     {product.maxQuantityPerPurchase || 1} unit(s)
                   </p>
                 </div>
@@ -244,7 +244,7 @@ const SellerProductDetails = () => {
             {/* Product Description */}
             {product.description && (
               <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-3">
-                <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+                <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                   Product Description
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed whitespace-pre-line font-medium">
@@ -257,8 +257,8 @@ const SellerProductDetails = () => {
             {product.attributes && Object.keys(product.attributes).length > 0 && (
               <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
                 <div className="flex items-center gap-2 border-b border-slate-100 pb-4">
-                  <ShieldCheck className="w-5 h-5 text-[#3F51F4]" />
-                  <h2 className="text-lg font-extrabold text-[#1B2A41]">
+                  <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                  <h2 className="text-lg font-extrabold text-slate-900">
                     Product Specifications
                   </h2>
                 </div>

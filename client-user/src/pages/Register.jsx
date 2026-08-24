@@ -213,11 +213,11 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0E131F] text-slate-100 flex flex-col justify-center relative overflow-hidden font-sans selection:bg-[#3F51F4] selection:text-white">
+    <div className="min-h-screen bg-[#0E131F] text-slate-100 flex flex-col justify-center relative overflow-hidden font-sans selection:bg-blue-500 selection:text-white">
       
       {/* Background Animated Ambient Lights & Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(#3F51F4_1px,transparent_1px)] [background-size:32px_32px] opacity-15 pointer-events-none"></div>
-      <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-[#3F51F4]/25 to-cyan-500/15 rounded-full blur-3xl pointer-events-none animate-pulse duration-1000"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(#3B82F6_1px,transparent_1px)] [background-size:32px_32px] opacity-15 pointer-events-none"></div>
+      <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-blue-500/25 to-cyan-500/15 rounded-full blur-3xl pointer-events-none animate-pulse duration-1000"></div>
       <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-gradient-to-tr from-indigo-600/20 to-purple-600/15 rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
@@ -236,7 +236,7 @@ const Register = () => {
             {/* Brand Logo & Tag */}
             <div className="space-y-6 relative z-10">
               <Link to="/" className="inline-flex items-center gap-3.5 group">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#3F51F4] via-[#5C72FF] to-[#8FD6F6] p-2.5 shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#3B82F6] via-[#60A5FA] to-[#2563EB] p-2.5 shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform flex items-center justify-center">
                   <img
                     src="/logo_cart.svg"
                     alt="ZyCart Logo"
@@ -245,7 +245,7 @@ const Register = () => {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-2xl font-black tracking-tight text-white flex items-center gap-1.5">
-                    ZyCart <span className="text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-blue-500/20 text-[#6A8EF0] border border-blue-500/30">User</span>
+                    ZyCart <span className="text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider bg-blue-500/20 text-blue-400 border border-blue-500/30">User</span>
                   </span>
                   <span className="text-[10px] uppercase tracking-widest text-slate-400 font-semibold">
                     Premium Shopping Central
@@ -254,11 +254,11 @@ const Register = () => {
               </Link>
 
               <div className="space-y-3 pt-4">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-[#8FD6F6]">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-300">
                   <Sparkles className="w-3.5 h-3.5 text-blue-400" /> New Shopper Registration
                 </div>
                 <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                  Join millions enjoying <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6A8EF0] via-[#8FD6F6] to-cyan-300">verified products & fast delivery.</span>
+                  Join millions enjoying <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-cyan-300">verified products & fast delivery.</span>
                 </h2>
                 <p className="text-sm text-slate-400 font-medium leading-relaxed max-w-lg">
                   Create your customer account to unlock personalized recommendations, seamless order tracking, priority checkout, and member perks.
@@ -269,7 +269,7 @@ const Register = () => {
             {/* Feature Highlights Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 my-8 relative z-10">
               <div className="p-4 rounded-2xl bg-slate-800/40 border border-slate-700/40 backdrop-blur-md flex items-start gap-3 hover:border-slate-600/60 transition">
-                <div className="w-9 h-9 rounded-xl bg-blue-500/15 text-[#6A8EF0] flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-9 h-9 rounded-xl bg-blue-500/15 text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
                   <Truck className="w-4 h-4" />
                 </div>
                 <div>
@@ -320,7 +320,7 @@ const Register = () => {
                 <span>{stats?.happyShoppers ? `${stats.happyShoppers.toLocaleString()} Registered Shoppers` : "Verified Shopper Community"}</span>
               </div>
 
-              <Link to="/login" className="text-[#8FD6F6] hover:text-white transition flex items-center gap-1">
+              <Link to="/login" className="text-blue-300 hover:text-white transition flex items-center gap-1 cursor-pointer">
                 Already registered? Sign In <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -337,16 +337,16 @@ const Register = () => {
               {/* Mobile Branded Header (visible on < lg screens) */}
               <div className="lg:hidden flex items-center justify-between pb-2 border-b border-slate-100">
                 <Link to="/" className="inline-flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] p-2 shadow-md shadow-blue-500/20 flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#3B82F6] via-[#60A5FA] to-[#2563EB] p-2 shadow-md shadow-blue-500/20 flex items-center justify-center">
                     <img
                       src="/logo_cart.svg"
                       alt="ZyCart Logo"
                       className="w-full h-full object-contain filter brightness-0 invert"
                     />
                   </div>
-                  <span className="text-xl font-black text-[#1B2A41]">ZyCart</span>
+                  <span className="text-xl font-black text-slate-900">ZyCart</span>
                 </Link>
-                <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-[#3F51F4] border border-blue-100">
+                <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100">
                   New Customer
                 </span>
               </div>
@@ -354,16 +354,16 @@ const Register = () => {
               {/* Form Title & Progress Indicator */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-[#3F51F4]">
+                  <div className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-blue-600">
                     {step === 1 ? "Step 01 / 02 • Email Verification" : "Step 02 / 02 • Profile & Security"}
                   </div>
                   <div className="flex gap-1.5">
-                    <div className={`w-8 h-1.5 rounded-full transition-all duration-300 ${step >= 1 ? "bg-[#3F51F4]" : "bg-slate-200"}`}></div>
-                    <div className={`w-8 h-1.5 rounded-full transition-all duration-300 ${step === 2 ? "bg-[#3F51F4]" : "bg-slate-200"}`}></div>
+                    <div className={`w-8 h-1.5 rounded-full transition-all duration-300 ${step >= 1 ? "bg-blue-600" : "bg-slate-200"}`}></div>
+                    <div className={`w-8 h-1.5 rounded-full transition-all duration-300 ${step === 2 ? "bg-blue-600" : "bg-slate-200"}`}></div>
                   </div>
                 </div>
 
-                <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41] tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                   {step === 1 ? "Create your free account" : "Complete your profile"}
                 </h1>
                 <p className="text-xs sm:text-sm text-slate-500 font-medium">
@@ -403,9 +403,9 @@ const Register = () => {
                           autoFocus
                           autoComplete="email"
                           placeholder="name@example.com"
-                          className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#3F51F4] focus:ring-4 focus:ring-[#3F51F4]/15 outline-none transition duration-200"
+                          className="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 outline-none transition duration-200"
                         />
-                        <Mail className="w-5 h-5 text-slate-400 group-focus-within:text-[#3F51F4] absolute left-3.5 top-3.5 pointer-events-none transition-colors" />
+                        <Mail className="w-5 h-5 text-slate-400 group-focus-within:text-blue-500 absolute left-3.5 top-3.5 pointer-events-none transition-colors" />
                       </div>
                       <p className="text-[11px] text-slate-400 font-medium mt-1.5">
                         We'll send a 6-digit verification code to confirm your email.
@@ -437,7 +437,7 @@ const Register = () => {
                         Already have a customer account?{" "}
                         <Link
                           to="/login"
-                          className="font-extrabold text-[#3F51F4] hover:underline"
+                          className="font-extrabold text-blue-600 hover:underline cursor-pointer"
                         >
                           Sign In
                         </Link>
@@ -460,18 +460,18 @@ const Register = () => {
                     {/* Security Notice & Edit Email Header */}
                     <div className="p-3.5 rounded-2xl bg-blue-50/80 border border-blue-100 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-2.5 overflow-hidden">
-                        <div className="w-7 h-7 rounded-xl bg-[#3F51F4] text-white flex items-center justify-center shrink-0">
+                        <div className="w-7 h-7 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0">
                           <KeyRound className="w-3.5 h-3.5" />
                         </div>
                         <div className="truncate text-xs">
-                          <span className="font-extrabold text-[#1B2A41] block truncate">{email}</span>
+                          <span className="font-extrabold text-slate-900 block truncate">{email}</span>
                           <span className="text-[10px] text-slate-500 font-medium">OTP valid for 5 minutes</span>
                         </div>
                       </div>
                       <button
                         type="button"
                         onClick={() => setStep(1)}
-                        className="text-xs font-extrabold text-[#3F51F4] hover:underline shrink-0 px-2 py-1"
+                        className="text-xs font-extrabold text-blue-600 hover:underline shrink-0 px-2 py-1 cursor-pointer"
                       >
                         Change
                       </button>
@@ -487,7 +487,7 @@ const Register = () => {
                           type="button"
                           onClick={handleResendOtp}
                           disabled={resendCooldown > 0 || resending}
-                          className="text-xs font-bold text-[#3F51F4] hover:underline disabled:text-slate-400 disabled:no-underline transition flex items-center gap-1"
+                          className="text-xs font-bold text-blue-600 hover:underline disabled:text-slate-400 disabled:no-underline transition flex items-center gap-1 cursor-pointer"
                         >
                           <RefreshCw className={`w-3 h-3 ${resending ? "animate-spin" : ""}`} />
                           {resendCooldown > 0 ? `Resend code (${resendCooldown}s)` : "Resend code"}
@@ -509,8 +509,8 @@ const Register = () => {
                             onPaste={idx === 0 ? handleOtpPaste : undefined}
                             className={`w-11 h-12 sm:w-12 sm:h-13 text-center text-lg sm:text-xl font-black rounded-2xl border transition duration-200 outline-none ${
                               val
-                                ? "bg-blue-50/60 border-[#3F51F4] text-[#1B2A41] ring-2 ring-[#3F51F4]/20"
-                                : "bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-[#3F51F4] focus:ring-4 focus:ring-[#3F51F4]/15"
+                                ? "bg-blue-50/60 border-blue-500 text-slate-900 ring-2 ring-blue-500/20"
+                                : "bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15"
                             }`}
                           />
                         ))}
@@ -530,9 +530,9 @@ const Register = () => {
                           onChange={(e) => setForm({ ...form, name: e.target.value })}
                           required
                           placeholder="e.g. John Doe"
-                          className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#3F51F4] focus:ring-4 focus:ring-[#3F51F4]/15 outline-none transition duration-200"
+                          className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 outline-none transition duration-200"
                         />
-                        <User className="w-4 h-4 text-slate-400 group-focus-within:text-[#3F51F4] absolute left-3.5 top-3.5 pointer-events-none transition-colors" />
+                        <User className="w-4 h-4 text-slate-400 group-focus-within:text-blue-500 absolute left-3.5 top-3.5 pointer-events-none transition-colors" />
                       </div>
                     </div>
 
@@ -556,7 +556,7 @@ const Register = () => {
                           }}
                           required
                           placeholder="9876543210"
-                          className="w-full pl-18 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#3F51F4] focus:ring-4 focus:ring-[#3F51F4]/15 outline-none transition duration-200"
+                          className="w-full pl-18 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 outline-none transition duration-200"
                         />
                       </div>
                     </div>
@@ -575,9 +575,9 @@ const Register = () => {
                           required
                           autoComplete="new-password"
                           placeholder="••••••••••••"
-                          className="w-full pl-11 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#3F51F4] focus:ring-4 focus:ring-[#3F51F4]/15 outline-none transition duration-200"
+                          className="w-full pl-11 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/15 outline-none transition duration-200"
                         />
-                        <Lock className="w-4 h-4 text-slate-400 group-focus-within:text-[#3F51F4] absolute left-3.5 top-3.5 pointer-events-none transition-colors" />
+                        <Lock className="w-4 h-4 text-slate-400 group-focus-within:text-blue-500 absolute left-3.5 top-3.5 pointer-events-none transition-colors" />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
@@ -616,13 +616,13 @@ const Register = () => {
                           type="checkbox"
                           checked={agreeTerms}
                           onChange={(e) => setAgreeTerms(e.target.checked)}
-                          className="w-4 h-4 mt-0.5 rounded-md border-slate-300 text-[#3F51F4] focus:ring-[#3F51F4] accent-[#3F51F4]"
+                          className="w-4 h-4 mt-0.5 rounded-md border-slate-300 text-blue-600 focus:ring-blue-500 accent-blue-600"
                         />
                         <span className="text-xs text-slate-500 font-medium leading-tight">
                           I agree to the{" "}
-                          <span className="text-[#3F51F4] font-bold hover:underline">Terms of Service</span>
+                          <span className="text-blue-600 font-bold hover:underline">Terms of Service</span>
                           {" "}and{" "}
-                          <span className="text-[#3F51F4] font-bold hover:underline">Privacy Policy</span>.
+                          <span className="text-blue-600 font-bold hover:underline">Privacy Policy</span>.
                         </span>
                       </label>
                     </div>

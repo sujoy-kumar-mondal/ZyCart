@@ -214,10 +214,10 @@ const SellerApply = () => {
         className="w-full max-w-2xl bg-white rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-200/80 space-y-8 relative z-10"
       >
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] text-white flex items-center justify-center mx-auto shadow-lg shadow-blue-500/20">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#10B981] to-[#34D399] text-white flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
             <Store className="w-7 h-7" />
           </div>
-          <h1 className="text-3xl font-black text-[#1B2A41]">
+          <h1 className="text-3xl font-black text-slate-900">
             Apply as ZyCart Merchant
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-semibold">
@@ -240,7 +240,7 @@ const SellerApply = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
 
@@ -254,7 +254,7 @@ const SellerApply = () => {
                     value={registrationForm.name}
                     onChange={(e) => setRegistrationForm({ ...registrationForm, name: e.target.value })}
                     placeholder="Owner Full Name"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
 
@@ -270,7 +270,7 @@ const SellerApply = () => {
                       value={registrationForm.mobile}
                       onChange={(e) => setRegistrationForm({ ...registrationForm, mobile: e.target.value.replace(/\D/g, "") })}
                       placeholder="9876543210"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                     />
                   </div>
 
@@ -284,7 +284,7 @@ const SellerApply = () => {
                       value={registrationForm.password}
                       onChange={(e) => setRegistrationForm({ ...registrationForm, password: e.target.value })}
                       placeholder="••••••••"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                     />
                   </div>
                 </div>
@@ -310,7 +310,7 @@ const SellerApply = () => {
                     value={otp}
                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
                     placeholder="000000"
-                    className="w-full py-3.5 px-4 bg-slate-50 border border-slate-200 rounded-2xl text-2xl font-black text-center tracking-widest text-[#1B2A41] focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full py-3.5 px-4 bg-slate-50 border border-slate-200 rounded-2xl text-2xl font-black text-center tracking-widest text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
 
@@ -318,7 +318,7 @@ const SellerApply = () => {
                   <button
                     type="button"
                     onClick={() => setOtpSent(false)}
-                    className="w-1/3 py-3.5 rounded-2xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50 transition text-sm"
+                    className="w-1/3 py-3.5 rounded-2xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50 transition text-sm cursor-pointer"
                   >
                     Back
                   </button>
@@ -348,7 +348,7 @@ const SellerApply = () => {
                 value={form.shopName}
                 onChange={handleChange}
                 placeholder="e.g. Apex Electronics"
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
               />
             </div>
 
@@ -361,7 +361,7 @@ const SellerApply = () => {
                 required
                 value={form.shopType}
                 onChange={handleChange}
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer"
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition cursor-pointer"
               >
                 <option value="">Select Category</option>
                 <option value="Electronics & Accessories">Electronics & Accessories</option>
@@ -385,7 +385,7 @@ const SellerApply = () => {
                   value={form.pan}
                   onChange={handleChange}
                   placeholder="ABCDE1234F"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 uppercase focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 uppercase focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                 />
               </div>
 
@@ -401,7 +401,7 @@ const SellerApply = () => {
                   value={form.aadhar}
                   onChange={handleChange}
                   placeholder="1234 5678 9012"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                 />
               </div>
 
@@ -417,7 +417,7 @@ const SellerApply = () => {
                   value={form.bankAccount}
                   onChange={handleChange}
                   placeholder="Enter Account Number"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                 />
               </div>
 
@@ -433,7 +433,7 @@ const SellerApply = () => {
                   value={form.gst}
                   onChange={handleChange}
                   placeholder="22AAAAA0000A1Z5"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 uppercase focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 uppercase focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                 />
               </div>
             </div>

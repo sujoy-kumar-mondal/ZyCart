@@ -71,8 +71,8 @@ const PaymentPage = () => {
               <span>Shipping Address</span>
             </div>
             <div className="h-0.5 w-12 sm:w-24 bg-emerald-400"></div>
-            <div className="flex items-center gap-2 text-[#3F51F4]">
-              <span className="w-8 h-8 rounded-full bg-[#3F51F4] text-white flex items-center justify-center font-black">2</span>
+            <div className="flex items-center gap-2 text-blue-600">
+              <span className="w-8 h-8 rounded-full bg-gradient-to-r from-[#3B82F6] to-[#2563EB] text-white flex items-center justify-center font-black shadow-md shadow-blue-500/20">2</span>
               <span>Payment Method</span>
             </div>
             <div className="h-0.5 w-12 sm:w-24 bg-slate-200"></div>
@@ -89,8 +89,8 @@ const PaymentPage = () => {
           {/* LEFT: Payment Methods Selection */}
           <div className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
             <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-              <CreditCard className="w-6 h-6 text-[#3F51F4]" />
-              <h2 className="text-xl font-extrabold text-[#1B2A41]">
+              <CreditCard className="w-6 h-6 text-blue-600" />
+              <h2 className="text-xl font-extrabold text-slate-900">
                 Select Payment Method
               </h2>
             </div>
@@ -102,7 +102,7 @@ const PaymentPage = () => {
                 onClick={() => setSelectedMethod("cod")}
                 className={`p-5 rounded-2xl border-2 transition cursor-pointer flex items-center justify-between ${
                   selectedMethod === "cod"
-                    ? "border-[#3F51F4] bg-blue-50/50 shadow-md"
+                    ? "border-blue-500 bg-blue-50/50 shadow-md"
                     : "border-slate-200/80 bg-white hover:border-slate-300"
                 }`}
               >
@@ -111,7 +111,7 @@ const PaymentPage = () => {
                     <Banknote className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-[#1B2A41] text-base">Cash on Delivery (COD)</h3>
+                    <h3 className="font-extrabold text-slate-900 text-base">Cash on Delivery (COD)</h3>
                     <p className="text-xs text-slate-500 font-medium">Pay via Cash / UPI at the time of delivery.</p>
                   </div>
                 </div>
@@ -122,7 +122,7 @@ const PaymentPage = () => {
                   value="cod"
                   checked={selectedMethod === "cod"}
                   onChange={() => setSelectedMethod("cod")}
-                  className="w-5 h-5 text-[#3F51F4] accent-[#3F51F4] cursor-pointer"
+                  className="w-5 h-5 text-blue-600 accent-blue-600 cursor-pointer"
                 />
               </div>
 
@@ -164,7 +164,7 @@ const PaymentPage = () => {
           {/* RIGHT: Order Summary Card */}
           <div className="lg:col-span-4 sticky top-24 space-y-4">
             <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-6">
-              <h2 className="text-xl font-extrabold text-[#1B2A41] border-b border-slate-100 pb-4">
+              <h2 className="text-xl font-extrabold text-slate-900 border-b border-slate-100 pb-4">
                 Final Amount
               </h2>
 

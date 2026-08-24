@@ -111,7 +111,7 @@ const AdminOrderDetails = () => {
             </button>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
                   Order #{order.parentOrderNumber}
                 </h1>
                 <span className={`px-3 py-0.5 rounded-full text-[10px] font-black uppercase ${
@@ -129,7 +129,7 @@ const AdminOrderDetails = () => {
           {canCancel && (
             <button
               onClick={() => setShowCancelModal(true)}
-              className="px-5 py-2.5 rounded-2xl bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 font-extrabold text-xs transition flex items-center gap-2"
+              className="px-5 py-2.5 rounded-2xl bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 font-extrabold text-xs transition flex items-center gap-2 cursor-pointer"
             >
               <XCircle className="w-4 h-4" /> Cancel Order (Admin Override)
             </button>
@@ -171,7 +171,7 @@ const AdminOrderDetails = () => {
             
             {/* Child Seller Packages */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Itemized Seller Sub-Packages ({order.childOrders?.length || 0})
               </h2>
 
@@ -180,7 +180,7 @@ const AdminOrderDetails = () => {
                   <div key={child._id} className="p-5 rounded-2xl bg-slate-50 border border-slate-100 space-y-3">
                     <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
                       <div>
-                        <p className="font-extrabold text-sm text-[#1B2A41]">{child.seller?.shopName || "Merchant Store"}</p>
+                        <p className="font-extrabold text-sm text-slate-900">{child.seller?.shopName || "Merchant Store"}</p>
                         <p className="text-[10px] text-slate-400 font-semibold">{child.seller?.email}</p>
                       </div>
                       <span className="px-3 py-1 rounded-full text-[10px] font-black bg-blue-100 text-blue-800">
@@ -225,7 +225,7 @@ const AdminOrderDetails = () => {
 
             {/* Customer Shipping Address */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Customer Delivery Address
               </h2>
 
@@ -245,7 +245,7 @@ const AdminOrderDetails = () => {
             
             {/* Financial Audit */}
             <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Financial Split Audit
               </h2>
 
@@ -276,7 +276,7 @@ const AdminOrderDetails = () => {
 
             {/* Actions */}
             <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Order Status Actions
               </h2>
 
@@ -326,8 +326,8 @@ const AdminOrderDetails = () => {
 
             {/* Status Timeline & Timestamps */}
             <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-[#3F51F4]" /> Order Status Timestamps
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+                <Calendar className="w-5 h-5 text-rose-600" /> Order Status Timestamps
               </h2>
 
               <div className="space-y-3 text-xs">
@@ -427,7 +427,7 @@ const AdminOrderDetails = () => {
                   <AlertTriangle className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-extrabold text-[#1B2A41]">Admin Order Cancellation</h3>
+                  <h3 className="text-lg font-extrabold text-slate-900">Admin Order Cancellation</h3>
                   <p className="text-xs text-slate-500">Provide executive audit reason to cancel #{order.parentOrderNumber}</p>
                 </div>
               </div>
@@ -447,7 +447,7 @@ const AdminOrderDetails = () => {
                 <select
                   value={cancelReasonPreset}
                   onChange={(e) => setCancelReasonPreset(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                 >
                   <option value="Fraudulent order or suspicious transaction">Fraudulent order or suspicious transaction</option>
                   <option value="Customer requested cancellation via executive support">Customer requested cancellation via executive support</option>
@@ -468,7 +468,7 @@ const AdminOrderDetails = () => {
                   onChange={(e) => setCancelReasonDetails(e.target.value)}
                   placeholder="Provide audit explanation for this cancellation override..."
                   required={cancelReasonPreset === "Other"}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                 />
               </div>
 

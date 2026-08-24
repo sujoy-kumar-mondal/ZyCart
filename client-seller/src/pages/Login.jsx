@@ -98,8 +98,8 @@ const Login = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50/60 via-[#F8FAFC] to-indigo-50/60 py-12 px-4 flex items-center justify-center relative overflow-hidden">
       
       {/* Floating Orbs */}
-      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-blue-400/20 blur-3xl pointer-events-none"></div>
-      <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-indigo-400/20 blur-3xl pointer-events-none"></div>
+      <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-emerald-400/15 blur-3xl pointer-events-none"></div>
+      <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-amber-400/15 blur-3xl pointer-events-none"></div>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -108,10 +108,10 @@ const Login = () => {
         className="w-full max-w-md bg-white rounded-3xl p-8 sm:p-10 shadow-2xl border border-slate-200/80 space-y-6 relative z-10"
       >
         <div className="text-center space-y-2">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] text-white flex items-center justify-center mx-auto shadow-lg shadow-blue-500/20">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#10B981] to-[#059669] text-white flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
             <Store className="w-7 h-7" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
             {step === 1 ? "Merchant Central" : "Security Verification"}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-semibold">
@@ -135,7 +135,7 @@ const Login = () => {
                   value={form.email}
                   required
                   placeholder="seller@example.com"
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#10B981]/40 outline-none transition"
                 />
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
               </div>
@@ -146,7 +146,7 @@ const Login = () => {
                 <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
                   Password
                 </label>
-                <Link to="/resetpassword" className="text-xs font-extrabold text-[#3F51F4] hover:underline">
+                <Link to="/resetpassword" className="text-xs font-extrabold text-emerald-600 hover:underline">
                   Forgot?
                 </Link>
               </div>
@@ -158,7 +158,7 @@ const Login = () => {
                   value={form.password}
                   required
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                  className="w-full pl-10 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#10B981]/40 outline-none transition"
                 />
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
                 <button
@@ -178,7 +178,7 @@ const Login = () => {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded-md border-slate-300 text-[#3F51F4] focus:ring-[#3F51F4] accent-[#3F51F4]"
+                  className="w-4 h-4 rounded-md border-slate-300 text-emerald-600 focus:ring-emerald-500 accent-emerald-600"
                 />
                 <span className="text-xs font-semibold text-slate-600">
                   Remember my email on this device
@@ -189,7 +189,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-lg shadow-blue-500/20 transition transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#10B981] via-[#34D399] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-lg shadow-emerald-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               {loading ? "Verifying..." : "Sign In to Dashboard"} <ArrowRight className="w-5 h-5" />
             </button>
@@ -208,7 +208,7 @@ const Login = () => {
                 required
                 autoFocus
                 placeholder="000000"
-                className="w-full py-3.5 px-4 bg-slate-50 border border-slate-200 rounded-2xl text-2xl font-black text-center tracking-widest text-[#1B2A41] focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                className="w-full py-3.5 px-4 bg-slate-50 border border-slate-200 rounded-2xl text-2xl font-black text-center tracking-widest text-slate-900 focus:ring-2 focus:ring-[#10B981]/40 outline-none transition"
               />
             </div>
 
@@ -216,14 +216,14 @@ const Login = () => {
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="w-1/3 py-3.5 rounded-2xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50 transition text-sm"
+                className="w-1/3 py-3.5 rounded-2xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50 transition text-sm cursor-pointer"
               >
                 Back
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="w-2/3 py-3.5 rounded-2xl font-extrabold text-white bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] shadow-md hover:opacity-95 transition text-sm"
+                className="w-2/3 py-3.5 rounded-2xl font-extrabold text-white bg-gradient-to-r from-[#10B981] via-[#34D399] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-md shadow-emerald-500/25 transition text-sm cursor-pointer"
               >
                 {loading ? "Verifying..." : "Verify OTP"}
               </button>
@@ -233,7 +233,7 @@ const Login = () => {
 
         <div className="pt-4 border-t border-slate-100 text-center text-xs font-semibold text-slate-500">
           Want to sell on ZyCart?{" "}
-          <Link to="/seller/apply" className="font-extrabold text-[#3F51F4] hover:underline">
+          <Link to="/seller/apply" className="font-extrabold text-emerald-600 hover:underline">
             Apply as Merchant
           </Link>
         </div>

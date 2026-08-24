@@ -138,12 +138,12 @@ const AdminUsers = () => {
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-[#1B2A41] via-[#243B5A] to-[#3F51F4] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="bg-gradient-to-r from-black via-slate-900 to-[#BE123C] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="space-y-2 relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-              <Users className="w-3.5 h-3.5 text-blue-300" /> Platform Identity Directory
+              <Users className="w-3.5 h-3.5 text-rose-400" /> Platform Identity Directory
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
               Customer Directory
@@ -156,9 +156,9 @@ const AdminUsers = () => {
           <div className="relative z-10 shrink-0">
             <button
               onClick={fetchUsers}
-              className="px-5 py-3 rounded-2xl bg-white text-[#1B2A41] font-black text-sm shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-2 cursor-pointer"
+              className="px-5 py-3 rounded-2xl bg-white text-slate-900 font-black text-sm shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-2 cursor-pointer"
             >
-              <RefreshCw className="w-4 h-4 text-[#3F51F4]" /> Refresh Users
+              <RefreshCw className="w-4 h-4 text-rose-600" /> Refresh Users
             </button>
           </div>
         </div>
@@ -168,9 +168,9 @@ const AdminUsers = () => {
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-400">
               <span className="text-xs font-bold uppercase tracking-wider">Total Customers</span>
-              <Users className="w-4 h-4 text-[#3F51F4]" />
+              <Users className="w-4 h-4 text-rose-600" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-[#1B2A41]">{stats.total}</p>
+            <p className="text-2xl sm:text-3xl font-black text-slate-900">{stats.total}</p>
             <p className="text-[11px] text-slate-500 font-semibold">Registered user profiles</p>
           </div>
 
@@ -185,11 +185,11 @@ const AdminUsers = () => {
 
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-400">
-              <span className="text-xs font-bold uppercase tracking-wider">Banned Accounts</span>
+              <span className="text-xs font-bold uppercase tracking-wider">Restricted / Banned</span>
               <UserX className="w-4 h-4 text-red-500" />
             </div>
             <p className="text-2xl sm:text-3xl font-black text-red-600">{stats.banned}</p>
-            <p className="text-[11px] text-slate-500 font-semibold">Suspended by admins</p>
+            <p className="text-[11px] text-slate-500 font-semibold">Banned for policy</p>
           </div>
 
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
@@ -210,7 +210,7 @@ const AdminUsers = () => {
               placeholder="Search user name, email, or mobile..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-rose-500/40 outline-none transition"
             />
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
           </div>
@@ -220,7 +220,7 @@ const AdminUsers = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 py-2 px-3 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none cursor-pointer"
+              className="bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 py-2 px-3 focus:ring-2 focus:ring-rose-500/40 outline-none cursor-pointer"
             >
               <option value="all">All Accounts ({users.length})</option>
               <option value="active">Active Accounts</option>
@@ -236,7 +236,7 @@ const AdminUsers = () => {
               <div className="w-16 h-16 rounded-3xl bg-slate-50 text-slate-400 flex items-center justify-center mx-auto border border-slate-100">
                 <User className="w-8 h-8" />
               </div>
-              <p className="text-lg font-black text-[#1B2A41]">No customer accounts found</p>
+              <p className="text-lg font-black text-slate-900">No customer accounts found</p>
               <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
                 Try modifying your search query or status filter.
               </p>
@@ -259,7 +259,7 @@ const AdminUsers = () => {
                     <tr key={u._id} className="hover:bg-slate-50/60 transition">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] text-white font-extrabold text-xs flex items-center justify-center shrink-0">
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#F87171] to-[#E11D48] text-white font-extrabold text-xs flex items-center justify-center shrink-0">
                             {u.name ? u.name[0].toUpperCase() : "U"}
                           </div>
                           <span className="font-extrabold text-slate-900">{u.name || "Customer"}</span>
@@ -286,7 +286,7 @@ const AdminUsers = () => {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => navigate(`/admin/users/${u._id}`)}
-                            className="px-3.5 py-1.5 rounded-xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-extrabold text-xs transition flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-xs"
+                            className="px-3.5 py-1.5 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100 font-extrabold text-xs transition flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-xs"
                           >
                             <Eye className="w-3.5 h-3.5" /> Inspect
                           </button>
@@ -345,7 +345,7 @@ const AdminUsers = () => {
                   )}
                 </div>
                 <div>
-                  <h3 className="text-lg font-black text-[#1B2A41]">
+                  <h3 className="text-lg font-black text-slate-900">
                     {confirmModal.type === "delete"
                       ? "Delete Customer"
                       : confirmModal.type === "ban"

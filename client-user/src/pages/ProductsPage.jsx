@@ -211,7 +211,7 @@ const ProductsPage = () => {
         {/* Page Header */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
-            <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
               Explore Product Catalog
             </h1>
             <p className="text-slate-500 text-xs sm:text-sm">
@@ -221,7 +221,7 @@ const ProductsPage = () => {
 
           <button
             onClick={() => setMobileFilterOpen(true)}
-            className="lg:hidden flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-[#3F51F4] text-white font-extrabold text-sm shadow-md"
+            className="lg:hidden flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] text-white font-extrabold text-sm shadow-md shadow-blue-500/20 cursor-pointer"
           >
             <Filter className="w-4 h-4" /> Filters &amp; Categories ({total})
           </button>
@@ -245,7 +245,7 @@ const ProductsPage = () => {
             {/* Sorting & Result Count Bar */}
             <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200/80 flex flex-wrap items-center justify-between gap-4">
               <span className="text-sm font-bold text-slate-700">
-                Showing <span className="text-[#3F51F4] font-black">{total}</span> matching products
+                Showing <span className="text-blue-600 font-black">{total}</span> matching products
               </span>
 
               <div className="flex items-center gap-2">
@@ -253,7 +253,7 @@ const ProductsPage = () => {
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value)}
-                  className="px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs font-extrabold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none cursor-pointer"
+                  className="px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs font-extrabold text-slate-800 focus:ring-2 focus:ring-blue-400 focus:border-blue-500 outline-none cursor-pointer"
                 >
                   {SORT_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -274,7 +274,7 @@ const ProductsPage = () => {
             ) : (
               <div className="text-center py-20 bg-white rounded-3xl border border-slate-200/80 p-8 space-y-3">
                 <p className="text-4xl">🔍</p>
-                <p className="text-lg font-bold text-[#1B2A41]">No products found</p>
+                <p className="text-lg font-bold text-slate-900">No products found</p>
                 <p className="text-sm text-slate-500 max-w-md mx-auto">
                   Try adjusting your search query, price ranges, or clearing specific category filters.
                 </p>
@@ -292,7 +292,7 @@ const ProductsPage = () => {
                   <button
                     onClick={() => handlePageClick(1)}
                     disabled={page === 1}
-                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-40"
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-40 cursor-pointer"
                   >
                     «
                   </button>
@@ -300,7 +300,7 @@ const ProductsPage = () => {
                   <button
                     onClick={() => handlePageClick(page - 1)}
                     disabled={page === 1}
-                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-40"
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-40 cursor-pointer"
                   >
                     Prev
                   </button>
@@ -316,9 +316,9 @@ const ProductsPage = () => {
                         <button
                           key={p}
                           onClick={() => handlePageClick(p)}
-                          className={`w-8 h-8 rounded-xl text-xs font-black transition ${
+                          className={`w-8 h-8 rounded-xl text-xs font-black transition cursor-pointer ${
                             p === page
-                              ? "bg-[#3F51F4] text-white shadow-md"
+                              ? "bg-gradient-to-r from-[#3B82F6] to-[#2563EB] text-white shadow-md shadow-blue-500/20"
                               : "border border-slate-200 text-slate-700 hover:bg-slate-100"
                           }`}
                         >
@@ -335,7 +335,7 @@ const ProductsPage = () => {
                   <button
                     onClick={() => handlePageClick(page + 1)}
                     disabled={page === totalPages}
-                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-40"
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-40 cursor-pointer"
                   >
                     Next
                   </button>
@@ -361,7 +361,7 @@ const ProductsPage = () => {
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex justify-end lg:hidden">
           <div className="w-full max-w-md bg-white h-full overflow-y-auto p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-              <h3 className="font-extrabold text-lg text-[#1B2A41]">Filters &amp; Categories</h3>
+              <h3 className="font-extrabold text-lg text-slate-900">Filters &amp; Categories</h3>
               <button
                 onClick={() => setMobileFilterOpen(false)}
                 className="p-2 rounded-full hover:bg-slate-100 text-slate-600"

@@ -157,12 +157,12 @@ const AdminProducts = () => {
       <div className="max-w-7xl mx-auto space-y-6">
 
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-[#1B2A41] via-[#243B5A] to-[#3F51F4] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="bg-gradient-to-r from-black via-slate-900 to-[#BE123C] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="space-y-2 relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-              <Package className="w-3.5 h-3.5 text-blue-300" /> Platform Catalog Engine
+              <Package className="w-3.5 h-3.5 text-rose-400" /> Platform Catalog Engine
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
               Manage Merchant Products
@@ -175,9 +175,9 @@ const AdminProducts = () => {
           <div className="relative z-10 shrink-0">
             <button
               onClick={fetchProducts}
-              className="px-5 py-3 rounded-2xl bg-white text-[#1B2A41] font-black text-sm shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-2 cursor-pointer"
+              className="px-5 py-3 rounded-2xl bg-white text-slate-900 font-black text-sm shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-2 cursor-pointer"
             >
-              <RefreshCw className="w-4 h-4 text-[#3F51F4]" /> Refresh Catalog
+              <RefreshCw className="w-4 h-4 text-rose-600" /> Refresh Catalog
             </button>
           </div>
         </div>
@@ -187,9 +187,9 @@ const AdminProducts = () => {
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-400">
               <span className="text-xs font-bold uppercase tracking-wider">Total Listings</span>
-              <Package className="w-4 h-4 text-[#3F51F4]" />
+              <Package className="w-4 h-4 text-rose-600" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-[#1B2A41]">{stats.total}</p>
+            <p className="text-2xl sm:text-3xl font-black text-slate-900">{stats.total}</p>
             <p className="text-[11px] text-slate-500 font-semibold">Catalog total entries</p>
           </div>
 
@@ -229,7 +229,7 @@ const AdminProducts = () => {
               placeholder="Search product, seller, category..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-rose-500 outline-none transition"
             />
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
           </div>
@@ -331,7 +331,7 @@ const AdminProducts = () => {
                               )}
                             </div>
                             <div className="space-y-0.5 max-w-xs">
-                              <p className="font-extrabold text-slate-900 line-clamp-1 group-hover:text-[#3F51F4] transition">
+                              <p className="font-extrabold text-slate-900 line-clamp-1 group-hover:text-rose-600 transition">
                                 {prod.title}
                               </p>
                               <p className="text-[10px] text-slate-400 font-mono">
@@ -348,7 +348,7 @@ const AdminProducts = () => {
                               to={`/admin/sellers/${prod.seller._id}`}
                               className="group/seller flex flex-col"
                             >
-                              <span className="font-bold text-slate-900 group-hover/seller:text-[#3F51F4] transition flex items-center gap-1">
+                              <span className="font-bold text-slate-900 group-hover/seller:text-rose-600 transition flex items-center gap-1">
                                 <Store className="w-3.5 h-3.5 text-slate-400" />
                                 {prod.seller.shopName || prod.seller.name}
                               </span>
@@ -364,7 +364,7 @@ const AdminProducts = () => {
                         {/* Category */}
                         <td className="py-4 px-6">
                           <div className="space-y-0.5">
-                            <span className="inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-blue-50 text-[#3F51F4]">
+                            <span className="inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-rose-50 text-rose-600">
                               {prod.mainCategory}
                             </span>
                             <p className="text-[11px] text-slate-600 font-medium">
@@ -435,7 +435,7 @@ const AdminProducts = () => {
                           <button
                             onClick={() => handleOpenDetailModal(prod)}
                             title="Inspect Product"
-                            className="p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-blue-50 hover:text-[#3F51F4] hover:border-blue-200 transition cursor-pointer"
+                            className="p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition cursor-pointer"
                           >
                             <Eye className="w-3.5 h-3.5" />
                           </button>
@@ -475,11 +475,11 @@ const AdminProducts = () => {
               {/* Modal Header */}
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-blue-50 text-[#3F51F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center">
                     <Package className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-black text-[#1B2A41]">Catalog Product Inspection</h3>
+                    <h3 className="text-lg font-black text-slate-900">Catalog Product Inspection</h3>
                     <p className="text-xs text-slate-500 font-semibold">
                       ID: #{selectedProduct._id}
                     </p>
@@ -536,7 +536,7 @@ const AdminProducts = () => {
 
                 <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
                   <span className="text-[10px] font-extrabold uppercase text-slate-400">Selling Price</span>
-                  <p className="font-black text-[#3F51F4] text-sm">
+                  <p className="font-black text-rose-600 text-sm">
                     {currency}{getEffectivePrice(selectedProduct).toLocaleString()}
                   </p>
                 </div>
@@ -563,9 +563,9 @@ const AdminProducts = () => {
 
               {/* Seller Information */}
               {selectedProduct.seller && (
-                <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-100 flex items-center justify-between">
+                <div className="p-4 rounded-2xl bg-rose-50/70 border border-rose-100 flex items-center justify-between">
                   <div className="space-y-1">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#3F51F4]">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-rose-600">
                       Listing Merchant Store
                     </span>
                     <p className="font-extrabold text-sm text-slate-900">
@@ -576,7 +576,7 @@ const AdminProducts = () => {
 
                   <Link
                     to={`/admin/sellers/${selectedProduct.seller._id}`}
-                    className="px-3.5 py-2 rounded-xl bg-white text-[#3F51F4] border border-blue-200 text-xs font-bold hover:bg-blue-50 transition flex items-center gap-1.5 shadow-xs"
+                    className="px-3.5 py-2 rounded-xl bg-white text-rose-600 border border-rose-200 text-xs font-bold hover:bg-rose-50 transition flex items-center gap-1.5 shadow-xs"
                   >
                     View Merchant <ExternalLink className="w-3 h-3" />
                   </Link>
@@ -644,7 +644,7 @@ const AdminProducts = () => {
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-lg font-black text-[#1B2A41]">Delete Product Listing?</h3>
+                <h3 className="text-lg font-black text-slate-900">Delete Product Listing?</h3>
                 <p className="text-xs text-slate-500 font-medium leading-relaxed">
                   Are you sure you want to permanently delete{" "}
                   <span className="font-bold text-slate-800">"{selectedProduct.title}"</span> from the catalog?

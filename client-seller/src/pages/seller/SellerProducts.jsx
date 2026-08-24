@@ -801,7 +801,7 @@ const SellerProducts = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
               Manage Product Listings
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 font-semibold mt-1">
@@ -814,7 +814,7 @@ const SellerProducts = () => {
               resetForm();
               setShowForm(true);
             }}
-            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] text-white font-extrabold text-sm shadow-lg shadow-blue-500/20 hover:opacity-95 transition transform active:scale-95 flex items-center gap-2 shrink-0"
+            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#10B981] via-[#34D399] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white font-extrabold text-sm shadow-lg shadow-emerald-500/25 transition transform active:scale-95 flex items-center gap-2 shrink-0 cursor-pointer"
           >
             <PlusCircle className="w-5 h-5" /> Add New Product
           </button>
@@ -829,7 +829,7 @@ const SellerProducts = () => {
                 Quota: {settings.maxProductsPerSeller || 50} max
               </span>
             </div>
-            <p className="text-3xl font-black text-[#3F51F4]">{totalProducts}</p>
+            <p className="text-3xl font-black text-emerald-600">{totalProducts}</p>
           </div>
 
           <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80 space-y-1">
@@ -847,7 +847,7 @@ const SellerProducts = () => {
         {showForm && (
           <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-slate-200/80 space-y-8">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-              <h2 className="text-2xl font-black text-[#1B2A41]">
+              <h2 className="text-2xl font-black text-slate-900">
                 {isEditing ? "Edit Product Details" : "Create New Catalog Listing"}
               </h2>
               <button
@@ -874,7 +874,7 @@ const SellerProducts = () => {
                     value={form.title}
                     onChange={handleChange}
                     placeholder="e.g. Fire-Boltt Ninja Smartwatch"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
 
@@ -888,7 +888,7 @@ const SellerProducts = () => {
                     value={form.price}
                     onChange={handleChange}
                     placeholder="e.g. 9999"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
 
@@ -902,7 +902,7 @@ const SellerProducts = () => {
                     value={form.stock}
                     onChange={handleChange}
                     placeholder="e.g. 50"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
 
@@ -918,7 +918,7 @@ const SellerProducts = () => {
                     placeholder="e.g. 5"
                     min="1"
                     max="25"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
 
@@ -932,7 +932,7 @@ const SellerProducts = () => {
                     value={form.discountedPrice || ''}
                     onChange={handleChange}
                     placeholder="e.g. 999"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
 
@@ -948,7 +948,7 @@ const SellerProducts = () => {
                     placeholder="e.g. 90"
                     min="0"
                     max="100"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
 
@@ -961,7 +961,7 @@ const SellerProducts = () => {
                     name="discountPeriod"
                     value={form.discountPeriod || ''}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
               </div>
@@ -977,7 +977,7 @@ const SellerProducts = () => {
                   onChange={handleChange}
                   placeholder="Detailed specs and key features of the product..."
                   rows={3}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition resize-none"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition resize-none"
                 />
               </div>
 
@@ -986,10 +986,10 @@ const SellerProducts = () => {
                 <div className="space-y-2 relative">
                   <div className="flex items-center justify-between">
                     <label className="block text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                      <Search className="w-3.5 h-3.5 text-[#3F51F4]" /> Search Product Type / Category Pathway
+                      <Search className="w-3.5 h-3.5 text-emerald-600" /> Search Product Type / Category Pathway
                     </label>
-                    <span className="text-[10px] font-extrabold text-[#3F51F4] bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-100 flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 text-blue-500" /> Smart Auto-Suggest
+                    <span className="text-[10px] font-extrabold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100 flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 text-emerald-500" /> Smart Auto-Suggest
                     </span>
                   </div>
 
@@ -1004,7 +1004,7 @@ const SellerProducts = () => {
                       }}
                       onFocus={() => setShowCategorySearchSuggestions(true)}
                       placeholder="Paste product title or search type (e.g. ANALOGUE Analog Watch - For Men, shoes, smartphone)..."
-                      className="w-full pl-10 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#3F51F4] focus:ring-2 focus:ring-blue-500/20 outline-none transition"
+                      className="w-full pl-10 pr-10 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition"
                     />
                     {categorySearchQuery && (
                       <button
@@ -1038,11 +1038,11 @@ const SellerProducts = () => {
                             key={pIdx}
                             type="button"
                             onClick={() => handleSelectCategoryPathway(pathway)}
-                            className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs hover:bg-blue-50/80 transition flex items-center justify-between group cursor-pointer border border-transparent hover:border-blue-100"
+                            className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs hover:bg-emerald-50/80 transition flex items-center justify-between group cursor-pointer border border-transparent hover:border-emerald-100"
                           >
                             <div className="space-y-0.5">
-                              <div className="font-extrabold text-slate-900 group-hover:text-[#3F51F4] flex items-center gap-1.5">
-                                <Tag className="w-3.5 h-3.5 text-[#3F51F4]" />
+                              <div className="font-extrabold text-slate-900 group-hover:text-emerald-600 flex items-center gap-1.5">
+                                <Tag className="w-3.5 h-3.5 text-emerald-600" />
                                 <span>{pathway.subSubCategory}</span>
                               </div>
                               <div className="text-[11px] text-slate-400 font-semibold flex items-center gap-1.5 flex-wrap">
@@ -1050,10 +1050,10 @@ const SellerProducts = () => {
                                 <ChevronRight className="w-3 h-3 text-slate-300 inline" />
                                 <span className="text-slate-500">{pathway.subCategory}</span>
                                 <ChevronRight className="w-3 h-3 text-slate-300 inline" />
-                                <span className="text-[#3F51F4] font-bold">{pathway.subSubCategory}</span>
+                                <span className="text-emerald-600 font-bold">{pathway.subSubCategory}</span>
                               </div>
                             </div>
-                            <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-lg bg-blue-50 text-[#3F51F4] group-hover:bg-[#3F51F4] group-hover:text-white transition">
+                            <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition">
                               Select &rarr;
                             </span>
                           </button>
@@ -1088,7 +1088,7 @@ const SellerProducts = () => {
                     <select
                       value={form.mainCategory}
                       onChange={(e) => handleMainCategoryChange(e.target.value)}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition cursor-pointer"
                     >
                       <option value="">Select Main Category</option>
                       {categories.map((cat) => (
@@ -1105,7 +1105,7 @@ const SellerProducts = () => {
                       value={form.subCategory}
                       onChange={(e) => handleSubCategoryChange(e.target.value)}
                       disabled={!form.mainCategory}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer disabled:opacity-50"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition cursor-pointer disabled:opacity-50"
                     >
                       <option value="">Select Sub Category</option>
                       {subCategories.map((cat) => (
@@ -1122,7 +1122,7 @@ const SellerProducts = () => {
                       value={form.subSubCategory}
                       onChange={(e) => handleSubSubCategoryChange(e.target.value)}
                       disabled={!form.subCategory}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer disabled:opacity-50"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition cursor-pointer disabled:opacity-50"
                     >
                       <option value="">Select Product Type</option>
                       {subSubCategories.map((cat) => (
@@ -1134,18 +1134,18 @@ const SellerProducts = () => {
 
                 {/* Dynamic Category Attributes / Specifications */}
                 {Object.keys(attributesSchema).length > 0 && (
-                  <div className="mt-4 p-5 rounded-2xl bg-blue-50/30 border border-blue-100/80 space-y-4">
-                    <div className="flex items-center justify-between pb-3 border-b border-blue-100">
+                  <div className="mt-4 p-5 rounded-2xl bg-emerald-50/30 border border-emerald-100/80 space-y-4">
+                    <div className="flex items-center justify-between pb-3 border-b border-emerald-100">
                       <div className="space-y-0.5">
                         <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
-                          <Layers className="w-4 h-4 text-[#3F51F4]" />
+                          <Layers className="w-4 h-4 text-emerald-600" />
                           <span>{form.subSubCategory} Specifications & Attributes</span>
                         </h4>
                         <p className="text-[11px] font-medium text-slate-500">
                           Provide specific catalog details
                         </p>
                       </div>
-                      <span className="text-[10px] font-black uppercase px-2.5 py-1 bg-blue-100 text-[#3F51F4] rounded-lg border border-blue-200/60">
+                      <span className="text-[10px] font-black uppercase px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-lg border border-emerald-200/60">
                         {Object.keys(attributesSchema).length} Attributes
                       </span>
                     </div>
@@ -1164,7 +1164,7 @@ const SellerProducts = () => {
                                 {fieldName} {field.required && <span className="text-rose-500 font-black">*</span>}
                               </span>
                               {field.filterable && (
-                                <span className="text-[9px] font-extrabold text-[#3F51F4] bg-blue-50 px-1.5 py-0.5 rounded shrink-0">
+                                <span className="text-[9px] font-extrabold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded shrink-0">
                                   Filterable
                                 </span>
                               )}
@@ -1174,7 +1174,7 @@ const SellerProducts = () => {
                               <select
                                 value={form.attributes[fieldName] || ""}
                                 onChange={(e) => handleAttributeChange(fieldName, e.target.value)}
-                                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer"
+                                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition cursor-pointer"
                               >
                                 <option value="">Select {fieldName}</option>
                                 {field.options.map((opt) => (
@@ -1193,7 +1193,7 @@ const SellerProducts = () => {
                                       handleAttributeChange(fieldName, [...current, val]);
                                     }
                                   }}
-                                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer"
+                                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition cursor-pointer"
                                 >
                                   <option value="">Add {fieldName}...</option>
                                   {field.options.map((opt) => (
@@ -1205,7 +1205,7 @@ const SellerProducts = () => {
                                     {form.attributes[fieldName].map((item) => (
                                       <span
                                         key={item}
-                                        className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-[#3F51F4] border border-blue-200 rounded-lg text-[11px] font-bold"
+                                        className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-[11px] font-bold"
                                       >
                                         {item}
                                         <button
@@ -1214,7 +1214,7 @@ const SellerProducts = () => {
                                             const updated = form.attributes[fieldName].filter((x) => x !== item);
                                             handleAttributeChange(fieldName, updated);
                                           }}
-                                          className="text-blue-400 hover:text-rose-500 font-black text-xs transition cursor-pointer"
+                                          className="text-emerald-500 hover:text-rose-500 font-black text-xs transition cursor-pointer"
                                         >
                                           &times;
                                         </button>
@@ -1230,7 +1230,7 @@ const SellerProducts = () => {
                                   const val = e.target.value === "" ? "" : e.target.value === "true";
                                   handleAttributeChange(fieldName, val);
                                 }}
-                                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition cursor-pointer"
+                                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition cursor-pointer"
                               >
                                 <option value="">Select</option>
                                 <option value="true">Yes</option>
@@ -1242,7 +1242,7 @@ const SellerProducts = () => {
                                 value={form.attributes[fieldName] || ""}
                                 onChange={(e) => handleAttributeChange(fieldName, e.target.value)}
                                 placeholder={field.placeholder || `Enter ${fieldName}...`}
-                                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                               />
                             ) : (
                               <input
@@ -1250,7 +1250,7 @@ const SellerProducts = () => {
                                 value={form.attributes[fieldName] || ""}
                                 onChange={(e) => handleAttributeChange(fieldName, e.target.value)}
                                 placeholder={field.placeholder || `Enter ${fieldName}...`}
-                                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                               />
                             )}
 
@@ -1297,11 +1297,11 @@ const SellerProducts = () => {
                           onDragOver={(e) => handleDragOver(e, idx)}
                           onDrop={(e) => handleDrop(e, idx)}
                           onDragEnd={() => setDraggedIndex(null)}
-                          className={`relative rounded-2xl overflow-hidden border-2 shadow-xs transition cursor-grab ${draggedIndex === idx ? "border-[#3F51F4] opacity-40" : "border-slate-200"
+                          className={`relative rounded-2xl overflow-hidden border-2 shadow-xs transition cursor-grab ${draggedIndex === idx ? "border-emerald-500 opacity-40" : "border-slate-200"
                             }`}
                         >
                           <img src={preview} alt={`Thumb ${idx + 1}`} className="w-full h-24 object-cover" />
-                          <span className="absolute bottom-1.5 left-1.5 bg-[#3F51F4] text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">
+                          <span className="absolute bottom-1.5 left-1.5 bg-emerald-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">
                             #{idx + 1}
                           </span>
                           <button
@@ -1352,7 +1352,7 @@ const SellerProducts = () => {
                 placeholder="Search catalog products by title..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
               />
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
             </div>
@@ -1389,7 +1389,7 @@ const SellerProducts = () => {
           {filteredProducts.length === 0 ? (
             <div className="text-center py-16 px-4 space-y-2">
               <p className="text-4xl">🔍</p>
-              <p className="text-lg font-bold text-[#1B2A41]">No matching products found</p>
+              <p className="text-lg font-bold text-slate-900">No matching products found</p>
               <p className="text-xs text-slate-500">Try clearing search filters or add a new product.</p>
             </div>
           ) : (
@@ -1416,7 +1416,7 @@ const SellerProducts = () => {
                             className="w-12 h-12 rounded-xl object-cover border border-slate-200 shrink-0"
                           />
                           <div className="min-w-0">
-                            <p className="font-extrabold text-slate-900 hover:text-[#3F51F4] transition line-clamp-1">
+                            <p className="font-extrabold text-slate-900 hover:text-emerald-600 transition line-clamp-1">
                               {product.title}
                             </p>
                             <p className="text-[10px] text-slate-400 font-bold truncate">
@@ -1483,7 +1483,7 @@ const SellerProducts = () => {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => handleEdit(product)}
-                            className="px-3 py-1.5 rounded-xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-extrabold text-xs transition"
+                            className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 font-extrabold text-xs transition cursor-pointer"
                           >
                             Edit
                           </button>
@@ -1541,7 +1541,7 @@ const SellerProducts = () => {
       {productToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-4 shadow-2xl border border-slate-200">
-            <h3 className="text-xl font-extrabold text-[#1B2A41]">
+            <h3 className="text-xl font-extrabold text-slate-900">
               Delete Catalog Product
             </h3>
             <p className="text-xs text-slate-500 font-medium">

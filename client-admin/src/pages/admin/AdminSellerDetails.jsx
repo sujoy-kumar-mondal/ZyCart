@@ -94,7 +94,7 @@ const AdminSellerDetails = () => {
             </button>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
                   {seller.shopName || seller.name}
                 </h1>
                 <span className={`px-3 py-0.5 rounded-full text-[10px] font-black uppercase ${seller.isBanned ? "bg-red-100 text-red-800" : seller.isApproved ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
@@ -117,7 +117,7 @@ const AdminSellerDetails = () => {
 
             {/* Merchant Owner Profile */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Storefront &amp; Owner Profile
               </h2>
 
@@ -158,7 +158,7 @@ const AdminSellerDetails = () => {
 
             {/* Business Credentials */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Business &amp; Tax Verification Credentials
               </h2>
 
@@ -189,7 +189,7 @@ const AdminSellerDetails = () => {
 
             {/* Products Table */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Listed Catalog Items ({products.length})
               </h2>
 
@@ -224,7 +224,7 @@ const AdminSellerDetails = () => {
                                 className="w-10 h-10 rounded-xl object-cover border border-slate-200 shrink-0 group-hover/btn:scale-105 transition"
                               />
                               <div className="min-w-0">
-                                <p className="font-extrabold text-slate-900 group-hover/btn:text-[#3F51F4] transition line-clamp-1 max-w-xs">
+                                <p className="font-extrabold text-slate-900 group-hover/btn:text-rose-600 transition line-clamp-1 max-w-xs">
                                   {product.title}
                                 </p>
                                 {product.mainCategory && (
@@ -284,7 +284,7 @@ const AdminSellerDetails = () => {
           {/* Sidebar Actions */}
           <div className="lg:col-span-4 sticky top-24 space-y-6">
             <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-6">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Account Controls
               </h2>
 
@@ -325,7 +325,7 @@ const AdminSellerDetails = () => {
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-indigo-50 flex items-center justify-center text-[#3F51F4]">
+                <div className="w-10 h-10 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-600">
                   <Package size={20} />
                 </div>
                 <div>
@@ -363,7 +363,7 @@ const AdminSellerDetails = () => {
                         key={idx}
                         onClick={() => setSelectedImage(idx)}
                         className={`w-14 h-14 rounded-xl overflow-hidden border-2 shrink-0 transition ${
-                          selectedImage === idx ? "border-[#3F51F4] ring-2 ring-[#3F51F4]/20" : "border-slate-200 opacity-70"
+                          selectedImage === idx ? "border-rose-500 ring-2 ring-rose-500/20" : "border-slate-200 opacity-70"
                         }`}
                       >
                         <img src={img} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
@@ -378,7 +378,7 @@ const AdminSellerDetails = () => {
                 
                 {/* Title & Categories */}
                 <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full inline-block mb-2">
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 bg-rose-50 text-rose-600 rounded-full inline-block mb-2">
                     {selectedProduct.mainCategory} {selectedProduct.subCategory ? `> ${selectedProduct.subCategory}` : ''} {selectedProduct.subSubCategory ? `> ${selectedProduct.subSubCategory}` : ''}
                   </span>
                   <h4 className="text-xl font-black text-slate-900 leading-snug">
@@ -477,7 +477,7 @@ const AdminSellerDetails = () => {
                 href={`http://localhost:5173/products/${selectedProduct._id}`}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs font-extrabold text-[#3F51F4] hover:underline"
+                className="inline-flex items-center gap-1.5 text-xs font-extrabold text-rose-600 hover:underline"
               >
                 Open in User Storefront <ExternalLink size={14} />
               </a>

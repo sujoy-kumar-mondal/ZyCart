@@ -306,7 +306,7 @@ const Navbar = () => {
                   navigate("/login");
                   setMenuOpen(false);
                 }}
-                className="w-full py-3 rounded-xl text-white font-extrabold text-xs bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4]"
+                className="w-full py-3 rounded-xl text-white font-extrabold text-xs bg-gradient-to-r from-[#F87171] via-[#EF4444] to-[#E11D48] shadow-lg shadow-red-500/25 cursor-pointer"
               >
                 Admin Sign In
               </button>

@@ -120,12 +120,12 @@ const AdminOrders = () => {
       <div className="max-w-7xl mx-auto space-y-6">
         
         {/* Header Banner matching AdminProducts */}
-        <div className="bg-gradient-to-r from-[#1B2A41] via-[#243B5A] to-[#3F51F4] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="bg-gradient-to-r from-black via-slate-900 to-[#BE123C] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="space-y-2 relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-              <TrendingUp className="w-3.5 h-3.5 text-blue-300" /> Platform Order Management
+              <TrendingUp className="w-3.5 h-3.5 text-rose-400" /> Platform Order Management
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
               Global Order Audits
@@ -138,21 +138,21 @@ const AdminOrders = () => {
           <div className="relative z-10 shrink-0">
             <button
               onClick={fetchOrders}
-              className="px-5 py-3 rounded-2xl bg-white text-[#1B2A41] font-black text-sm shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-2 cursor-pointer"
+              className="px-5 py-3 rounded-2xl bg-white text-slate-900 font-black text-sm shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-2 cursor-pointer"
             >
-              <RefreshCw className="w-4 h-4 text-[#3F51F4]" /> Refresh Orders
+              <RefreshCw className="w-4 h-4 text-rose-600" /> Refresh Orders
             </button>
           </div>
         </div>
 
-        {/* 4 Core Metrics Grid matching AdminProducts */}
+        {/* 4 Core Metrics Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-400">
               <span className="text-xs font-bold uppercase tracking-wider">Total Orders</span>
-              <ShoppingBag className="w-4 h-4 text-[#3F51F4]" />
+              <ShoppingBag className="w-4 h-4 text-rose-600" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-[#1B2A41]">{stats.total}</p>
+            <p className="text-2xl sm:text-3xl font-black text-slate-900">{stats.total}</p>
             <p className="text-[11px] text-slate-500 font-semibold">All customer checkouts</p>
           </div>
 
@@ -192,7 +192,7 @@ const AdminOrders = () => {
               placeholder="Search Order #, customer name, or email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:ring-2 focus:ring-rose-500/40 outline-none transition"
             />
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
           </div>
@@ -204,7 +204,7 @@ const AdminOrders = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 py-2 px-3 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none cursor-pointer"
+                className="bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 py-2 px-3 focus:ring-2 focus:ring-rose-500/40 outline-none cursor-pointer"
               >
                 <option value="all">All Statuses ({orders.length})</option>
                 <option value="pending">Pending</option>
@@ -223,7 +223,7 @@ const AdminOrders = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 py-2 px-3 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none cursor-pointer"
+                className="bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 py-2 px-3 focus:ring-2 focus:ring-rose-500/40 outline-none cursor-pointer"
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -240,7 +240,7 @@ const AdminOrders = () => {
             <div className="w-16 h-16 rounded-3xl bg-slate-50 text-slate-400 flex items-center justify-center mx-auto border border-slate-100">
               <ShoppingBag className="w-8 h-8" />
             </div>
-            <p className="text-lg font-black text-[#1B2A41]">No matching orders found</p>
+            <p className="text-lg font-black text-slate-900">No matching orders found</p>
             <p className="text-xs text-slate-500 max-w-sm mx-auto font-medium">
               We couldn't find any orders matching your active filters. Try modifying your search query or status selection.
             </p>
@@ -256,7 +256,7 @@ const AdminOrders = () => {
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-5">
                   <div className="space-y-1.5">
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <h3 className="text-lg font-black text-[#1B2A41] tracking-tight">
+                      <h3 className="text-lg font-black text-slate-900 tracking-tight">
                         Order #{order.parentOrderNumber}
                       </h3>
                       <span
@@ -268,7 +268,7 @@ const AdminOrders = () => {
                             : order.status === "Cancelled"
                             ? "bg-red-100 text-red-800 border border-red-200"
                             : order.status === "Shipped"
-                            ? "bg-blue-100 text-blue-800 border border-blue-200"
+                            ? "bg-rose-100 text-rose-800 border border-rose-200"
                             : "bg-purple-100 text-purple-800 border border-purple-200"
                         }`}
                       >
@@ -294,7 +294,7 @@ const AdminOrders = () => {
                   <div className="flex items-center gap-3 shrink-0">
                     <button
                       onClick={() => navigate(`/admin/orders/${order._id}`)}
-                      className="px-5 py-2.5 rounded-2xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-black text-xs transition flex items-center gap-2 cursor-pointer active:scale-95 shadow-xs"
+                      className="px-5 py-2.5 rounded-2xl bg-rose-50 text-rose-600 hover:bg-rose-100 font-black text-xs transition flex items-center gap-2 cursor-pointer active:scale-95 shadow-xs"
                     >
                       <Eye className="w-4 h-4" /> Inspect Audit Details
                     </button>
@@ -335,7 +335,7 @@ const AdminOrders = () => {
                         className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-3 text-xs"
                       >
                         <div className="flex items-center justify-between border-b border-slate-200/60 pb-2.5">
-                          <span className="font-black text-[#1B2A41] truncate max-w-[200px]">
+                          <span className="font-black text-slate-900 truncate max-w-[200px]">
                             {child.seller?.shopName || "Merchant Store"}
                           </span>
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
@@ -364,7 +364,7 @@ const AdminOrders = () => {
 
                         <div className="border-t border-slate-200/60 pt-2 flex justify-between font-black text-slate-900">
                           <span>Package Total:</span>
-                          <span className="text-[#3F51F4]">{currency}{child.amount?.toLocaleString()}</span>
+                          <span className="text-rose-600">{currency}{child.amount?.toLocaleString()}</span>
                         </div>
                       </div>
                     ))}

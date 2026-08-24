@@ -61,7 +61,7 @@ const Footer = () => {
           {/* Brand Bio */}
           <div className="lg:col-span-4 space-y-4">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#2563EB] to-[#F97316] p-2 flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <div className="w-10 h-10 rounded-2xl bg-[#2563EB] p-2 flex items-center justify-center shadow-lg shadow-blue-500/20">
                 <img src="/logo_cart.svg" alt="ZyCart Logo" className="w-full h-full object-contain filter brightness-0 invert" />
               </div>
               <span className="text-2xl font-black text-white">

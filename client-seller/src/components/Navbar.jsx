@@ -104,7 +104,7 @@ const Navbar = () => {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-3 p-1.5 rounded-2xl hover:bg-slate-100/80 transition cursor-pointer"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#10B981] to-[#F59E0B] text-white font-black text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
+                  <div className="w-10 h-10 rounded-2xl bg-linear-to-tr from-[#10B981] to-[#008b5d] text-white font-black text-sm flex items-center justify-center shadow-md shadow-emerald-500/20">
                     {getInitials()}
                   </div>
                   <div className="text-left hidden lg:block">
@@ -197,7 +197,7 @@ const Navbar = () => {
                   onClick={() => setMenuOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-700 hover:bg-slate-50"
                 >
-                  <LayoutDashboard className="w-5 h-5 text-[#3F51F4]" /> Dashboard
+                  <LayoutDashboard className="w-5 h-5 text-emerald-600" /> Dashboard
                 </NavLink>
 
                 <NavLink
@@ -205,7 +205,7 @@ const Navbar = () => {
                   onClick={() => setMenuOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-700 hover:bg-slate-50"
                 >
-                  <Package className="w-5 h-5 text-[#3F51F4]" /> My Products
+                  <Package className="w-5 h-5 text-emerald-600" /> My Products
                 </NavLink>
 
                 <NavLink
@@ -213,7 +213,7 @@ const Navbar = () => {
                   onClick={() => setMenuOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-700 hover:bg-slate-50"
                 >
-                  <ShoppingBag className="w-5 h-5 text-[#3F51F4]" /> Customer Orders
+                  <ShoppingBag className="w-5 h-5 text-emerald-600" /> Customer Orders
                 </NavLink>
 
                 <NavLink
@@ -221,7 +221,7 @@ const Navbar = () => {
                   onClick={() => setMenuOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-700 hover:bg-slate-50"
                 >
-                  <User className="w-5 h-5 text-[#3F51F4]" /> Store Profile
+                  <User className="w-5 h-5 text-emerald-600" /> Store Profile
                 </NavLink>
 
                 <NavLink
@@ -234,7 +234,7 @@ const Navbar = () => {
 
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 transition"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 transition cursor-pointer"
                 >
                   <LogOut className="w-5 h-5" /> Sign Out
                 </button>
@@ -246,7 +246,7 @@ const Navbar = () => {
                     navigate("/login");
                     setMenuOpen(false);
                   }}
-                  className="w-full py-3 rounded-2xl font-bold text-slate-800 bg-slate-100 text-sm"
+                  className="w-full py-3 rounded-2xl font-bold text-slate-800 bg-slate-100 text-sm cursor-pointer"
                 >
                   Sign In
                 </button>
@@ -255,7 +255,7 @@ const Navbar = () => {
                     navigate("/seller/apply");
                     setMenuOpen(false);
                   }}
-                  className="w-full py-3 rounded-2xl font-extrabold text-white bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] text-sm shadow-md"
+                  className="w-full py-3 rounded-2xl font-extrabold text-white bg-gradient-to-r from-[#10B981] via-[#34D399] to-[#059669] text-sm shadow-md shadow-emerald-500/20 cursor-pointer"
                 >
                   Apply as Merchant
                 </button>

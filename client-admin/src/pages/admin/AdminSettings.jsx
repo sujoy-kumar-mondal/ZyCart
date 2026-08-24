@@ -130,12 +130,12 @@ const AdminSettings = () => {
       <div className="max-w-7xl mx-auto space-y-6">
 
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-[#1B2A41] via-[#243B5A] to-[#3F51F4] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="bg-gradient-to-r from-black via-slate-900 to-[#BE123C] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="space-y-2 relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-              <Settings className="w-3.5 h-3.5 text-blue-300" /> Platform Infrastructure
+              <Settings className="w-3.5 h-3.5 text-rose-400" /> Platform Infrastructure
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
               Global System Settings
@@ -158,9 +158,9 @@ const AdminSettings = () => {
               type="button"
               onClick={handleSaveSettings}
               disabled={saving}
-              className="px-6 py-3 rounded-2xl bg-white text-red-600 font-black text-xs shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              className="px-6 py-3 rounded-2xl bg-white text-rose-600 font-black text-xs shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-2 cursor-pointer disabled:opacity-50"
             >
-              <Save className="w-4 h-4 text-red-600" />
+              <Save className="w-4 h-4 text-rose-600" />
               {saving ? "Saving..." : "Save Changes"}
             </button>
           </div>
@@ -237,8 +237,8 @@ const AdminSettings = () => {
           >
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
               <div className="border-b border-slate-100 pb-4">
-                <h3 className="text-base font-black text-[#1B2A41] flex items-center gap-2">
-                  <Globe className="w-5 h-5 text-[#3F51F4]" /> Platform Identity &amp; Contact Info
+                <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-rose-600" /> Platform Identity &amp; Contact Info
                 </h3>
                 <p className="text-xs text-slate-500 font-medium">Brand names, currency symbols, and customer communication channels.</p>
               </div>
@@ -252,7 +252,7 @@ const AdminSettings = () => {
                     type="text"
                     value={settings.platformName}
                     onChange={(e) => setSettings({ ...settings, platformName: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                 </div>
 
@@ -264,7 +264,7 @@ const AdminSettings = () => {
                     type="text"
                     value={settings.tagline}
                     onChange={(e) => setSettings({ ...settings, tagline: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                 </div>
 
@@ -276,7 +276,7 @@ const AdminSettings = () => {
                     type="email"
                     value={settings.supportEmail}
                     onChange={(e) => setSettings({ ...settings, supportEmail: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                 </div>
 
@@ -288,7 +288,7 @@ const AdminSettings = () => {
                     type="text"
                     value={settings.supportPhone}
                     onChange={(e) => setSettings({ ...settings, supportPhone: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                 </div>
 
@@ -300,7 +300,7 @@ const AdminSettings = () => {
                     type="text"
                     value={settings.currencySymbol}
                     onChange={(e) => setSettings({ ...settings, currencySymbol: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                 </div>
 
@@ -313,7 +313,7 @@ const AdminSettings = () => {
                     value={settings.address}
                     onChange={(e) => setSettings({ ...settings, address: e.target.value })}
                     placeholder="Enter platform address (displayed on Contact Us & Footer)..."
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition resize-none"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition resize-none"
                   />
                 </div>
 
@@ -326,7 +326,7 @@ const AdminSettings = () => {
                     value={settings.businessHours}
                     onChange={(e) => setSettings({ ...settings, businessHours: e.target.value })}
                     placeholder="Enter operating hours (e.g. Monday - Friday: 9:00 AM - 6:00 PM)..."
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition resize-none"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-semibold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition resize-none"
                   />
                 </div>
               </div>
@@ -336,8 +336,8 @@ const AdminSettings = () => {
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div>
-                  <h3 className="text-base font-black text-[#1B2A41] flex items-center gap-2">
-                    <Bell className="w-5 h-5 text-[#3F51F4]" /> Storefront Announcement Banner
+                  <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                    <Bell className="w-5 h-5 text-rose-600" /> Storefront Announcement Banner
                   </h3>
                   <p className="text-xs text-slate-500 font-medium">Broadcast sales, promo codes, or notices across the customer storefront.</p>
                 </div>
@@ -357,7 +357,7 @@ const AdminSettings = () => {
                     }
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#3F51F4]"></div>
+                  <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
                 </label>
               </div>
 
@@ -379,7 +379,7 @@ const AdminSettings = () => {
                     })
                   }
                   placeholder="e.g. Free delivery on all orders above ₹499 this weekend!"
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition disabled:opacity-50"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition disabled:opacity-50"
                 />
               </div>
             </div>
@@ -397,8 +397,8 @@ const AdminSettings = () => {
           >
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
               <div className="border-b border-slate-100 pb-4">
-                <h3 className="text-base font-black text-[#1B2A41] flex items-center gap-2">
-                  <Truck className="w-5 h-5 text-[#3F51F4]" /> Delivery, Fees &amp; Order Policies
+                <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                  <Truck className="w-5 h-5 text-rose-600" /> Delivery, Fees &amp; Order Policies
                 </h3>
                 <p className="text-xs text-slate-500 font-medium">Configure shipping fees, free shipping thresholds, and order quantity limits.</p>
               </div>
@@ -413,7 +413,7 @@ const AdminSettings = () => {
                     min="0"
                     value={settings.deliveryFee}
                     onChange={(e) => setSettings({ ...settings, deliveryFee: Number(e.target.value) })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                   <p className="text-[10px] text-slate-400 mt-1">Default flat shipping fee added to orders below threshold.</p>
                 </div>
@@ -427,7 +427,7 @@ const AdminSettings = () => {
                     min="0"
                     value={settings.freeDeliveryThreshold}
                     onChange={(e) => setSettings({ ...settings, freeDeliveryThreshold: Number(e.target.value) })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                   <p className="text-[10px] text-slate-400 mt-1">Orders with total above this amount receive 100% free delivery.</p>
                 </div>
@@ -441,7 +441,7 @@ const AdminSettings = () => {
                     min="0"
                     value={settings.minOrderValue}
                     onChange={(e) => setSettings({ ...settings, minOrderValue: Number(e.target.value) })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                   <p className="text-[10px] text-slate-400 mt-1">Set to 0 for no minimum purchase restriction.</p>
                 </div>
@@ -456,7 +456,7 @@ const AdminSettings = () => {
                     max="25"
                     value={settings.defaultMaxQuantityPerItem}
                     onChange={(e) => setSettings({ ...settings, defaultMaxQuantityPerItem: Number(e.target.value) })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                   <p className="text-[10px] text-slate-400 mt-1">Maximum units a customer can buy per item in a single order.</p>
                 </div>
@@ -470,7 +470,7 @@ const AdminSettings = () => {
                     value={settings.estimatedDeliveryDays}
                     onChange={(e) => setSettings({ ...settings, estimatedDeliveryDays: e.target.value })}
                     placeholder="e.g. 3-5 Business Days"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                 </div>
               </div>
@@ -489,8 +489,8 @@ const AdminSettings = () => {
           >
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
               <div className="border-b border-slate-100 pb-4">
-                <h3 className="text-base font-black text-[#1B2A41] flex items-center gap-2">
-                  <Store className="w-5 h-5 text-[#3F51F4]" /> Merchant Policies &amp; Platform Revenue
+                <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                  <Store className="w-5 h-5 text-rose-600" /> Merchant Policies &amp; Platform Revenue
                 </h3>
                 <p className="text-xs text-slate-500 font-medium">Manage seller commission percentage, auto-approval workflows, and product quota limits.</p>
               </div>
@@ -506,7 +506,7 @@ const AdminSettings = () => {
                     max="100"
                     value={settings.platformCommissionRate}
                     onChange={(e) => setSettings({ ...settings, platformCommissionRate: Number(e.target.value) })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                   <p className="text-[10px] text-slate-400 mt-1">Percentage deducted from completed merchant orders as marketplace commission.</p>
                 </div>
@@ -520,7 +520,7 @@ const AdminSettings = () => {
                     min="1"
                     value={settings.maxProductsPerSeller}
                     onChange={(e) => setSettings({ ...settings, maxProductsPerSeller: Number(e.target.value) })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                   <p className="text-[10px] text-slate-400 mt-1">Upper limit of active catalog items allowed per merchant store.</p>
                 </div>
@@ -539,7 +539,7 @@ const AdminSettings = () => {
                       onChange={(e) => setSettings({ ...settings, autoApproveSellers: e.target.checked })}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#3F51F4]"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
                   </label>
                 </div>
 
@@ -555,7 +555,7 @@ const AdminSettings = () => {
                       onChange={(e) => setSettings({ ...settings, requireGstin: e.target.checked })}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#3F51F4]"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
                   </label>
                 </div>
               </div>
@@ -575,8 +575,8 @@ const AdminSettings = () => {
             {/* 2FA Section */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
               <div className="border-b border-slate-100 pb-4">
-                <h3 className="text-base font-black text-[#1B2A41] flex items-center gap-2">
-                  <Lock className="w-5 h-5 text-[#3F51F4]" /> Two-Factor Authentication (2FA) Security
+                <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                  <Lock className="w-5 h-5 text-rose-600" /> Two-Factor Authentication (2FA) Security
                 </h3>
                 <p className="text-xs text-slate-500 font-medium">Control multi-factor OTP verification for customer, merchant, and admin sign-in flows.</p>
               </div>
@@ -594,7 +594,7 @@ const AdminSettings = () => {
                       onChange={(e) => setSettings({ ...settings, enableCustomer2FA: e.target.checked })}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#3F51F4]"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
                   </label>
                 </div>
 
@@ -610,7 +610,7 @@ const AdminSettings = () => {
                       onChange={(e) => setSettings({ ...settings, enableSeller2FA: e.target.checked })}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#3F51F4]"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
                   </label>
                 </div>
 
@@ -626,7 +626,7 @@ const AdminSettings = () => {
                       onChange={(e) => setSettings({ ...settings, enableAdmin2FA: e.target.checked })}
                       className="sr-only peer"
                     />
-                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#3F51F4]"></div>
+                    <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
                   </label>
                 </div>
               </div>

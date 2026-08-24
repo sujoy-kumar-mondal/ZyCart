@@ -107,15 +107,15 @@ const AdminProfile = () => {
         
         {/* Profile Card Header */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 flex flex-col sm:flex-row items-center gap-6">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] text-white font-black text-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#F87171] to-[#E11D48] text-white font-black text-2xl flex items-center justify-center shadow-lg shadow-red-500/20 shrink-0">
             <ShieldCheck className="w-8 h-8" />
           </div>
           
           <div className="space-y-1 text-center sm:text-left flex-1">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-              <h1 className="text-2xl font-black text-[#1B2A41]">{profile.name}</h1>
+              <h1 className="text-2xl font-black text-slate-900">{profile.name}</h1>
               <span className={`px-3 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                isSuperAdmin ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"
+                isSuperAdmin ? "bg-purple-100 text-purple-800" : "bg-rose-100 text-rose-800"
               }`}>
                 {isSuperAdmin ? "Super Admin" : "Sub-Admin"}
               </span>
@@ -125,9 +125,9 @@ const AdminProfile = () => {
 
           <Link
             to="/changepassword"
-            className="px-4 py-2.5 rounded-2xl border border-slate-200 text-slate-700 text-xs font-extrabold hover:bg-slate-50 transition flex items-center gap-1.5 shrink-0"
+            className="px-4 py-2.5 rounded-2xl border border-slate-200 text-slate-700 text-xs font-extrabold hover:text-rose-600 hover:bg-slate-50 transition flex items-center gap-1.5 shrink-0"
           >
-            <KeyRound className="w-4 h-4 text-[#3F51F4]" /> Change Password
+            <KeyRound className="w-4 h-4 text-rose-600" /> Change Password
           </Link>
         </div>
 
@@ -139,7 +139,7 @@ const AdminProfile = () => {
             
             {/* Personal Admin Details */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Admin Personal Credentials
               </h2>
 
@@ -153,7 +153,7 @@ const AdminProfile = () => {
                     name="name"
                     value={form.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-rose-500/40 outline-none transition"
                   />
                 </div>
 
@@ -178,7 +178,7 @@ const AdminProfile = () => {
                     name="mobile"
                     value={form.mobile}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-rose-500/40 outline-none transition"
                   />
                 </div>
               </div>
@@ -186,7 +186,7 @@ const AdminProfile = () => {
 
             {/* Address Details */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Residential / Office Address
               </h2>
 
@@ -198,7 +198,7 @@ const AdminProfile = () => {
                     name="line1"
                     value={form.address.line1}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-rose-500/40 outline-none transition"
                   />
                 </div>
 
@@ -210,7 +210,7 @@ const AdminProfile = () => {
                       name="city"
                       value={form.address.city}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-rose-500/40 outline-none transition"
                     />
                   </div>
 
@@ -221,7 +221,7 @@ const AdminProfile = () => {
                       name="state"
                       value={form.address.state}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-rose-500/40 outline-none transition"
                     />
                   </div>
 
@@ -232,7 +232,7 @@ const AdminProfile = () => {
                       name="postalCode"
                       value={form.address.postalCode}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 outline-none transition"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-rose-500/40 outline-none transition"
                     />
                   </div>
                 </div>
@@ -243,7 +243,7 @@ const AdminProfile = () => {
             <button
               onClick={handleUpdate}
               disabled={updating}
-              className="w-full py-4 rounded-2xl font-extrabold text-white text-sm bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] hover:opacity-95 shadow-md transition flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-4 rounded-2xl font-extrabold text-white text-sm bg-gradient-to-r from-[#F87171] via-[#EF4444] to-[#E11D48] hover:from-[#EF4444] hover:to-[#BE123C] shadow-lg shadow-red-500/25 transition flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               <Save className="w-4 h-4" /> {updating ? "Saving Changes..." : "Save Admin Profile"}
             </button>
@@ -253,7 +253,7 @@ const AdminProfile = () => {
           {/* RIGHT: Permissions Matrix Sidebar */}
           <div className="lg:col-span-4 sticky top-24 space-y-4">
             <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-6">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Assigned Operational Privileges
               </h2>
 

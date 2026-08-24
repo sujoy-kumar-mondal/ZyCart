@@ -93,17 +93,17 @@ const TrendsSlider = ({ type, title }) => {
       className="mb-20"
     >
       <div className="mb-10">
-        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#1B2A41] mb-2">
+        <h2 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900 mb-2">
           {title}
         </h2>
-        <p className="text-gray-600 text-lg">
+        <p className="text-slate-600 font-medium text-lg">
           {type === "purchase"
             ? "Most purchased products by our customers"
             : "Most viewed products trending right now"}
         </p>
       </div>
 
-      <div className="bg-white rounded-2xl p-4 md:p-8 shadow-lg border border-gray-200 w-full overflow-hidden">
+      <div className="bg-white rounded-3xl p-4 md:p-8 shadow-sm border border-slate-200/80 w-full overflow-hidden">
         <style>{`
           /* Slider Container */
           .trends-slider {
@@ -161,7 +161,7 @@ const TrendsSlider = ({ type, title }) => {
           }
 
           .slick-dots li.slick-active button:before {
-            color: #4f46e5;
+            color: #3b82f6;
             transform: scale(1.3);
           }
 
@@ -173,7 +173,7 @@ const TrendsSlider = ({ type, title }) => {
             top: 50%;
             transform: translateY(-50%);
             z-index: 1;
-            background: #4f46e5;
+            background: #3b82f6;
             border-radius: 50%;
             transition: all 0.3s ease;
             display: flex !important;
@@ -191,7 +191,7 @@ const TrendsSlider = ({ type, title }) => {
 
           .slick-prev:hover,
           .slick-next:hover {
-            background: #4338ca;
+            background: #2563eb;
             transform: translateY(-50%) scale(1.1);
           }
 

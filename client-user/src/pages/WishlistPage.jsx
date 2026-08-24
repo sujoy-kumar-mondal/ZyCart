@@ -54,7 +54,7 @@ const WishlistPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-2"
         >
-          <h1 className="text-4xl md:text-5xl font-extrabold bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] bg-clip-text text-transparent">
             My Wishlist
           </h1>
           <p className="text-gray-600 text-lg">
@@ -71,7 +71,7 @@ const WishlistPage = () => {
           >
             <div className="text-6xl">💔</div>
             <div>
-              <h2 className="text-2xl font-bold text-[#1B2A41] mb-2">
+              <h2 className="text-2xl font-bold text-slate-900 mb-2">
                 Your wishlist is empty
               </h2>
               <p className="text-gray-600 mb-6">
@@ -80,7 +80,7 @@ const WishlistPage = () => {
             </div>
             <Link
               to="/products"
-              className="inline-block px-6 py-3 bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] text-white rounded-xl font-semibold hover:shadow-lg transition"
+              className="inline-block px-6 py-3 bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] text-white rounded-2xl font-semibold shadow-md shadow-blue-500/20 hover:opacity-95 transition cursor-pointer"
             >
               Continue Shopping
             </Link>
@@ -114,7 +114,7 @@ const WishlistPage = () => {
                     className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition group"
                   >
                     {/* Product Image */}
-                    <div className="relative overflow-hidden bg-linear-to-br from-gray-100 to-gray-200 h-64 md:h-72">
+                    <div className="relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 h-64 md:h-72">
                       <img
                         src={product.images?.[0] || "/placeholder.png"}
                         alt={product.title}
@@ -122,7 +122,7 @@ const WishlistPage = () => {
                       />
                       <button
                         onClick={() => handleRemove(product._id)}
-                        className="absolute top-3 right-3 bg-red-500 text-white p-2.5 rounded-full shadow-lg hover:bg-red-600 transition"
+                        className="absolute top-3 right-3 bg-red-500 text-white p-2.5 rounded-full shadow-lg hover:bg-red-600 transition cursor-pointer"
                       >
                         <svg
                           className="w-5 h-5"
@@ -149,9 +149,9 @@ const WishlistPage = () => {
                     <div className="p-4 md:p-6 space-y-3">
                       <Link
                         to={`/product/${product._id}`}
-                        className="hover:text-[#3F51F4] transition"
+                        className="hover:text-blue-600 transition"
                       >
-                        <h3 className="text-lg font-semibold text-[#1B2A41] line-clamp-2 hover:text-[#3F51F4]">
+                        <h3 className="text-lg font-semibold text-slate-900 line-clamp-2 hover:text-blue-600">
                           {product.title}
                         </h3>
                       </Link>
@@ -165,7 +165,7 @@ const WishlistPage = () => {
                         <div>
                           {hasActiveDiscount ? (
                             <div className="flex items-baseline gap-2 flex-wrap">
-                              <span className="text-2xl font-black bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] bg-clip-text text-transparent">
+                              <span className="text-2xl font-black bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] bg-clip-text text-transparent">
                                 {currency}{effectiveDiscountedPrice.toLocaleString()}
                               </span>
                               <span className="text-sm text-gray-400 line-through">
@@ -176,7 +176,7 @@ const WishlistPage = () => {
                               </span>
                             </div>
                           ) : (
-                            <p className="text-2xl font-bold text-[#3F51F4]">
+                            <p className="text-2xl font-bold text-blue-600">
                               {currency}{product.price.toLocaleString()}
                             </p>
                           )}
@@ -204,17 +204,17 @@ const WishlistPage = () => {
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleMoveToCart(product)}
                           disabled={product.stock === 0 || !product.isAvailable}
-                          className={`py-2.5 rounded-lg font-semibold transition text-sm ${
+                          className={`py-2.5 rounded-2xl font-semibold transition text-sm cursor-pointer ${
                             product.stock === 0 || !product.isAvailable
                               ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                              : "bg-linear-to-r from-[#6A8EF0] to-[#3F51F4] text-white hover:shadow-lg"
+                              : "bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] text-white shadow-md shadow-blue-500/20 hover:opacity-95"
                           }`}
                         >
                           🛒 Add to Cart
                         </motion.button>
                         <Link
                           to={`/product/${product._id}`}
-                          className="py-2.5 rounded-lg font-semibold border-2 border-[#3F51F4] text-[#3F51F4] hover:bg-blue-50 transition text-sm text-center"
+                          className="py-2.5 rounded-2xl font-semibold border-2 border-blue-500 text-blue-600 hover:bg-blue-50 transition text-sm text-center"
                         >
                           View
                         </Link>
@@ -234,7 +234,7 @@ const WishlistPage = () => {
             >
               <Link
                 to="/products"
-                className="inline-block px-6 py-3 bg-white border-2 border-[#3F51F4] text-[#3F51F4] rounded-xl font-semibold hover:bg-blue-50 transition"
+                className="inline-block px-6 py-3 bg-white border-2 border-blue-500 text-blue-600 rounded-2xl font-semibold hover:bg-blue-50 transition cursor-pointer"
               >
                 ← Continue Shopping
               </Link>

@@ -105,8 +105,8 @@ const ChangePassword = () => {
       
       {/* Background Animated Ambient Lights & Grid */}
       <div className="absolute inset-0 bg-[radial-gradient(#10B981_1px,transparent_1px)] [background-size:32px_32px] opacity-10 pointer-events-none"></div>
-      <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/20 to-[#3F51F4]/15 rounded-full blur-3xl pointer-events-none animate-pulse duration-1000"></div>
-      <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-gradient-to-tr from-cyan-600/20 to-emerald-600/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-emerald-500/20 to-amber-500/15 rounded-full blur-3xl pointer-events-none animate-pulse duration-1000"></div>
+      <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-gradient-to-tr from-amber-500/15 to-emerald-600/15 rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="relative z-10 max-w-5xl mx-auto w-full">
         

@@ -116,15 +116,15 @@ const UserOrderDetails = () => {
             <ArrowLeft className="w-6 h-6 text-gray-600" />
           </button>
           <div>
-            <h1 className="text-3xl font-bold text-[#1B2A41]">Order Details</h1>
-            <p className="text-gray-600">Order #{order?.parentOrderNumber}</p>
+            <h1 className="text-3xl font-black text-slate-900">Order Details</h1>
+            <p className="text-slate-600 font-semibold">Order #{order?.parentOrderNumber}</p>
           </div>
         </div>
 
         {canCancel && (
           <button
             onClick={() => setShowCancelModal(true)}
-            className="px-5 py-2.5 rounded-2xl bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 font-extrabold text-sm transition flex items-center gap-2"
+            className="px-5 py-2.5 rounded-2xl bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 font-extrabold text-sm transition flex items-center gap-2 cursor-pointer"
           >
             <XCircle className="w-4 h-4" /> Cancel Order
           </button>
@@ -163,36 +163,36 @@ const UserOrderDetails = () => {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Status Section */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40">
-            <h2 className="text-2xl font-bold text-[#1B2A41] mb-6">Order Status</h2>
+          <div className="bg-white rounded-3xl shadow-sm p-8 border border-slate-200/80">
+            <h2 className="text-2xl font-black text-slate-900 mb-6">Order Status</h2>
 
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-1">Order Status</p>
-                <span className={`inline-block px-4 py-2 rounded-lg font-semibold text-sm ${getStatusColor(order?.status)}`}>
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/60">
+                <p className="text-slate-500 font-semibold text-xs mb-1">Order Status</p>
+                <span className={`inline-block px-4 py-2 rounded-xl font-extrabold text-xs ${getStatusColor(order?.status)}`}>
                   {order?.status}
                 </span>
               </div>
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-1">Payment Status</p>
-                <span className={`inline-block px-4 py-2 rounded-lg font-semibold text-sm ${getPaymentStatusColor(order?.paymentStatus)}`}>
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/60">
+                <p className="text-slate-500 font-semibold text-xs mb-1">Payment Status</p>
+                <span className={`inline-block px-4 py-2 rounded-xl font-extrabold text-xs ${getPaymentStatusColor(order?.paymentStatus)}`}>
                   {order?.paymentStatus?.charAt(0).toUpperCase() + order?.paymentStatus?.slice(1)}
                 </span>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-1 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" /> Order Date &amp; Time
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/60">
+                <p className="text-slate-500 font-semibold text-xs mb-1 flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-blue-600" /> Order Date &amp; Time
                 </p>
-                <p className="text-[#1B2A41] font-semibold">
+                <p className="text-slate-900 font-extrabold text-sm">
                   {order?.createdAt ? new Date(order.createdAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" }) : "N/A"}
                 </p>
               </div>
-              <div className="p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-600 text-sm mb-1">Payment Method</p>
-                <p className="text-[#1B2A41] font-semibold capitalize">
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/60">
+                <p className="text-slate-500 font-semibold text-xs mb-1">Payment Method</p>
+                <p className="text-slate-900 font-extrabold text-sm capitalize">
                   {order?.paymentMethod || "N/A"}
                 </p>
               </div>
@@ -200,23 +200,23 @@ const UserOrderDetails = () => {
           </div>
 
           {/* Products Section */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40">
-            <h2 className="text-2xl font-bold text-[#1B2A41] mb-6">Order Items</h2>
+          <div className="bg-white rounded-3xl shadow-sm p-8 border border-slate-200/80">
+            <h2 className="text-2xl font-black text-slate-900 mb-6">Order Items</h2>
 
             <div className="space-y-4">
               {order?.childOrders?.map((childOrder) =>
                 childOrder.items.map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                  <div key={idx} className="flex items-start gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-[#1B2A41] text-lg">{item.title}</h3>
-                      <p className="text-gray-600 text-sm mt-1">Quantity: {item.qty}</p>
-                      <p className="text-gray-600 text-sm">Price: {currency}{item.price?.toLocaleString()}</p>
-                      <p className="text-[#1B2A41] font-bold mt-2">
+                      <h3 className="font-extrabold text-slate-900 text-base">{item.title}</h3>
+                      <p className="text-slate-500 font-medium text-xs mt-1">Quantity: {item.qty}</p>
+                      <p className="text-slate-500 font-medium text-xs">Price: {currency}{item.price?.toLocaleString()}</p>
+                      <p className="text-slate-900 font-black mt-2 text-sm">
                         Subtotal: {currency}{item.subtotal?.toLocaleString()}
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className={`inline-block px-3 py-1 rounded-lg font-semibold text-sm ${getStatusColor(childOrder.status)}`}>
+                      <span className={`inline-block px-3 py-1 rounded-xl font-extrabold text-xs ${getStatusColor(childOrder.status)}`}>
                         {childOrder.status}
                       </span>
                     </div>
@@ -227,14 +227,14 @@ const UserOrderDetails = () => {
           </div>
 
           {/* Delivery Address */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40">
-            <h2 className="text-2xl font-bold text-[#1B2A41] mb-6 flex items-center gap-2">
-              <MapPin className="w-6 h-6" /> Delivery Address
+          <div className="bg-white rounded-3xl shadow-sm p-8 border border-slate-200/80">
+            <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-2">
+              <MapPin className="w-6 h-6 text-blue-600" /> Delivery Address
             </h2>
 
-            <div className="bg-gray-50 rounded-xl p-6">
-              <p className="text-[#1B2A41] font-semibold text-lg">{order?.address?.line1}</p>
-              <p className="text-gray-600 mt-2">
+            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-200/60">
+              <p className="text-slate-900 font-extrabold text-base">{order?.address?.line1}</p>
+              <p className="text-slate-600 font-medium text-sm mt-1">
                 {order?.address?.city}, {order?.address?.state} {order?.address?.postalCode}
               </p>
             </div>
@@ -244,15 +244,15 @@ const UserOrderDetails = () => {
         {/* Sidebar */}
         <div className="lg:col-span-1">
           {/* Order Summary */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-[#8FD6F6]/40 sticky top-20">
-            <h3 className="text-xl font-bold text-[#1B2A41] mb-6">Order Summary</h3>
+          <div className="bg-white rounded-3xl shadow-sm p-8 border border-slate-200/80 sticky top-20">
+            <h3 className="text-xl font-black text-slate-900 mb-6">Order Summary</h3>
 
-            <div className="space-y-4 border-b border-gray-200 pb-4 mb-4">
+            <div className="space-y-4 border-b border-slate-200/80 pb-4 mb-4">
               {order?.childOrders?.map((childOrder) =>
                 childOrder.items.map((item, idx) => (
                   <div key={idx} className="flex justify-between text-sm">
-                    <span className="text-gray-600">{item.title} x{item.qty}</span>
-                    <span className="font-semibold text-[#1B2A41]">
+                    <span className="text-slate-600 font-medium">{item.title} x{item.qty}</span>
+                    <span className="font-extrabold text-slate-900">
                       {currency}{item.subtotal?.toLocaleString()}
                     </span>
                   </div>
@@ -263,17 +263,17 @@ const UserOrderDetails = () => {
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Subtotal:</span>
-                <span className="font-semibold text-[#1B2A41]">
+                <span className="font-semibold text-slate-900">
                   {currency}{order?.totalAmount?.toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Shipping:</span>
-                <span className="font-semibold text-[#1B2A41]">Free</span>
+                <span className="font-semibold text-slate-900">Free</span>
               </div>
               <div className="border-t pt-3 flex justify-between items-center">
-                <span className="text-lg font-bold text-[#1B2A41]">Total:</span>
-                <span className="text-2xl font-bold text-[#3F51F4]">
+                <span className="text-lg font-bold text-slate-900">Total:</span>
+                <span className="text-2xl font-bold text-blue-600">
                   {currency}{order?.totalAmount?.toLocaleString()}
                 </span>
               </div>
@@ -281,14 +281,14 @@ const UserOrderDetails = () => {
 
             {/* Timeline */}
             <div className="mt-8 pt-8 border-t">
-              <h4 className="font-bold text-[#1B2A41] mb-4">Order Tracking Timeline</h4>
+              <h4 className="font-bold text-slate-900 mb-4">Order Tracking Timeline</h4>
               <div className="space-y-4">
                 
                 {/* Placed */}
                 <div className="flex gap-3">
                   <CheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
                   <div>
-                    <p className="font-semibold text-[#1B2A41] text-sm">Order Placed</p>
+                    <p className="font-semibold text-slate-900 text-sm">Order Placed</p>
                     <p className="text-gray-600 text-xs">
                       {order?.placedAt
                         ? new Date(order.placedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
@@ -304,7 +304,7 @@ const UserOrderDetails = () => {
                   <div className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-[#1B2A41] text-sm">Confirmed</p>
+                      <p className="font-semibold text-slate-900 text-sm">Confirmed</p>
                       <p className="text-gray-600 text-xs">
                         {order?.confirmedAt
                           ? new Date(order.confirmedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
@@ -319,7 +319,7 @@ const UserOrderDetails = () => {
                   <div className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-[#1B2A41] text-sm">Items Packed</p>
+                      <p className="font-semibold text-slate-900 text-sm">Items Packed</p>
                       <p className="text-gray-600 text-xs">
                         {order?.packedAt
                           ? new Date(order.packedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
@@ -334,7 +334,7 @@ const UserOrderDetails = () => {
                   <div className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-purple-500 shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-[#1B2A41] text-sm">Shipped</p>
+                      <p className="font-semibold text-slate-900 text-sm">Shipped</p>
                       <p className="text-gray-600 text-xs">
                         {order?.shippedAt
                           ? new Date(order.shippedAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
@@ -349,7 +349,7 @@ const UserOrderDetails = () => {
                   <div className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-[#1B2A41] text-sm">Out for Delivery</p>
+                      <p className="font-semibold text-slate-900 text-sm">Out for Delivery</p>
                       <p className="text-gray-600 text-xs">
                         {order?.outForDeliveryAt
                           ? new Date(order.outForDeliveryAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
@@ -364,7 +364,7 @@ const UserOrderDetails = () => {
                   <div className="flex gap-3">
                     <CheckCircle className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-semibold text-[#1B2A41] text-sm">Delivered</p>
+                      <p className="font-semibold text-slate-900 text-sm">Delivered</p>
                       <p className="text-gray-600 text-xs">
                         {order?.deliveredAt
                           ? new Date(order.deliveredAt).toLocaleString([], { dateStyle: "short", timeStyle: "medium" })
@@ -421,13 +421,13 @@ const UserOrderDetails = () => {
                   <AlertTriangle className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-extrabold text-[#1B2A41]">Cancel Order</h3>
+                  <h3 className="text-lg font-extrabold text-slate-900">Cancel Order</h3>
                   <p className="text-xs text-slate-500">Please provide a reason to cancel #{order?.parentOrderNumber}</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowCancelModal(false)}
-                className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition"
+                className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -441,7 +441,7 @@ const UserOrderDetails = () => {
                 <select
                   value={cancelReasonPreset}
                   onChange={(e) => setCancelReasonPreset(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-blue-500 outline-none transition cursor-pointer"
                 >
                   <option value="Order placed by mistake">Order placed by mistake</option>
                   <option value="Found a better price elsewhere">Found a better price elsewhere</option>
@@ -462,7 +462,7 @@ const UserOrderDetails = () => {
                   onChange={(e) => setCancelReasonDetails(e.target.value)}
                   placeholder="Explain why you wish to cancel this order..."
                   required={cancelReasonPreset === "Other"}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-blue-500 outline-none transition"
                 />
               </div>
 

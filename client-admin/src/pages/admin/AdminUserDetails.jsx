@@ -91,7 +91,7 @@ const AdminUserDetails = () => {
             </button>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl sm:text-3xl font-black text-[#1B2A41]">
+                <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
                   {user.name}
                 </h1>
                 <span className={`px-3 py-0.5 rounded-full text-[10px] font-black uppercase ${
@@ -115,7 +115,7 @@ const AdminUserDetails = () => {
             
             {/* Customer Profile */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Customer Account Information
               </h2>
 
@@ -132,41 +132,62 @@ const AdminUserDetails = () => {
                   </p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1 sm:col-span-2">
-                  <span className="text-[10px] font-extrabold uppercase text-slate-400">Email Address</span>
-                  <p className="font-black text-sm text-slate-900">{user.email}</p>
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold uppercase text-slate-400 flex items-center gap-1">
+                    <Mail className="w-3 h-3 text-slate-400" /> Email Address
+                  </span>
+                  <p className="font-black text-sm text-slate-900 break-all">{user.email}</p>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1 sm:col-span-2">
-                  <span className="text-[10px] font-extrabold uppercase text-slate-400">Mobile Phone</span>
-                  <p className="font-black text-sm text-slate-900">{user.mobile || "Not provided"}</p>
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                  <span className="text-[10px] font-extrabold uppercase text-slate-400 flex items-center gap-1">
+                    <Phone className="w-3 h-3 text-slate-400" /> Mobile Number
+                  </span>
+                  <p className="font-black text-sm text-slate-900">{user.mobile || "N/A"}</p>
                 </div>
               </div>
             </div>
 
-            {/* Saved Addresses */}
-            {user.addresses && user.addresses.length > 0 && (
-              <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-                <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
-                  Saved Shipping Addresses ({user.addresses.length})
-                </h2>
+            {/* Address Information */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
+                Saved Shipping Addresses ({addresses.length})
+              </h2>
 
-                <div className="space-y-3">
-                  {user.addresses.map((addr, idx) => (
-                    <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-xs font-semibold text-slate-700 space-y-0.5">
-                      <p className="font-black text-slate-900">{addr.line1}</p>
-                      <p>{addr.city}, {addr.state} — {addr.postalCode}</p>
+              {addresses.length === 0 ? (
+                <p className="text-xs font-semibold text-slate-400 py-4 text-center">No saved delivery addresses found.</p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {addresses.map((addr) => (
+                    <div key={addr._id} className="p-4 rounded-2xl bg-slate-50 border border-slate-100 text-xs font-semibold space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-black text-slate-900">{addr.name || user.name}</span>
+                        {addr.isDefault && (
+                          <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-purple-100 text-purple-800">
+                            Default
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-slate-600 leading-relaxed font-medium">
+                        {addr.addressLine1}, {addr.city}, {addr.state} - {addr.postalCode}
+                      </p>
+                      <p className="text-[11px] text-slate-500 font-bold">Phone: {addr.mobile || user.mobile}</p>
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Orders History */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-4">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
-                Customer Order History ({orders.length})
-              </h2>
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h2 className="text-lg font-extrabold text-slate-900">
+                  Customer Order History ({orders.length})
+                </h2>
+                <Link to={`/admin/orders?search=${user.email}`} className="text-xs font-bold text-rose-600 hover:underline">
+                  View All Orders &rarr;
+                </Link>
+              </div>
 
               {orders.length === 0 ? (
                 <p className="text-xs font-semibold text-slate-400 py-4 text-center">No purchases recorded for this customer yet.</p>
@@ -183,7 +204,7 @@ const AdminUserDetails = () => {
 
                       <div className="text-right">
                         <p className="font-black text-slate-900">{currency}{order.totalAmount?.toLocaleString()}</p>
-                        <span className="text-[10px] font-black uppercase text-[#3F51F4]">{order.status}</span>
+                        <span className="text-[10px] font-black uppercase text-rose-600">{order.status}</span>
                       </div>
                     </div>
                   ))}
@@ -196,7 +217,7 @@ const AdminUserDetails = () => {
           {/* Sidebar Actions */}
           <div className="lg:col-span-4 sticky top-24 space-y-6">
             <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-6">
-              <h2 className="text-lg font-extrabold text-[#1B2A41] border-b border-slate-100 pb-3">
+              <h2 className="text-lg font-extrabold text-slate-900 border-b border-slate-100 pb-3">
                 Account Controls
               </h2>
 
@@ -204,7 +225,7 @@ const AdminUserDetails = () => {
                 <button
                   onClick={toggleBanStatus}
                   disabled={actionLoading}
-                  className={`w-full py-4 rounded-2xl font-extrabold text-xs shadow-md transition disabled:opacity-50 ${
+                  className={`w-full py-4 rounded-2xl font-extrabold text-xs shadow-md transition disabled:opacity-50 cursor-pointer ${
                     user.isBanned
                       ? "bg-slate-800 hover:bg-slate-900 text-white"
                       : "bg-red-600 hover:bg-red-700 text-white"
@@ -216,7 +237,7 @@ const AdminUserDetails = () => {
                 <button
                   onClick={deleteUser}
                   disabled={actionLoading}
-                  className="w-full py-4 rounded-2xl font-extrabold text-xs text-red-600 bg-red-50 hover:bg-red-100 transition disabled:opacity-50"
+                  className="w-full py-4 rounded-2xl font-extrabold text-xs text-red-600 bg-red-50 hover:bg-red-100 transition disabled:opacity-50 cursor-pointer"
                 >
                   {actionLoading ? "Deleting..." : "Delete Customer Account"}
                 </button>

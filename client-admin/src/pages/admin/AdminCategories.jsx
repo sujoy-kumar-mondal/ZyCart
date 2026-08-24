@@ -370,17 +370,17 @@ const AdminCategories = () => {
     }
   };
 
-  return (
+return (
     <div className="min-h-screen bg-[#F8FAFC] py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-6">
 
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-[#1B2A41] via-[#243B5A] to-[#3F51F4] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="bg-gradient-to-r from-black via-slate-900 to-[#BE123C] rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="space-y-2 relative z-10">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-              <FolderTree className="w-3.5 h-3.5 text-blue-300" /> Taxonomy &amp; Dynamic Attributes Engine
+              <FolderTree className="w-3.5 h-3.5 text-rose-400" /> Taxonomy &amp; Dynamic Attributes Engine
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
               Manage Categories &amp; Attribute Schemas
@@ -393,9 +393,9 @@ const AdminCategories = () => {
           <div className="relative z-10 shrink-0">
             <button
               onClick={handleOpenAddModal}
-              className="px-5 py-3 rounded-2xl bg-white text-[#1B2A41] font-black text-sm shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-2 cursor-pointer"
+              className="px-5 py-3 rounded-2xl bg-white text-slate-900 font-black text-sm shadow-lg hover:bg-slate-50 transition transform active:scale-95 flex items-center gap-2 cursor-pointer"
             >
-              <Plus className="w-4 h-4 text-[#3F51F4]" /> Add New Category
+              <Plus className="w-4 h-4 text-rose-600" /> Add New Category
             </button>
           </div>
         </div>
@@ -405,9 +405,9 @@ const AdminCategories = () => {
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-400">
               <span className="text-xs font-bold uppercase tracking-wider">Total Categories</span>
-              <Layers className="w-4 h-4 text-[#3F51F4]" />
+              <Layers className="w-4 h-4 text-rose-600" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-[#1B2A41]">{stats.total}</p>
+            <p className="text-2xl sm:text-3xl font-black text-slate-900">{stats.total}</p>
             <p className="text-[11px] text-slate-500 font-semibold">Active catalog paths</p>
           </div>
 
@@ -423,19 +423,19 @@ const AdminCategories = () => {
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-400">
               <span className="text-xs font-bold uppercase tracking-wider">Active Status</span>
-              <CheckCircle2 className="w-4 h-4 text-blue-500" />
+              <CheckCircle2 className="w-4 h-4 text-rose-500" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-blue-600">{stats.active}</p>
+            <p className="text-2xl sm:text-3xl font-black text-rose-600">{stats.active}</p>
             <p className="text-[11px] text-slate-500 font-semibold">Visible to merchants</p>
           </div>
 
           <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-1">
             <div className="flex items-center justify-between text-slate-400">
-              <span className="text-xs font-bold uppercase tracking-wider">Inactive / Hidden</span>
-              <XCircle className="w-4 h-4 text-amber-500" />
+              <span className="text-xs font-bold uppercase tracking-wider">Configured Schemas</span>
+              <SlidersHorizontal className="w-4 h-4 text-purple-500" />
             </div>
-            <p className="text-2xl sm:text-3xl font-black text-amber-600">{stats.inactive}</p>
-            <p className="text-[11px] text-slate-500 font-semibold">Archived pathways</p>
+            <p className="text-2xl sm:text-3xl font-black text-purple-600">{stats.withAttributes}</p>
+            <p className="text-[11px] text-slate-500 font-semibold">Categories with specifications</p>
           </div>
         </div>
 
@@ -447,7 +447,7 @@ const AdminCategories = () => {
               placeholder="Search category, subcategory..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 placeholder-slate-400 focus:bg-white focus:border-rose-500 outline-none transition"
             />
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3 pointer-events-none" />
           </div>
@@ -526,7 +526,7 @@ const AdminCategories = () => {
 
                       {/* Main Category */}
                       <td className="py-4 px-6">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-blue-50 text-[#3F51F4] font-extrabold border border-blue-100/80">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-rose-50 text-rose-600 font-extrabold border border-rose-100/80">
                           <Layers className="w-3.5 h-3.5" />
                           {cat.mainCategory}
                         </span>
@@ -595,7 +595,7 @@ const AdminCategories = () => {
                         <button
                           onClick={() => handleOpenEditModal(cat)}
                           title="Edit Category Hierarchy"
-                          className="p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-blue-50 hover:text-[#3F51F4] hover:border-blue-200 transition cursor-pointer"
+                          className="p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition cursor-pointer"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
                         </button>
@@ -637,13 +637,13 @@ const AdminCategories = () => {
                     <SlidersHorizontal className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-black text-[#1B2A41]">Category Attributes Schema</h3>
+                    <h3 className="text-lg font-black text-slate-900">Category Attributes Schema</h3>
                     <p className="text-xs text-slate-500 font-semibold flex items-center gap-1 mt-0.5">
                       <span>{selectedCategory.mainCategory}</span>
                       <ChevronRight className="w-3 h-3 text-slate-400" />
                       <span>{selectedCategory.subCategory}</span>
                       <ChevronRight className="w-3 h-3 text-slate-400" />
-                      <span className="font-extrabold text-[#3F51F4]">{selectedCategory.subSubCategory}</span>
+                      <span className="font-extrabold text-rose-600">{selectedCategory.subSubCategory}</span>
                     </p>
                   </div>
                 </div>
@@ -656,10 +656,10 @@ const AdminCategories = () => {
               </div>
 
               {/* Instructions Callout */}
-              <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-100 flex items-start gap-3">
-                <Info className="w-5 h-5 text-[#3F51F4] shrink-0 mt-0.5" />
+              <div className="p-4 rounded-2xl bg-rose-50/70 border border-rose-100 flex items-start gap-3">
+                <Info className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
                 <div className="text-xs text-slate-700 leading-relaxed font-medium">
-                  <span className="font-bold text-[#1B2A41]">Dynamic Specifications:</span> Attributes defined here will automatically appear on the merchant product upload form when listing products in this category. (e.g. Brand, Storage, RAM, Color, Material, Size).
+                  <span className="font-bold text-slate-900">Dynamic Specifications:</span> Attributes defined here will automatically appear on the merchant product upload form when listing products in this category. (e.g. Brand, Storage, RAM, Color, Material, Size).
                 </div>
               </div>
 
@@ -975,11 +975,11 @@ const AdminCategories = () => {
             >
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-blue-50 text-[#3F51F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center">
                     <Plus className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-black text-[#1B2A41]">Add New Category</h3>
+                    <h3 className="text-lg font-black text-slate-900">Add New Category</h3>
                     <p className="text-xs text-slate-500 font-semibold">Define a new 3-tier catalog branch</p>
                   </div>
                 </div>
@@ -1003,7 +1003,7 @@ const AdminCategories = () => {
                     placeholder="e.g. Electronics, Fashion, Home & Kitchen"
                     value={formData.mainCategory}
                     onChange={(e) => setFormData({ ...formData, mainCategory: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                   <datalist id="mainCategoryList">
                     {mainCategoriesList.map((m) => (
@@ -1022,7 +1022,7 @@ const AdminCategories = () => {
                     placeholder="e.g. Mobiles & Accessories, Footwear"
                     value={formData.subCategory}
                     onChange={(e) => setFormData({ ...formData, subCategory: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                 </div>
 
@@ -1036,7 +1036,7 @@ const AdminCategories = () => {
                     placeholder="e.g. Smartphones, Casual Shoes, Smartwatches"
                     value={formData.subSubCategory}
                     onChange={(e) => setFormData({ ...formData, subSubCategory: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                 </div>
 
@@ -1046,7 +1046,7 @@ const AdminCategories = () => {
                       type="checkbox"
                       checked={formData.isActive}
                       onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                      className="w-4 h-4 rounded text-[#3F51F4] accent-[#3F51F4]"
+                      className="w-4 h-4 rounded text-rose-600 accent-rose-600"
                     />
                     <span className="text-xs font-bold text-slate-700">Make active immediately</span>
                   </label>
@@ -1063,7 +1063,7 @@ const AdminCategories = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-2/3 py-3 rounded-2xl font-black text-white text-xs bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] shadow-md hover:opacity-95 transition cursor-pointer disabled:opacity-50"
+                    className="w-2/3 py-3 rounded-2xl font-black text-white text-xs bg-gradient-to-r from-[#F87171] via-[#EF4444] to-[#E11D48] hover:from-[#EF4444] hover:to-[#BE123C] shadow-lg shadow-red-500/25 transition cursor-pointer disabled:opacity-50"
                   >
                     {submitting ? "Creating..." : "Save Category"}
                   </button>
@@ -1088,11 +1088,11 @@ const AdminCategories = () => {
             >
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-blue-50 text-[#3F51F4] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center">
                     <Edit3 className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-black text-[#1B2A41]">Edit Category</h3>
+                    <h3 className="text-lg font-black text-slate-900">Edit Category</h3>
                     <p className="text-xs text-slate-500 font-semibold">Modify category details</p>
                   </div>
                 </div>
@@ -1114,7 +1114,7 @@ const AdminCategories = () => {
                     required
                     value={formData.mainCategory}
                     onChange={(e) => setFormData({ ...formData, mainCategory: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                 </div>
 
@@ -1127,7 +1127,7 @@ const AdminCategories = () => {
                     required
                     value={formData.subCategory}
                     onChange={(e) => setFormData({ ...formData, subCategory: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                 </div>
 
@@ -1140,7 +1140,7 @@ const AdminCategories = () => {
                     required
                     value={formData.subSubCategory}
                     onChange={(e) => setFormData({ ...formData, subSubCategory: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-[#3F51F4] outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-900 focus:bg-white focus:border-rose-500 outline-none transition"
                   />
                 </div>
 
@@ -1150,7 +1150,7 @@ const AdminCategories = () => {
                       type="checkbox"
                       checked={formData.isActive}
                       onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                      className="w-4 h-4 rounded text-[#3F51F4] accent-[#3F51F4]"
+                      className="w-4 h-4 rounded text-rose-600 accent-rose-600"
                     />
                     <span className="text-xs font-bold text-slate-700">Category Active Status</span>
                   </label>
@@ -1167,7 +1167,7 @@ const AdminCategories = () => {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-2/3 py-3 rounded-2xl font-black text-white text-xs bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] shadow-md hover:opacity-95 transition cursor-pointer disabled:opacity-50"
+                    className="w-2/3 py-3 rounded-2xl font-black text-white text-xs bg-gradient-to-r from-[#F87171] via-[#EF4444] to-[#E11D48] hover:from-[#EF4444] hover:to-[#BE123C] shadow-lg shadow-red-500/25 transition cursor-pointer disabled:opacity-50"
                   >
                     {submitting ? "Updating..." : "Update Category"}
                   </button>
@@ -1195,7 +1195,7 @@ const AdminCategories = () => {
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-lg font-black text-[#1B2A41]">Delete Category Branch?</h3>
+                <h3 className="text-lg font-black text-slate-900">Delete Category Branch?</h3>
                 <p className="text-xs text-slate-500 font-medium leading-relaxed">
                   Are you sure you want to permanently remove{" "}
                   <span className="font-bold text-slate-800">

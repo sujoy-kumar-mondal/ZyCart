@@ -187,12 +187,12 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-slate-100 flex flex-col justify-center relative overflow-hidden font-sans selection:bg-[#3F51F4] selection:text-white py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#0A0A0F] text-slate-100 flex flex-col justify-center relative overflow-hidden font-sans selection:bg-red-600 selection:text-white py-12 px-4 sm:px-6 lg:px-8">
       
       {/* Background Animated Ambient Lights & Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(#3F51F4_1px,transparent_1px)] [background-size:32px_32px] opacity-15 pointer-events-none"></div>
-      <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-[#3F51F4]/25 to-indigo-600/15 rounded-full blur-3xl pointer-events-none animate-pulse duration-1000"></div>
-      <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-gradient-to-tr from-purple-600/20 to-blue-600/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(#EF4444_1px,transparent_1px)] [background-size:32px_32px] opacity-15 pointer-events-none"></div>
+      <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-rose-500/20 to-red-600/15 rounded-full blur-3xl pointer-events-none animate-pulse duration-1000"></div>
+      <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-gradient-to-tr from-red-600/20 to-rose-600/15 rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="relative z-10 max-w-5xl mx-auto w-full">
         
@@ -200,8 +200,8 @@ const ForgotPassword = () => {
         <div className="bg-slate-900/85 backdrop-blur-2xl border border-slate-800/80 rounded-[32px] sm:rounded-[40px] shadow-2xl shadow-black/80 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[580px]">
           
           {/* LEFT SIDE: Admin Info */}
-          <div className="hidden lg:flex lg:col-span-5 bg-gradient-to-br from-[#0F172A] via-[#131B31] to-[#1E1B4B] p-8 sm:p-10 flex-col justify-between relative border-r border-slate-800/70 overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="hidden lg:flex lg:col-span-5 bg-gradient-to-br from-[#0F172A] via-[#1A0B12] to-[#2B0E17] p-8 sm:p-10 flex-col justify-between relative border-r border-slate-800/70 overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
             <div className="space-y-6 relative z-10">
               <Link to="/login" className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition group">
@@ -209,12 +209,12 @@ const ForgotPassword = () => {
               </Link>
 
               <div className="space-y-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-semibold text-[#8FD6F6]">
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-400" /> Executive Verification
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-xs font-semibold text-rose-300">
+                  <Sparkles className="w-3.5 h-3.5 text-rose-400" /> Executive Verification
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug">
                   Recover Admin <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6A8EF0] via-[#8FD6F6] to-indigo-300">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-red-300 to-rose-200">
                     Console Access
                   </span>
                 </h2>
@@ -225,9 +225,9 @@ const ForgotPassword = () => {
 
               {/* Step Flow Preview */}
               <div className="space-y-3 pt-2">
-                <div className={`p-3.5 rounded-2xl border transition ${step === 1 ? "bg-indigo-500/15 border-indigo-500/40 text-white" : "bg-slate-800/40 border-slate-700/40 text-slate-400"}`}>
+                <div className={`p-3.5 rounded-2xl border transition ${step === 1 ? "bg-rose-500/15 border-rose-500/40 text-white" : "bg-slate-800/40 border-slate-700/40 text-slate-400"}`}>
                   <div className="flex items-center gap-3">
-                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 1 ? "bg-[#3F51F4] text-white" : "bg-slate-700 text-slate-300"}`}>
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 1 ? "bg-rose-600 text-white" : "bg-slate-700 text-slate-300"}`}>
                       1
                     </span>
                     <div>
@@ -237,9 +237,9 @@ const ForgotPassword = () => {
                   </div>
                 </div>
 
-                <div className={`p-3.5 rounded-2xl border transition ${step === 2 ? "bg-indigo-500/15 border-indigo-500/40 text-white" : "bg-slate-800/40 border-slate-700/40 text-slate-400"}`}>
+                <div className={`p-3.5 rounded-2xl border transition ${step === 2 ? "bg-rose-500/15 border-rose-500/40 text-white" : "bg-slate-800/40 border-slate-700/40 text-slate-400"}`}>
                   <div className="flex items-center gap-3">
-                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 2 ? "bg-[#3F51F4] text-white" : "bg-slate-700 text-slate-300"}`}>
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 2 ? "bg-rose-600 text-white" : "bg-slate-700 text-slate-300"}`}>
                       2
                     </span>
                     <div>
@@ -254,7 +254,7 @@ const ForgotPassword = () => {
             {/* Admin Footer */}
             <div className="relative z-10 pt-6 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-400">
               <span>Executive Security Protocol</span>
-              <span className="font-semibold text-[#8FD6F6]">Active</span>
+              <span className="font-semibold text-rose-400">Active</span>
             </div>
           </div>
 
@@ -266,7 +266,7 @@ const ForgotPassword = () => {
               {/* Header */}
               <div className="space-y-1 text-center lg:text-left">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#6A8EF0] px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">
+                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-rose-400 px-2.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/20">
                     Step {step} of 2
                   </span>
                   {step === 2 && (
@@ -280,7 +280,7 @@ const ForgotPassword = () => {
                   )}
                 </div>
                 <h1 className="text-2xl font-black text-white tracking-tight flex items-center justify-center lg:justify-start gap-2.5 pt-1">
-                  <KeyRound className="w-6 h-6 text-[#6A8EF0]" />
+                  <KeyRound className="w-6 h-6 text-rose-400" />
                   {step === 1 ? "Forgot Password" : "Reset Password"}
                 </h1>
                 <p className="text-xs text-slate-400 font-medium">
@@ -311,7 +311,7 @@ const ForgotPassword = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="admin@zycart.com"
-                        className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#3F51F4] focus:border-transparent transition"
+                        className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition"
                         required
                         autoFocus
                       />
@@ -321,7 +321,7 @@ const ForgotPassword = () => {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#6A8EF0] via-[#3F51F4] to-[#4F46E5] hover:from-[#5C72FF] hover:to-[#4338CA] text-white text-sm font-black shadow-lg shadow-blue-500/25 transition-all transform active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-2"
+                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#F87171] via-[#EF4444] to-[#E11D48] hover:from-[#EF4444] hover:to-[#BE123C] text-white text-sm font-black shadow-lg shadow-red-500/25 transition-all transform active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer mt-2"
                   >
                     {loading ? (
                       <>
@@ -338,7 +338,7 @@ const ForgotPassword = () => {
 
                   <div className="pt-2 text-center">
                     <Link to="/login" className="text-xs font-bold text-slate-400 hover:text-white transition">
-                      Remembered your password? <span className="text-[#6A8EF0]">Sign In</span>
+                      Remembered your password? <span className="text-rose-400">Sign In</span>
                     </Link>
                   </div>
                 </motion.form>
@@ -365,7 +365,7 @@ const ForgotPassword = () => {
                           value={digit}
                           onChange={(e) => handleOtpChange(index, e.target.value)}
                           onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                          className="w-12 h-12 text-center text-lg font-black bg-slate-800/80 border border-slate-700/80 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-[#3F51F4] focus:border-[#3F51F4] transition shadow-inner"
+                          className="w-12 h-12 text-center text-lg font-black bg-slate-800/80 border border-slate-700/80 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition shadow-inner"
                           required
                         />
                       ))}
@@ -377,7 +377,7 @@ const ForgotPassword = () => {
                         type="button"
                         onClick={handleResendOtp}
                         disabled={resendCooldown > 0 || resending}
-                        className="text-[11px] font-bold text-[#6A8EF0] hover:text-blue-300 disabled:text-slate-500 disabled:cursor-not-allowed transition cursor-pointer"
+                        className="text-[11px] font-bold text-rose-400 hover:text-rose-300 disabled:text-slate-500 disabled:cursor-not-allowed transition cursor-pointer"
                       >
                         {resending ? "Sending..." : resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend Code"}
                       </button>
@@ -396,7 +396,7 @@ const ForgotPassword = () => {
                         value={form.password}
                         onChange={(e) => setForm({ ...form, password: e.target.value })}
                         placeholder="Enter strong new password"
-                        className="w-full pl-10 pr-10 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#3F51F4] focus:border-transparent transition"
+                        className="w-full pl-10 pr-10 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent transition"
                         required
                       />
                       <button
@@ -434,7 +434,7 @@ const ForgotPassword = () => {
                             ? isMatch
                               ? "border-emerald-500/60 focus:ring-emerald-500"
                               : "border-rose-500/60 focus:ring-rose-500"
-                            : "border-slate-700/80 focus:ring-[#3F51F4]"
+                            : "border-slate-700/80 focus:ring-rose-500"
                         }`}
                         required
                       />
@@ -485,7 +485,7 @@ const ForgotPassword = () => {
                   <button
                     type="submit"
                     disabled={loading || (form.password && !isAllRulesMet)}
-                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#6A8EF0] via-[#3F51F4] to-[#4F46E5] hover:from-[#5C72FF] hover:to-[#4338CA] text-white text-sm font-black shadow-lg shadow-blue-500/25 transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer mt-2"
+                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#F87171] via-[#EF4444] to-[#E11D48] hover:from-[#EF4444] hover:to-[#BE123C] text-white text-sm font-black shadow-lg shadow-red-500/25 transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer mt-2"
                   >
                     {loading ? (
                       <>

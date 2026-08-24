@@ -103,9 +103,9 @@ const UserProfile = () => {
       <div className="min-h-[70vh] flex items-center justify-center px-4">
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 text-center max-w-md w-full space-y-4">
           <p className="text-4xl">⚠️</p>
-          <h2 className="text-xl font-bold text-[#1B2A41]">Failed to load account profile</h2>
+          <h2 className="text-xl font-bold text-slate-900">Failed to load account profile</h2>
           <button
-            className="w-full py-3 rounded-2xl bg-[#3F51F4] text-white font-extrabold text-sm"
+            className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] text-white font-extrabold text-sm shadow-md shadow-blue-500/20 hover:opacity-95 transition cursor-pointer"
             onClick={() => navigate("/login")}
           >
             Go to Login
@@ -127,12 +127,12 @@ const UserProfile = () => {
         
         {/* Profile Card Header */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 flex flex-col sm:flex-row items-center gap-6">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] text-white font-black text-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-[#3B82F6] via-[#60A5FA] to-[#2563EB] text-white font-black text-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
             {getInitials()}
           </div>
           <div className="space-y-1 text-center sm:text-left flex-1">
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-              <h1 className="text-2xl font-black text-[#1B2A41]">{profile.name}</h1>
+              <h1 className="text-2xl font-black text-slate-900">{profile.name}</h1>
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-800 uppercase">
                 Customer
               </span>
@@ -142,9 +142,9 @@ const UserProfile = () => {
 
           <Link
             to="/changepassword"
-            className="px-4 py-2.5 rounded-2xl border border-slate-200 text-slate-700 text-xs font-extrabold hover:bg-slate-50 transition flex items-center gap-1.5 shrink-0"
+            className="px-4 py-2.5 rounded-2xl border border-slate-200 text-slate-700 text-xs font-extrabold hover:bg-slate-50 transition flex items-center gap-1.5 shrink-0 cursor-pointer"
           >
-            <KeyRound className="w-4 h-4 text-[#3F51F4]" /> Change Password
+            <KeyRound className="w-4 h-4 text-blue-600" /> Change Password
           </Link>
         </div>
 
@@ -152,8 +152,8 @@ const UserProfile = () => {
         <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
           
           <div className="flex items-center gap-2 border-b border-slate-100 pb-4">
-            <User className="w-5 h-5 text-[#3F51F4]" />
-            <h2 className="text-lg font-extrabold text-[#1B2A41]">Personal Details</h2>
+            <User className="w-5 h-5 text-blue-600" />
+            <h2 className="text-lg font-extrabold text-slate-900">Personal Details</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -167,7 +167,7 @@ const UserProfile = () => {
                   name="name"
                   value={form.name}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white outline-none transition"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-white outline-none transition"
                 />
                 <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
               </div>
@@ -199,7 +199,7 @@ const UserProfile = () => {
                   value={form.mobile}
                   onChange={handleChange}
                   placeholder="+91 9876543210"
-                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white outline-none transition"
+                  className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-white outline-none transition"
                 />
                 <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
               </div>
@@ -207,8 +207,8 @@ const UserProfile = () => {
           </div>
 
           <div className="flex items-center gap-2 border-b border-slate-100 pt-4 pb-4">
-            <MapPin className="w-5 h-5 text-[#3F51F4]" />
-            <h2 className="text-lg font-extrabold text-[#1B2A41]">Shipping Address</h2>
+            <MapPin className="w-5 h-5 text-blue-600" />
+            <h2 className="text-lg font-extrabold text-slate-900">Shipping Address</h2>
           </div>
 
           <div className="space-y-4">
@@ -222,7 +222,7 @@ const UserProfile = () => {
                 value={form.address.line1}
                 onChange={handleChange}
                 placeholder="House No, Street..."
-                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white outline-none transition"
+                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-white outline-none transition"
               />
             </div>
 
@@ -236,7 +236,7 @@ const UserProfile = () => {
                   name="city"
                   value={form.address.city}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white outline-none transition"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-white outline-none transition"
                 />
               </div>
 
@@ -249,7 +249,7 @@ const UserProfile = () => {
                   name="state"
                   value={form.address.state}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white outline-none transition"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-white outline-none transition"
                 />
               </div>
 
@@ -262,7 +262,7 @@ const UserProfile = () => {
                   name="postalCode"
                   value={form.address.postalCode}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white outline-none transition"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-blue-400 focus:border-blue-500 focus:bg-white outline-none transition"
                 />
               </div>
             </div>
@@ -272,7 +272,7 @@ const UserProfile = () => {
           <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t border-slate-100">
             <button
               onClick={handleUpdate}
-              className="w-full sm:flex-1 py-3.5 rounded-2xl font-extrabold text-white text-sm bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#1D4ED8] hover:to-[#1E40AF] shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:flex-1 py-3.5 rounded-2xl font-extrabold text-white text-sm bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] hover:opacity-95 shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer"
             >
               <Save className="w-4 h-4" /> Save Profile Updates
             </button>

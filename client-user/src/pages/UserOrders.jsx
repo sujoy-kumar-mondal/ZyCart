@@ -42,16 +42,16 @@ const UserOrders = () => {
     return (
       <div className="min-h-[75vh] bg-[#F8FAFC] py-16 flex items-center justify-center px-4">
         <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-sm border border-slate-200/80 text-center max-w-md w-full space-y-4">
-          <div className="w-16 h-16 bg-blue-50 text-[#3F51F4] rounded-full flex items-center justify-center mx-auto text-2xl">
+          <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-2xl">
             📦
           </div>
-          <h2 className="text-2xl font-extrabold text-[#1B2A41]">No Orders Yet</h2>
+          <h2 className="text-2xl font-extrabold text-slate-900">No Orders Yet</h2>
           <p className="text-slate-500 text-sm">
             You haven't placed any orders with ZyCart yet. Explore our catalog to get started!
           </p>
           <Link
             to="/products"
-            className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-[#3F51F4] text-white font-extrabold text-sm"
+            className="inline-flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] text-white font-extrabold text-sm shadow-md shadow-blue-500/20 hover:opacity-95 transition cursor-pointer"
           >
             Start Shopping <ArrowRight className="w-4 h-4" />
           </Link>
@@ -82,7 +82,7 @@ const UserOrders = () => {
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold text-[#1B2A41]">My Order History</h1>
+            <h1 className="text-3xl font-extrabold text-slate-900">My Order History</h1>
             <p className="text-sm text-slate-500 font-semibold mt-1">
               Track and review all your purchases across sellers
             </p>
@@ -117,7 +117,7 @@ const UserOrders = () => {
                   <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                     Order Reference Number
                   </span>
-                  <h3 className="font-mono font-black text-[#1B2A41] text-lg">
+                  <h3 className="font-mono font-black text-slate-900 text-lg">
                     #{order.parentOrderNumber || order._id.slice(-8)}
                   </h3>
                   <p className="text-xs font-semibold text-slate-500 flex items-center gap-1.5 pt-0.5">
@@ -131,7 +131,7 @@ const UserOrders = () => {
 
                   <button
                     onClick={() => navigate(`/my-orders/${order._id}`)}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-extrabold text-xs transition"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-blue-50 text-blue-600 hover:bg-blue-100 font-extrabold text-xs transition cursor-pointer"
                   >
                     <Eye className="w-4 h-4" /> View Details
                   </button>
@@ -171,7 +171,7 @@ const UserOrders = () => {
 
                     <div className="pt-2 border-t border-slate-200/60 flex justify-between items-baseline text-xs">
                       <span className="text-slate-500 font-bold">Package Amount</span>
-                      <span className="text-base font-black text-[#1B2A41]">{currency}{child.amount?.toLocaleString()}</span>
+                      <span className="text-base font-black text-slate-900">{currency}{child.amount?.toLocaleString()}</span>
                     </div>
                   </div>
                 ))}

@@ -46,9 +46,9 @@ const CartItem = ({ item }) => {
         className="flex flex-col grow cursor-pointer w-full min-w-0"
         onClick={() => navigate(`/product/${item.productId}`)}
       >
-        <h3 className="font-bold text-base sm:text-lg text-[#1B2A41] hover:text-[#3F51F4] transition line-clamp-2">{item.title}</h3>
+        <h3 className="font-extrabold text-base sm:text-lg text-slate-900 hover:text-blue-600 transition line-clamp-2">{item.title}</h3>
 
-        <p className="text-[#3F51F4] font-black text-lg mt-1">{currency}{item.price?.toLocaleString ? item.price.toLocaleString() : item.price}</p>
+        <p className="text-blue-600 font-black text-lg mt-1">{currency}{item.price?.toLocaleString ? item.price.toLocaleString() : item.price}</p>
 
         {item.stock < 10 && (
           <p className="text-xs font-semibold text-amber-600 mt-0.5">
@@ -66,14 +66,14 @@ const CartItem = ({ item }) => {
               }}
               disabled={item.qty <= 1}
               className={`
-                w-8 h-8 flex items-center justify-center rounded-lg border text-[#1B2A41] font-bold transition
-                ${item.qty <= 1 ? "bg-gray-100 border-gray-200 opacity-50 cursor-not-allowed" : "bg-[#F1F8FF] border-blue-200 hover:bg-blue-100"}
+                w-8 h-8 flex items-center justify-center rounded-lg border text-slate-900 font-bold transition cursor-pointer
+                ${item.qty <= 1 ? "bg-gray-100 border-gray-200 opacity-50 cursor-not-allowed" : "bg-blue-50/60 border-blue-200 hover:bg-blue-100"}
               `}
             >
               -
             </button>
 
-            <span className="font-extrabold text-[#1B2A41] text-sm px-2">{item.qty}</span>
+            <span className="font-extrabold text-slate-900 text-sm px-2">{item.qty}</span>
 
             <button
               onClick={(e) => {
@@ -82,8 +82,8 @@ const CartItem = ({ item }) => {
               }}
               disabled={item.qty >= maxAllowed}
               className={`
-                w-8 h-8 flex items-center justify-center rounded-lg border text-[#1B2A41] font-bold transition
-                ${item.qty >= maxAllowed ? "bg-gray-100 border-gray-200 opacity-50 cursor-not-allowed" : "bg-[#F1F8FF] border-blue-200 hover:bg-blue-100"}
+                w-8 h-8 flex items-center justify-center rounded-lg border text-slate-900 font-bold transition cursor-pointer
+                ${item.qty >= maxAllowed ? "bg-gray-100 border-gray-200 opacity-50 cursor-not-allowed" : "bg-blue-50/60 border-blue-200 hover:bg-blue-100"}
               `}
               title={item.qty >= maxAllowed ? `Maximum ${maxAllowed} allowed` : "Increase quantity"}
             >

@@ -78,7 +78,7 @@ const Navbar = () => {
             to="/"
             className="flex items-center gap-2 sm:gap-3 group shrink-0"
           >
-            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-[#2563EB] via-[#3B82F6] to-[#F97316] p-2 sm:p-2.5 shadow-md shadow-blue-500/20 group-hover:scale-105 transition transform flex items-center justify-center">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-[#2563EB] p-2 sm:p-2.5 shadow-md shadow-blue-500/20 group-hover:scale-105 transition transform flex items-center justify-center">
               <img src="/logo_cart.svg" alt="ZyCart Logo" className="w-full h-full object-contain filter brightness-0 invert" />
             </div>
             <div className="flex flex-col">
@@ -200,7 +200,7 @@ const Navbar = () => {
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     className="flex items-center gap-2 p-1.5 rounded-full hover:bg-slate-100/80 border border-slate-200/80 transition"
                   >
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#2563EB] to-[#F97316] text-white font-extrabold text-sm flex items-center justify-center shadow-md shadow-blue-500/20">
+                    <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#2563EB] to-[#1D4ED8] text-white font-extrabold text-sm flex items-center justify-center shadow-md shadow-blue-500/20">
                       {getInitials()}
                     </div>
                     <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-200 hidden sm:block ${dropdownOpen ? "rotate-180" : ""}`} />
@@ -298,7 +298,7 @@ const Navbar = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="bg-transparent outline-none text-sm text-slate-800 placeholder-slate-400 flex-1 font-medium"
               />
-              <button type="submit" className="text-slate-500 hover:text-[#3F51F4]">
+              <button type="submit" className="text-slate-500 hover:text-blue-600 cursor-pointer">
                 <Search className="w-4 h-4" />
               </button>
             </form>

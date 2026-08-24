@@ -117,11 +117,11 @@ const CheckoutPage = () => {
       <div className="min-h-[75vh] bg-[#F8FAFC] py-16 flex items-center justify-center px-4">
         <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-sm border border-slate-200/80 text-center max-w-md w-full space-y-4">
           <p className="text-4xl">🛒</p>
-          <h2 className="text-2xl font-extrabold text-[#1B2A41]">Your cart is empty</h2>
+          <h2 className="text-2xl font-extrabold text-slate-900">Your cart is empty</h2>
           <p className="text-slate-500 text-sm">Add products to your cart before proceeding to checkout.</p>
           <Link
             to="/products"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-[#3F51F4] text-white font-extrabold text-sm hover:bg-[#3444D8] transition"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] text-white font-extrabold text-sm shadow-md shadow-blue-500/20 hover:opacity-95 transition cursor-pointer"
           >
             Browse Catalog
           </Link>
@@ -137,7 +137,7 @@ const CheckoutPage = () => {
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold text-[#1B2A41]">Checkout</h1>
+            <h1 className="text-3xl font-extrabold text-slate-900">Checkout</h1>
             <p className="text-sm text-slate-500 font-semibold mt-1">
               Step 1 of 2: Shipping Destination
             </p>
@@ -145,7 +145,7 @@ const CheckoutPage = () => {
 
           <Link
             to="/cart"
-            className="inline-flex items-center gap-2 text-sm font-bold text-[#3F51F4] hover:underline"
+            className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:underline cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" /> Back to Cart
           </Link>
@@ -158,11 +158,11 @@ const CheckoutPage = () => {
           <div className="lg:col-span-8 space-y-6">
             <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-6">
               <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-                <div className="w-10 h-10 rounded-2xl bg-blue-50 text-[#3F51F4] flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
                   <MapPin className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-extrabold text-[#1B2A41]">Shipping Address</h2>
+                  <h2 className="text-lg font-extrabold text-slate-900">Shipping Address</h2>
                   <p className="text-xs text-slate-500 font-semibold">
                     Enter the complete address where your order will be delivered.
                   </p>
@@ -181,7 +181,7 @@ const CheckoutPage = () => {
                     onChange={handleChange}
                     required
                     placeholder="e.g. Flat 4B, Emerald Heights, Park Street"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:ring-4 focus:ring-blue-500/15 focus:border-blue-500 focus:bg-white outline-none transition"
                   />
                 </div>
 
@@ -197,7 +197,7 @@ const CheckoutPage = () => {
                       onChange={handleChange}
                       required
                       placeholder="e.g. Kolkata"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white outline-none transition"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:ring-4 focus:ring-blue-500/15 focus:border-blue-500 focus:bg-white outline-none transition"
                     />
                   </div>
 
@@ -212,7 +212,7 @@ const CheckoutPage = () => {
                       onChange={handleChange}
                       required
                       placeholder="e.g. West Bengal"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white outline-none transition"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:ring-4 focus:ring-blue-500/15 focus:border-blue-500 focus:bg-white outline-none transition"
                     />
                   </div>
                 </div>
@@ -228,7 +228,7 @@ const CheckoutPage = () => {
                     onChange={handleChange}
                     required
                     placeholder="e.g. 700001"
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-[#3F51F4]/40 focus:bg-white outline-none transition"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:ring-4 focus:ring-blue-500/15 focus:border-blue-500 focus:bg-white outline-none transition"
                   />
                 </div>
               </div>
@@ -245,7 +245,7 @@ const CheckoutPage = () => {
           {/* RIGHT: Order Summary */}
           <div className="lg:col-span-4 sticky top-24 space-y-4">
             <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-6">
-              <h2 className="text-xl font-extrabold text-[#1B2A41] border-b border-slate-100 pb-4">
+              <h2 className="text-xl font-extrabold text-slate-900 border-b border-slate-100 pb-4">
                 Order Summary
               </h2>
 

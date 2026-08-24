@@ -24,7 +24,7 @@ const ProtectedRoute = ({ children, permission }) => {
           </div>
           
           <div className="space-y-2">
-            <h2 className="text-xl font-black text-[#1B2A41]">Access Restricted</h2>
+            <h2 className="text-xl font-black text-slate-900">Access Restricted</h2>
             <p className="text-xs text-slate-500 font-semibold leading-relaxed">
               Your administrator account does not possess the required <span className="font-bold text-red-600 px-2 py-0.5 rounded-lg bg-red-50 border border-red-100">'{permission}'</span> permission flag to access this operational module.
             </p>
@@ -33,7 +33,7 @@ const ProtectedRoute = ({ children, permission }) => {
           <div className="pt-2">
             <Link
               to="/admin/dashboard"
-              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-[#3F51F4] hover:bg-[#3444C9] text-white text-xs font-black shadow-lg shadow-blue-500/20 transition active:scale-95 cursor-pointer"
+              className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-[#F87171] via-[#EF4444] to-[#E11D48] hover:from-[#EF4444] hover:to-[#BE123C] text-white text-xs font-black shadow-lg shadow-red-500/20 transition active:scale-95 cursor-pointer"
             >
               <LayoutDashboard className="w-4 h-4" /> Return to Dashboard
             </Link>

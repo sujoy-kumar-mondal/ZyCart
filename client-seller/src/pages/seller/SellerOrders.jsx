@@ -55,10 +55,10 @@ const SellerOrders = () => {
     return (
       <div className="min-h-[75vh] bg-[#F8FAFC] py-16 flex items-center justify-center px-4">
         <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-sm border border-slate-200/80 text-center max-w-md w-full space-y-4">
-          <div className="w-16 h-16 bg-blue-50 text-[#3F51F4] rounded-full flex items-center justify-center mx-auto text-2xl">
+          <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl">
             📦
           </div>
-          <h2 className="text-2xl font-extrabold text-[#1B2A41]">No Orders Yet</h2>
+          <h2 className="text-2xl font-extrabold text-slate-900">No Orders Yet</h2>
           <p className="text-slate-500 text-sm">
             You don't have any customer orders yet. Optimize your product listings to boost sales!
           </p>
@@ -95,7 +95,7 @@ const SellerOrders = () => {
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold text-[#1B2A41]">Customer Fulfillment Orders</h1>
+            <h1 className="text-3xl font-extrabold text-slate-900">Customer Fulfillment Orders</h1>
             <p className="text-sm text-slate-500 font-semibold mt-1">
               Process customer packages, update dispatch statuses, and track earnings
             </p>
@@ -115,7 +115,7 @@ const SellerOrders = () => {
                   <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
                     Parent Order Number
                   </span>
-                  <h3 className="font-mono font-black text-[#1B2A41] text-lg">
+                  <h3 className="font-mono font-black text-slate-900 text-lg">
                     #{order.parentOrderId?.parentOrderNumber || order._id.slice(-8)}
                   </h3>
                   <p className="text-xs font-semibold text-slate-500 flex items-center gap-1.5 pt-0.5">
@@ -129,7 +129,7 @@ const SellerOrders = () => {
 
                   <button
                     onClick={() => navigate(`/seller/orders/${order._id}`)}
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-blue-50 text-[#3F51F4] hover:bg-blue-100 font-extrabold text-xs transition"
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 font-extrabold text-xs transition cursor-pointer"
                   >
                     <Eye className="w-4 h-4" /> Order Details
                   </button>
@@ -170,7 +170,7 @@ const SellerOrders = () => {
               <div className="pt-2 flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <span className="text-xs font-bold text-slate-400">Package Subtotal: </span>
-                  <span className="text-lg font-black text-[#1B2A41]">{currency}{order.amount?.toLocaleString()}</span>
+                  <span className="text-lg font-black text-slate-900">{currency}{order.amount?.toLocaleString()}</span>
                   <span className="text-xs font-bold text-emerald-600 ml-2">
                     (Your Net Payout: {currency}{(order.amount - Math.round((order.amount * (settings?.platformCommissionRate ?? order.commissionRate ?? commissionRate)) / 100))?.toLocaleString()} after {settings?.platformCommissionRate ?? order.commissionRate ?? commissionRate}% platform fee)
                   </span>
@@ -182,7 +182,7 @@ const SellerOrders = () => {
                     {order.status === "Confirmed" && (
                       <button
                         onClick={() => updateStatus(order._id, "Packed")}
-                        className="px-4 py-2 rounded-2xl text-xs font-extrabold text-white bg-purple-600 hover:bg-purple-700 shadow-xs transition"
+                        className="px-4 py-2 rounded-2xl text-xs font-extrabold text-white bg-purple-600 hover:bg-purple-700 shadow-xs transition cursor-pointer"
                       >
                         Mark as Packed
                       </button>
@@ -190,7 +190,7 @@ const SellerOrders = () => {
 
                     <button
                       onClick={() => updateStatus(order._id, "Shipped")}
-                      className="px-4 py-2 rounded-2xl text-xs font-extrabold text-white bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] shadow-md shadow-blue-500/20 hover:opacity-95 transition"
+                      className="px-4 py-2 rounded-2xl text-xs font-extrabold text-white bg-gradient-to-r from-[#10B981] via-[#34D399] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-md shadow-emerald-500/20 transition cursor-pointer"
                     >
                       Mark as Shipped
                     </button>

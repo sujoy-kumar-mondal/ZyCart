@@ -191,11 +191,11 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0E131F] text-slate-100 flex flex-col justify-center relative overflow-hidden font-sans selection:bg-[#3F51F4] selection:text-white py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#0E131F] text-slate-100 flex flex-col justify-center relative overflow-hidden font-sans selection:bg-blue-500 selection:text-white py-12 px-4 sm:px-6 lg:px-8">
       
       {/* Background Animated Ambient Lights & Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(#3F51F4_1px,transparent_1px)] [background-size:32px_32px] opacity-15 pointer-events-none"></div>
-      <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-[#3F51F4]/25 to-cyan-500/15 rounded-full blur-3xl pointer-events-none animate-pulse duration-1000"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(#3B82F6_1px,transparent_1px)] [background-size:32px_32px] opacity-15 pointer-events-none"></div>
+      <div className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-blue-500/25 to-cyan-500/15 rounded-full blur-3xl pointer-events-none animate-pulse duration-1000"></div>
       <div className="absolute -bottom-40 -right-40 w-[600px] h-[600px] bg-gradient-to-tr from-indigo-600/20 to-purple-600/15 rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="relative z-10 max-w-5xl mx-auto w-full">
@@ -208,17 +208,17 @@ const ForgotPassword = () => {
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
             <div className="space-y-6 relative z-10">
-              <Link to="/login" className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition group">
+              <Link to="/login" className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition group cursor-pointer">
                 <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" /> Back to Sign In
               </Link>
 
               <div className="space-y-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-[#8FD6F6]">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-300">
                   <Sparkles className="w-3.5 h-3.5 text-blue-400" /> Account Recovery
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug">
                   Reset & Recover <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6A8EF0] via-[#8FD6F6] to-cyan-300">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-cyan-300">
                     Your Access Safely
                   </span>
                 </h2>
@@ -231,7 +231,7 @@ const ForgotPassword = () => {
               <div className="space-y-3 pt-2">
                 <div className={`p-3.5 rounded-2xl border transition ${step === 1 ? "bg-blue-500/15 border-blue-500/40 text-white" : "bg-slate-800/40 border-slate-700/40 text-slate-400"}`}>
                   <div className="flex items-center gap-3">
-                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 1 ? "bg-[#3F51F4] text-white" : "bg-slate-700 text-slate-300"}`}>
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 1 ? "bg-blue-600 text-white" : "bg-slate-700 text-slate-300"}`}>
                       1
                     </span>
                     <div>
@@ -243,7 +243,7 @@ const ForgotPassword = () => {
 
                 <div className={`p-3.5 rounded-2xl border transition ${step === 2 ? "bg-blue-500/15 border-blue-500/40 text-white" : "bg-slate-800/40 border-slate-700/40 text-slate-400"}`}>
                   <div className="flex items-center gap-3">
-                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 2 ? "bg-[#3F51F4] text-white" : "bg-slate-700 text-slate-300"}`}>
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${step === 2 ? "bg-blue-600 text-white" : "bg-slate-700 text-slate-300"}`}>
                       2
                     </span>
                     <div>
@@ -258,7 +258,7 @@ const ForgotPassword = () => {
             {/* Help / Support Link */}
             <div className="relative z-10 pt-6 border-t border-slate-800/60 flex items-center justify-between text-xs text-slate-400">
               <span>Need help?</span>
-              <Link to="/contact" className="font-semibold text-[#6A8EF0] hover:text-white transition">
+              <Link to="/contact" className="font-semibold text-blue-400 hover:text-white transition cursor-pointer">
                 Contact Customer Support →
               </Link>
             </div>
@@ -272,7 +272,7 @@ const ForgotPassword = () => {
               {/* Header */}
               <div className="space-y-1 text-center lg:text-left">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#6A8EF0] px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">
+                  <span className="text-[11px] font-extrabold uppercase tracking-widest text-blue-400 px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">
                     Step {step} of 2
                   </span>
                   {step === 2 && (
@@ -286,7 +286,7 @@ const ForgotPassword = () => {
                   )}
                 </div>
                 <h1 className="text-2xl font-black text-white tracking-tight flex items-center justify-center lg:justify-start gap-2.5 pt-1">
-                  <KeyRound className="w-6 h-6 text-[#6A8EF0]" />
+                  <KeyRound className="w-6 h-6 text-blue-400" />
                   {step === 1 ? "Forgot Password" : "Reset Password"}
                 </h1>
                 <p className="text-xs text-slate-400 font-medium">
@@ -317,7 +317,7 @@ const ForgotPassword = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@example.com"
-                        className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#3F51F4] focus:border-transparent transition"
+                        className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         required
                         autoFocus
                       />
@@ -343,8 +343,8 @@ const ForgotPassword = () => {
                   </button>
 
                   <div className="pt-2 text-center">
-                    <Link to="/login" className="text-xs font-bold text-slate-400 hover:text-white transition">
-                      Remembered your password? <span className="text-[#6A8EF0]">Sign In</span>
+                    <Link to="/login" className="text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer">
+                      Remembered your password? <span className="text-blue-400">Sign In</span>
                     </Link>
                   </div>
                 </motion.form>
@@ -371,7 +371,7 @@ const ForgotPassword = () => {
                           value={digit}
                           onChange={(e) => handleOtpChange(index, e.target.value)}
                           onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                          className="w-12 h-12 text-center text-lg font-black bg-slate-800/80 border border-slate-700/80 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-[#3F51F4] focus:border-[#3F51F4] transition shadow-inner"
+                          className="w-12 h-12 text-center text-lg font-black bg-slate-800/80 border border-slate-700/80 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition shadow-inner"
                           required
                         />
                       ))}
@@ -383,7 +383,7 @@ const ForgotPassword = () => {
                         type="button"
                         onClick={handleResendOtp}
                         disabled={resendCooldown > 0 || resending}
-                        className="text-[11px] font-bold text-[#6A8EF0] hover:text-blue-300 disabled:text-slate-500 disabled:cursor-not-allowed transition cursor-pointer"
+                        className="text-[11px] font-bold text-blue-400 hover:text-blue-300 disabled:text-slate-500 disabled:cursor-not-allowed transition cursor-pointer"
                       >
                         {resending ? "Sending..." : resendCooldown > 0 ? `Resend code in ${resendCooldown}s` : "Resend Code"}
                       </button>
@@ -402,7 +402,7 @@ const ForgotPassword = () => {
                         value={form.password}
                         onChange={(e) => setForm({ ...form, password: e.target.value })}
                         placeholder="Enter strong new password"
-                        className="w-full pl-10 pr-10 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-[#3F51F4] focus:border-transparent transition"
+                        className="w-full pl-10 pr-10 py-3 rounded-2xl bg-slate-800/60 border border-slate-700/80 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                         required
                       />
                       <button
@@ -440,7 +440,7 @@ const ForgotPassword = () => {
                             ? isMatch
                               ? "border-emerald-500/60 focus:ring-emerald-500"
                               : "border-rose-500/60 focus:ring-rose-500"
-                            : "border-slate-700/80 focus:ring-[#3F51F4]"
+                            : "border-slate-700/80 focus:ring-blue-500"
                         }`}
                         required
                       />

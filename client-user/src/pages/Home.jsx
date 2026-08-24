@@ -69,7 +69,7 @@ const Home = () => {
       title: "Verified Reviews",
       description: "Read genuine feedback and ratings from verified buyers.",
       icon: CheckCircle,
-      color: "from-blue-600 to-[#3F51F4]",
+      color: "from-blue-500 to-indigo-600",
     },
   ];
 
@@ -96,16 +96,16 @@ const Home = () => {
               className="lg:col-span-7 space-y-5 sm:space-y-6 w-full max-w-full"
             >
 
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-[#1B2A41] leading-tight break-words">
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 leading-tight break-words">
                 {tagline.includes(",") ? (
                   <>
                     {tagline.split(",")[0]},{" "}
-                    <span className="bg-gradient-to-r from-[#2563EB] to-[#F97316] text-transparent bg-clip-text">
+                    <span className="bg-gradient-to-r from-[#3B82F6] to-[#F97316] text-transparent bg-clip-text">
                       {tagline.split(",").slice(1).join(",")}
                     </span>
                   </>
                 ) : (
-                  <span className="bg-gradient-to-r from-[#2563EB] to-[#F97316] text-transparent bg-clip-text">
+                  <span className="bg-gradient-to-r from-[#3B82F6] to-[#F97316] text-transparent bg-clip-text">
                     {tagline}
                   </span>
                 )}
@@ -118,7 +118,7 @@ const Home = () => {
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2">
                 <Link
                   to="/products"
-                  className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-extrabold text-white text-sm sm:text-base bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:opacity-95 shadow-xl shadow-blue-500/25 transition transform active:scale-95 flex items-center justify-center gap-2"
+                  className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-extrabold text-white text-sm sm:text-base bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] hover:opacity-95 shadow-xl shadow-blue-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
                 >
                   Explore Catalog <ArrowRight className="w-5 h-5" />
                 </Link>
@@ -163,7 +163,7 @@ const Home = () => {
 
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 text-center">
-                    <p className="text-2xl sm:text-3xl font-black text-[#2563EB]">{stats?.activeProducts?.toLocaleString() || 0}</p>
+                    <p className="text-2xl sm:text-3xl font-black text-blue-600">{stats?.activeProducts?.toLocaleString() || 0}</p>
                     <p className="text-[11px] sm:text-xs font-semibold text-slate-600 mt-1">Products Listed</p>
                   </div>
                   <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-100 text-center">
@@ -213,7 +213,7 @@ const Home = () => {
               const IconComponent = stat.icon;
               return (
                 <div key={idx} className="text-center space-y-2">
-                  <IconComponent className="w-6 h-6 mx-auto text-[#2563EB]" />
+                  <IconComponent className="w-6 h-6 mx-auto text-blue-600" />
                   <p className="text-2xl sm:text-3xl font-black text-slate-900">{stat.value}</p>
                   <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</p>
                 </div>
@@ -243,7 +243,7 @@ const Home = () => {
                 <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${feature.color} text-white flex items-center justify-center shadow-md`}>
                   <IconComponent className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-[#2563EB] transition">
+                <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-blue-600 transition">
                   {feature.title}
                 </h3>
                 <p className="text-slate-600 text-sm leading-relaxed">
@@ -259,7 +259,7 @@ const Home = () => {
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gradient-to-r from-black via-slate-900 to-black border border-slate-800 rounded-3xl p-10 sm:p-16 text-center text-white shadow-2xl space-y-6 relative overflow-hidden">
           <h2 className="text-3xl sm:text-5xl font-black leading-tight">
-            Ready to Find Your Next <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2563EB] to-[#F97316]">Favorite Product?</span>
+            Ready to Find Your Next <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3B82F6] to-[#F97316]">Favorite Product?</span>
           </h2>
           <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto">
             Explore thousands of products across electronics, fashion, home decor, and smart gadgets.
@@ -267,7 +267,7 @@ const Home = () => {
           <div className="pt-2">
             <Link
               to="/products"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] text-white rounded-2xl font-extrabold text-base shadow-lg shadow-orange-500/25 transition transform active:scale-95"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#F97316] to-[#EA580C] hover:from-[#EA580C] hover:to-[#C2410C] text-white rounded-2xl font-extrabold text-base shadow-lg shadow-orange-500/25 transition transform active:scale-95 cursor-pointer"
             >
               Start Shopping Now <ArrowRight className="w-5 h-5" />
             </Link>

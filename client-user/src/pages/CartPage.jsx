@@ -43,18 +43,18 @@ const CartPage = () => {
     return (
       <div className="min-h-[75vh] bg-[#F8FAFC] py-16 flex items-center justify-center px-4">
         <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-sm border border-slate-200/80 text-center max-w-md w-full space-y-6">
-          <div className="w-20 h-20 bg-blue-50 text-[#3F51F4] rounded-full flex items-center justify-center mx-auto text-3xl">
+          <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto text-3xl">
             🛒
           </div>
           <div className="space-y-2">
-            <h2 className="text-2xl font-extrabold text-[#1B2A41]">Your Shopping Cart is Empty</h2>
+            <h2 className="text-2xl font-extrabold text-slate-900">Your Shopping Cart is Empty</h2>
             <p className="text-slate-500 text-sm">
               Looks like you haven't added any products to your cart yet.
             </p>
           </div>
           <Link
             to="/products"
-            className="inline-flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-gradient-to-r from-[#6A8EF0] to-[#3F51F4] text-white font-extrabold text-base shadow-lg shadow-blue-500/20 hover:opacity-95 transition transform active:scale-95"
+            className="inline-flex items-center justify-center gap-2 w-full py-4 rounded-2xl bg-gradient-to-r from-[#3B82F6] via-[#60A5FA] to-[#2563EB] text-white font-extrabold text-base shadow-lg shadow-blue-500/20 hover:opacity-95 transition transform active:scale-95 cursor-pointer"
           >
             Start Shopping Now <ArrowRight className="w-5 h-5" />
           </Link>
@@ -78,7 +78,7 @@ const CartPage = () => {
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold text-[#1B2A41]">Shopping Cart</h1>
+            <h1 className="text-3xl font-extrabold text-slate-900">Shopping Cart</h1>
             <p className="text-sm text-slate-500 font-semibold mt-1">
               {cartItems.length} {cartItems.length === 1 ? "item" : "items"} in your cart ({totalQuantity} total units)
             </p>
@@ -86,7 +86,7 @@ const CartPage = () => {
 
           <Link
             to="/products"
-            className="inline-flex items-center gap-2 text-sm font-bold text-[#3F51F4] hover:underline"
+            className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:underline cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" /> Continue Shopping
           </Link>
@@ -96,14 +96,14 @@ const CartPage = () => {
         {amountNeededForFree > 0 ? (
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 p-4 rounded-2xl flex items-center justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-3">
-              <Truck className="w-5 h-5 text-[#3F51F4] shrink-0" />
+              <Truck className="w-5 h-5 text-blue-600 shrink-0" />
               <p className="text-xs sm:text-sm font-bold text-slate-800">
-                Add <span className="text-[#3F51F4] font-black">{currency}{amountNeededForFree.toLocaleString()}</span> more to your cart to qualify for <span className="text-emerald-700 font-black">100% FREE Delivery</span>!
+                Add <span className="text-blue-600 font-black">{currency}{amountNeededForFree.toLocaleString()}</span> more to your cart to qualify for <span className="text-emerald-700 font-black">100% FREE Delivery</span>!
               </p>
             </div>
             <Link
               to="/products"
-              className="text-xs font-black text-[#3F51F4] hover:underline shrink-0"
+              className="text-xs font-black text-blue-600 hover:underline shrink-0 cursor-pointer"
             >
               Shop More &rarr;
             </Link>
@@ -128,7 +128,7 @@ const CartPage = () => {
           {/* RIGHT: Order Summary Card */}
           <div className="lg:col-span-4 sticky top-24 space-y-4">
             <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-slate-200/80 space-y-6">
-              <h2 className="text-xl font-extrabold text-[#1B2A41] border-b border-slate-100 pb-4">
+              <h2 className="text-xl font-extrabold text-slate-900 border-b border-slate-100 pb-4">
                 Order Summary
               </h2>
 
