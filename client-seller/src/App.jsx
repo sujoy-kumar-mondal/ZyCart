@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 
 // Seller Pages
 import SellerDashboard from "./pages/seller/SellerDashboard.jsx";
@@ -26,6 +27,7 @@ import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 const App = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 w-full max-w-full">
+      <ScrollToTop />
       <Toaster />
       <Navbar />
 

@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
+import ScrollToTop from "./components/ScrollToTop.jsx";
 import MaintenanceMode from "./components/MaintenanceMode.jsx";
 import { useSettings } from "./context/SettingsProvider.jsx";
 
@@ -35,6 +36,7 @@ const App = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100 w-full max-w-full">
+      <ScrollToTop />
       <Toaster />
       <Navbar />
       <main className="grow container-main w-full max-w-full">
