@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useWishlist } from "../context/WishlistProvider";
 import { useCart } from "../context/CartProvider";
+import { useAuth } from "../context/AuthProvider";
 import { useSettings } from "../context/SettingsProvider";
 import { toast } from "react-hot-toast";
 import Loader from "../components/Loader";
@@ -13,13 +14,25 @@ const WishlistPage = () => {
   const brandName = settings?.platformName || "ZyCart";
   const { wishlist, loading, removeFromWishlist, fetchWishlist } = useWishlist();
   const { addToCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = `My Wishlist | ${brandName}`;
+    if (!user) {
+      toast.error("Please login to view your wishlist");
+      navigate("/login");
+      return;
+    }
     fetchWishlist();
-  }, [brandName]);
+  }, [brandName, user, navigate]);
 
   const handleMoveToCart = (product) => {
+    if (!user) {
+      toast.error("Please login to move items to cart");
+      navigate("/login");
+      return;
+    }
     addToCart(product);
     removeFromWishlist(product._id);
     toast.success("Moved to cart!");

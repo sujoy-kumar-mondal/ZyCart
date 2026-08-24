@@ -9,6 +9,8 @@ export const CartProvider = ({ children }) => {
   const { user } = useAuth();
 
   const [cartItems, setCartItems] = useState(() => {
+    const u = localStorage.getItem("user");
+    if (!u || u === "undefined") return [];
     const data = localStorage.getItem("cart");
     return data ? JSON.parse(data) : [];
   });
@@ -29,7 +31,11 @@ export const CartProvider = ({ children }) => {
   // 1) SYNC CART FROM DATABASE AFTER LOGIN
   // =====================================================
   useEffect(() => {
-    if (!user) return;  // Only fetch cart when logged in
+    if (!user) {
+      setCartItems([]);
+      localStorage.removeItem("cart");
+      return;
+    }
 
     const fetchUserCart = async () => {
       try {
@@ -61,13 +67,21 @@ export const CartProvider = ({ children }) => {
   // 2) SAVE CART TO LOCAL STORAGE
   // =====================================================
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, [cartItems]);
+    if (user) {
+      localStorage.setItem("cart", JSON.stringify(cartItems));
+    } else {
+      localStorage.removeItem("cart");
+    }
+  }, [cartItems, user]);
 
   // =====================================================
   // 3) ADD ITEM TO CART + Sync DB if logged in
   // =====================================================
   const addToCart = async (product, qty = 1) => {
+    if (!user) {
+      return { success: false, requireLogin: true };
+    }
+
     const maxAllowed = product.maxQuantityPerPurchase
       ? Math.min(product.stock, product.maxQuantityPerPurchase)
       : product.stock;
@@ -111,18 +125,18 @@ export const CartProvider = ({ children }) => {
       ];
     });
 
-    if (!canProceed) return;
+    if (!canProceed) return { success: false, message: `Maximum ${maxAllowed} allowed` };
 
-    // ---- Sync with DB if logged in ----
-    if (user) {
-      try {
-        await axios.post("/cart/add", {
-          productId: product._id,
-          qty,
-        });
-      } catch (err) {
-        toast.error(err.response?.data?.message || "Failed to update cart in database.");
-      }
+    // ---- Sync with DB ----
+    try {
+      await axios.post("/cart/add", {
+        productId: product._id,
+        qty,
+      });
+      return { success: true };
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to update cart in database.");
+      return { success: false };
     }
   };
 

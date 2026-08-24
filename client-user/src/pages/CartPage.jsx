@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import CartItem from "../components/CartItem";
 import { useCart } from "../context/CartProvider";
+import { useAuth } from "../context/AuthProvider";
 import { useSettings } from "../context/SettingsProvider";
 import { useNavigate, Link } from "react-router-dom";
 import { ShoppingBag, ArrowRight, ShieldCheck, Truck, ArrowLeft, Sparkles, AlertCircle } from "lucide-react";
@@ -8,13 +9,18 @@ import { toast } from "react-hot-toast";
 
 const CartPage = () => {
   const { cartItems, totalPrice, totalQuantity } = useCart();
+  const { user } = useAuth();
   const { settings } = useSettings();
   const currency = settings?.currencySymbol || "₹";
   const navigate = useNavigate();
   
   useEffect(() => {
     document.title = "Shopping Cart | " + (settings.platformName || "ZyCart");
-  }, [settings.platformName]);
+    if (!user) {
+      toast.error("Please login to view your cart");
+      navigate("/login");
+    }
+  }, [settings.platformName, user, navigate]);
 
   const freeThreshold = settings.freeDeliveryThreshold ?? 499;
   const standardDeliveryFee = settings.deliveryFee ?? 40;

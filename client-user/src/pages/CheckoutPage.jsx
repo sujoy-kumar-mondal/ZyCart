@@ -35,6 +35,12 @@ const CheckoutPage = () => {
   useEffect(() => {
     document.title = "Checkout — Shipping Address | " + (settings.platformName || "ZyCart");
     
+    if (!user) {
+      toast.error("Please login to proceed to checkout");
+      navigate("/login");
+      return;
+    }
+
     const loadUserAddress = async () => {
       try {
         const res = await axios.get("/users/profile");
@@ -47,7 +53,7 @@ const CheckoutPage = () => {
     };
     
     loadUserAddress();
-  }, [settings.platformName]);
+  }, [settings.platformName, user, navigate]);
 
   const handleChange = (e) => {
     setAddress({ ...address, [e.target.name]: e.target.value });

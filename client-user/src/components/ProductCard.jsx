@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { useCart } from "../context/CartProvider";
 import { useWishlist } from "../context/WishlistProvider";
@@ -13,6 +13,7 @@ const ProductCard = ({ product }) => {
   const { settings } = useSettings();
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
   const [wishlistLoading, setWishlistLoading] = useState(false);
+  const navigate = useNavigate();
 
   const inWishlist = isInWishlist(product._id);
 
@@ -20,6 +21,7 @@ const ProductCard = ({ product }) => {
     e.preventDefault();
     if (!user) {
       toast.error("Please login to add to wishlist");
+      navigate("/login");
       return;
     }
 
@@ -142,7 +144,13 @@ const ProductCard = ({ product }) => {
       {/* Bottom Action Button */}
       <div className="pt-3 mt-auto">
         <button
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
+            if (!user) {
+              toast.error("Please login to add items to cart");
+              navigate("/login");
+              return;
+            }
             if (product.isAvailable && product.stock > 0) {
               addToCart(product);
               toast.success("Added to cart!");

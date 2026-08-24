@@ -180,9 +180,19 @@ const ProductDetailsPage = () => {
   }, [product]);
 
   const handleAddToCart = async () => {
+    if (!user) {
+      toast.error('Please login to add items to cart');
+      navigate('/login');
+      return;
+    }
     if (!product) return;
     try {
-      await addToCart(product, quantity);
+      const res = await addToCart(product, quantity);
+      if (res && res.requireLogin) {
+        toast.error('Please login to add items to cart');
+        navigate('/login');
+        return;
+      }
       toast.success('Added to cart!');
       try {
         await axiosInstance.post('/products/update-trend-purchase', { 
@@ -198,7 +208,8 @@ const ProductDetailsPage = () => {
 
   const handleBuyNow = async () => {
     if (!user) {
-      toast.error('Please login to continue');
+      toast.error('Please login to buy items');
+      navigate('/login');
       return;
     }
 
@@ -214,7 +225,7 @@ const ProductDetailsPage = () => {
         });
       } catch (err) {
       }
-      window.location.href = '/checkout';
+      navigate('/checkout');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to process order');
     }
@@ -223,6 +234,7 @@ const ProductDetailsPage = () => {
   const handleWishlist = async () => {
     if (!user) {
       toast.error('Please login to add to wishlist');
+      navigate('/login');
       return;
     }
 
