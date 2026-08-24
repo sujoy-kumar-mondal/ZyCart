@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../utils/axiosInstance.js";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 import { toast } from "react-hot-toast";
 import { motion } from "framer-motion";
 
@@ -18,6 +19,7 @@ const EyeOffIcon = () => (
 );
 
 const ChangePassword = () => {
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     const [form, setForm] = useState({ password: "", nPassword: "", cPassword: "" });
@@ -25,6 +27,14 @@ const ChangePassword = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showNPassword, setShowNPassword] = useState(false);
     const [showCPassword, setShowCPassword] = useState(false);
+
+    useEffect(() => {
+        document.title = "Change Password | ZyCart";
+        if (!user) {
+            toast.error("Please login to access change password");
+            navigate("/login");
+        }
+    }, [user, navigate]);
 
     const handleChange = (e) =>
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -64,9 +74,6 @@ const ChangePassword = () => {
             setLoading(false);
         }
     };
-    useEffect(() => {
-        document.title = "Change Password | ZyCart";
-    }, []);
 
     return (
         <>

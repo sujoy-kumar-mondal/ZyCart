@@ -26,6 +26,9 @@ import Contact from "./pages/Contact.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ChangePassword from "./pages/ChangePassword.jsx";
 
+// Route Guards
+import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+
 const App = () => {
   const { settings, loading, refreshSettings } = useSettings();
 
@@ -41,6 +44,7 @@ const App = () => {
       <Navbar />
       <main className="grow container-main w-full max-w-full">
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/product/:id" element={<ProductDetailsPage />} />
           <Route path="/login" element={<Login />} />
@@ -49,14 +53,72 @@ const App = () => {
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/changepassword" element={<ChangePassword />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
-          <Route path="/payment" element={<PaymentPage />} />
-          <Route path="/my-orders" element={<UserOrders />} />
-          <Route path="/my-orders/:orderId" element={<UserOrderDetails />} />
-          <Route path="/wishlist" element={<WishlistPage />} />
-          <Route path="/profile" element={<UserProfile />} />
+
+          {/* Protected Customer Routes */}
+          <Route
+            path="/changepassword"
+            element={
+              <ProtectedRoute>
+                <ChangePassword />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <CartPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <CheckoutPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment"
+            element={
+              <ProtectedRoute>
+                <PaymentPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-orders"
+            element={
+              <ProtectedRoute>
+                <UserOrders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-orders/:orderId"
+            element={
+              <ProtectedRoute>
+                <UserOrderDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/wishlist"
+            element={
+              <ProtectedRoute>
+                <WishlistPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <UserProfile />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
       <Footer />
