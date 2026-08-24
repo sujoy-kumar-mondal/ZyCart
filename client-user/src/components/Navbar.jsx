@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 import { useCart } from "../context/CartProvider";
@@ -19,11 +19,24 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const urlSearch = searchParams.get("search") || "";
     setSearchQuery(urlSearch);
   }, [searchParams]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const getInitials = () => {
     if (!user?.name) return "U";
@@ -56,7 +69,7 @@ const Navbar = () => {
         </div>
       )}
 
-      <nav className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition-all w-full max-w-full overflow-hidden">
+      <nav className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition-all w-full max-w-full">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20 gap-2 sm:gap-4">
           
@@ -182,7 +195,7 @@ const Navbar = () => {
                 </NavLink>
 
                 {/* User Dropdown */}
-                <div className="relative ml-1">
+                <div ref={dropdownRef} className="relative ml-1">
                   <button
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                     className="flex items-center gap-2 p-1.5 rounded-full hover:bg-slate-100/80 border border-slate-200/80 transition"
