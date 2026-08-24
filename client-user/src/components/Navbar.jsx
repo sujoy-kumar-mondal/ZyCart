@@ -60,7 +60,7 @@ const Navbar = () => {
   };
 
   return (
-    <>
+    <header className="sticky top-0 z-50 w-full">
       {/* Global Announcement Banner */}
       {settings.announcementBanner?.enabled && (
         <div className="w-full bg-gradient-to-r from-[#1B2A41] via-[#3F51F4] to-[#1B2A41] text-white py-2 px-3 sm:px-4 text-center text-xs font-bold shadow-xs relative z-50 flex items-center justify-center gap-2 overflow-hidden">
@@ -69,7 +69,7 @@ const Navbar = () => {
         </div>
       )}
 
-      <nav className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition-all w-full max-w-full">
+      <nav className="bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-xs transition-all w-full max-w-full">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20 gap-2 sm:gap-4">
           
@@ -379,7 +379,7 @@ const Navbar = () => {
         )}
       </AnimatePresence>
     </nav>
-    </>
+    </header>
   );
 };
 

@@ -48,7 +48,7 @@ const Navbar = () => {
     }`;
 
   return (
-    <>
+    <header className="sticky top-0 z-50 w-full">
       {/* Maintenance Alert Banner */}
       {settings.maintenanceMode?.enabled && (
         <div className="bg-amber-600 text-white py-2 px-4 text-center text-xs font-black shadow-xs relative z-50 flex items-center justify-center gap-2">
@@ -57,7 +57,7 @@ const Navbar = () => {
         </div>
       )}
 
-      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/85 border-b border-slate-200/80 shadow-xs">
+      <nav className="backdrop-blur-xl bg-white/90 border-b border-slate-200/80 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
         
         {/* Brand Logo & Merchant Badge */}
@@ -265,7 +265,7 @@ const Navbar = () => {
         )}
       </AnimatePresence>
     </nav>
-    </>
+    </header>
   );
 };
 

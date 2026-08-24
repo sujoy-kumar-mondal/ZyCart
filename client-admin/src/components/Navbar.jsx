@@ -47,7 +47,8 @@ const Navbar = () => {
   const hasPerm = (perm) => isSuperAdmin || (user?.permissions && user.permissions.includes(perm));
 
   return (
-    <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/85 border-b border-slate-200/80 shadow-xs">
+    <header className="sticky top-0 z-50 w-full">
+      <nav className="backdrop-blur-xl bg-white/90 border-b border-slate-200/80 shadow-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 sm:h-20">
         
         {/* Brand Logo & Operations Badge */}
@@ -314,6 +315,7 @@ const Navbar = () => {
         )}
       </AnimatePresence>
     </nav>
+    </header>
   );
 };
 
