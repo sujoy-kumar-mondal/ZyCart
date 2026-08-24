@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 import { useSettings } from "../context/SettingsProvider";
@@ -13,6 +13,19 @@ const Navbar = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const getInitials = () => {
     if (!user?.name) return "A";
@@ -112,7 +125,7 @@ const Navbar = () => {
               )}
 
               {/* Profile Avatar Dropdown */}
-              <div className="relative ml-3">
+              <div ref={dropdownRef} className="relative ml-3">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="w-10 h-10 rounded-full font-black text-xs text-white bg-gradient-to-tr from-[#3F51F4] to-[#6A8EF0] hover:opacity-90 transition shadow-md shadow-blue-500/20 flex items-center justify-center cursor-pointer"

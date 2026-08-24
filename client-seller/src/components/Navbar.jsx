@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 import { useSettings } from "../context/SettingsProvider";
@@ -13,6 +13,19 @@ const Navbar = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const getInitials = () => {
     if (!user?.name) return "S";
@@ -86,7 +99,7 @@ const Navbar = () => {
               </NavLink>
 
               {/* User Dropdown */}
-              <div className="relative ml-2">
+              <div ref={dropdownRef} className="relative ml-2">
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className="flex items-center gap-3 p-1.5 rounded-2xl hover:bg-slate-100/80 transition"
