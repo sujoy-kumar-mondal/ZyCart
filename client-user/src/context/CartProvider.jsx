@@ -9,9 +9,9 @@ export const CartProvider = ({ children }) => {
   const { user } = useAuth();
 
   const [cartItems, setCartItems] = useState(() => {
-    const u = localStorage.getItem("user");
+    const u = localStorage.getItem("user") || sessionStorage.getItem("user");
     if (!u || u === "undefined") return [];
-    const data = localStorage.getItem("cart");
+    const data = localStorage.getItem("cart") || sessionStorage.getItem("cart");
     return data ? JSON.parse(data) : [];
   });
 
@@ -34,6 +34,7 @@ export const CartProvider = ({ children }) => {
     if (!user) {
       setCartItems([]);
       localStorage.removeItem("cart");
+      sessionStorage.removeItem("cart");
       return;
     }
 
@@ -54,7 +55,11 @@ export const CartProvider = ({ children }) => {
         }));
 
         setCartItems(formatted);
-        localStorage.setItem("cart", JSON.stringify(formatted));
+        if (localStorage.getItem("user")) {
+          localStorage.setItem("cart", JSON.stringify(formatted));
+        } else {
+          sessionStorage.setItem("cart", JSON.stringify(formatted));
+        }
       } catch (err) {
       }
     };
@@ -64,13 +69,20 @@ export const CartProvider = ({ children }) => {
 
 
   // =====================================================
-  // 2) SAVE CART TO LOCAL STORAGE
+  // 2) SAVE CART TO STORAGE
   // =====================================================
   useEffect(() => {
     if (user) {
-      localStorage.setItem("cart", JSON.stringify(cartItems));
+      if (localStorage.getItem("user")) {
+        localStorage.setItem("cart", JSON.stringify(cartItems));
+        sessionStorage.removeItem("cart");
+      } else {
+        sessionStorage.setItem("cart", JSON.stringify(cartItems));
+        localStorage.removeItem("cart");
+      }
     } else {
       localStorage.removeItem("cart");
+      sessionStorage.removeItem("cart");
     }
   }, [cartItems, user]);
 

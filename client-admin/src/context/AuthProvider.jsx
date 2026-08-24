@@ -4,9 +4,11 @@ import axios from "../utils/axiosInstance.js";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(() => localStorage.getItem("token"));
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem("token") || sessionStorage.getItem("token");
+  });
   const [user, setUser] = useState(() => {
-    const u = localStorage.getItem("user");
+    const u = localStorage.getItem("user") || sessionStorage.getItem("user");
     return u && u !== "undefined" ? JSON.parse(u) : null;
   });
   const [loading, setLoading] = useState(false);
@@ -14,14 +16,23 @@ export const AuthProvider = ({ children }) => {
   // ------------------------------------------------------
   // Save login data
   // ------------------------------------------------------
-  const login = (data) => {
+  const login = (data, rememberMe = true) => {
     const { token, user } = data;
 
     setToken(token);
     setUser(user);
 
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+    if (rememberMe) {
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      sessionStorage.removeItem("token");
+      sessionStorage.removeItem("user");
+    } else {
+      sessionStorage.setItem("token", token);
+      sessionStorage.setItem("user", JSON.stringify(user));
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    }
   };
 
   // ------------------------------------------------------
@@ -34,13 +45,16 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("cart");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    sessionStorage.removeItem("cart");
   };
 
   // ------------------------------------------------------
   // Refresh current user profile & permissions from DB
   // ------------------------------------------------------
   const refreshUser = useCallback(async () => {
-    const currentToken = token || localStorage.getItem("token");
+    const currentToken = token || localStorage.getItem("token") || sessionStorage.getItem("token");
     if (!currentToken) return null;
 
     try {
@@ -56,7 +70,11 @@ export const AuthProvider = ({ children }) => {
           return null;
         }
         setUser(freshAdmin);
-        localStorage.setItem("user", JSON.stringify(freshAdmin));
+        if (localStorage.getItem("user")) {
+          localStorage.setItem("user", JSON.stringify(freshAdmin));
+        } else {
+          sessionStorage.setItem("user", JSON.stringify(freshAdmin));
+        }
         return freshAdmin;
       }
     } catch (err) {

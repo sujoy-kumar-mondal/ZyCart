@@ -10,7 +10,13 @@ const Login = () => {
   const { user, login } = useAuth();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({
+    email: localStorage.getItem("zycart_saved_seller_email") || "",
+    password: "",
+  });
+  const [rememberMe, setRememberMe] = useState(
+    Boolean(localStorage.getItem("zycart_saved_seller_email"))
+  );
   const [step, setStep] = useState(1);
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,6 +33,11 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (rememberMe) {
+      localStorage.setItem("zycart_saved_seller_email", form.email);
+    } else {
+      localStorage.removeItem("zycart_saved_seller_email");
+    }
     setLoading(true);
 
     try {
@@ -40,7 +51,7 @@ const Login = () => {
           token: res.data.token,
           user: res.data.seller,
         };
-        login(loginData);
+        login(loginData, rememberMe);
         toast.success("Merchant login successful!");
         navigate("/seller/dashboard");
       }
@@ -68,7 +79,7 @@ const Login = () => {
           token: res.data.token,
           user: res.data.seller,
         };
-        login(loginData);
+        login(loginData, rememberMe);
         toast.success("Merchant login successful!");
         navigate("/seller/dashboard");
       }
@@ -158,6 +169,21 @@ const Login = () => {
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
+            </div>
+
+            {/* Remember Me Checkbox */}
+            <div className="flex items-center justify-between pt-1">
+              <label className="flex items-center gap-2.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 rounded-md border-slate-300 text-[#3F51F4] focus:ring-[#3F51F4] accent-[#3F51F4]"
+                />
+                <span className="text-xs font-semibold text-slate-600">
+                  Remember my email on this device
+                </span>
+              </label>
             </div>
 
             <button

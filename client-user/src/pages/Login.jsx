@@ -94,8 +94,7 @@ const Login = () => {
           otpInputRefs.current[0]?.focus();
         }, 150);
       } else if (res.data.success) {
-        login(res.data);
-        localStorage.setItem("token", res.data.token);
+        login(res.data, rememberMe);
         toast.success("Welcome back! Login successful.");
         navigate("/");
       }
@@ -170,8 +169,7 @@ const Login = () => {
       });
 
       if (res.data.success) {
-        login(res.data);
-        localStorage.setItem("token", res.data.token);
+        login(res.data, rememberMe);
         toast.success("2FA Security verified! Welcome to ZyCart.");
         navigate("/");
       }
