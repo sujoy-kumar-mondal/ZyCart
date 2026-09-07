@@ -45,9 +45,6 @@ const SellerApply = () => {
   const handleSendOtp = async (e) => {
     e.preventDefault();
 
-    if (settings.requireGstin !== false && !form.gst) {
-      return toast.error("GSTIN number is required!");
-    }
     if (!email) return toast.error("Email is required!");
     if (!email.includes("@")) return toast.error("Please enter a valid email!");
     if (!registrationForm.name.trim()) return toast.error("Full Name is required!");
@@ -133,10 +130,13 @@ const SellerApply = () => {
       !form.shopType.trim() ||
       !form.pan.trim() ||
       !form.aadhar.trim() ||
-      !form.bankAccount.trim() ||
-      !form.gst.trim()
+      !form.bankAccount.trim()
     ) {
       return toast.error("Please fill all required fields!");
+    }
+
+    if (settings.requireGstin !== false && !form.gst.trim()) {
+      return toast.error("GSTIN number is required!");
     }
 
     const cleanPan = form.pan.trim().toUpperCase();
@@ -156,12 +156,14 @@ const SellerApply = () => {
       return toast.error("Invalid Bank Account number! (9 to 18 digits)");
     }
 
-    if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{3}$/i.test(cleanGst)) {
-      return toast.error("Invalid GSTIN number format! (Must be 15 characters, e.g. 22ABCDE1234F1Z5)");
-    }
+    if (settings.requireGstin !== false || cleanGst) {
+      if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{3}$/i.test(cleanGst)) {
+        return toast.error("Invalid GSTIN number format! (Must be 15 characters, e.g. 22ABCDE1234F1Z5)");
+      }
 
-    if (cleanPan && cleanGst.length >= 12 && cleanGst.slice(2, 12) !== cleanPan) {
-      return toast.error("GSTIN characters 3 to 12 must match your PAN number!");
+      if (cleanPan && cleanGst.length >= 12 && cleanGst.slice(2, 12) !== cleanPan) {
+        return toast.error("GSTIN characters 3 to 12 must match your PAN number!");
+      }
     }
 
     const sellerIdToUse = sellerId || localStorage.getItem("sellerId") || user?.id;
