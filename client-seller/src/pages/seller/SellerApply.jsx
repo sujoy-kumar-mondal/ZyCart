@@ -229,113 +229,111 @@ const SellerApply = () => {
 
         {/* Step 1: User Account Registration */}
         {step === 1 ? (
-          <form className="space-y-4">
-            {!otpSent ? (
-              <>
+          !otpSent ? (
+            <form onSubmit={handleSendOtp} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={registrationForm.name}
+                  onChange={(e) => setRegistrationForm({ ...registrationForm, name: e.target.value })}
+                  placeholder="Owner Full Name"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Email Address *
+                    Mobile Number *
                   </label>
                   <input
-                    type="email"
+                    type="tel"
                     required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
+                    maxLength={10}
+                    value={registrationForm.mobile}
+                    onChange={(e) => setRegistrationForm({ ...registrationForm, mobile: e.target.value.replace(/\D/g, "") })}
+                    placeholder="9876543210"
                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Full Name *
+                    Password *
                   </label>
                   <input
-                    type="text"
+                    type="password"
                     required
-                    value={registrationForm.name}
-                    onChange={(e) => setRegistrationForm({ ...registrationForm, name: e.target.value })}
-                    placeholder="Owner Full Name"
+                    value={registrationForm.password}
+                    onChange={(e) => setRegistrationForm({ ...registrationForm, password: e.target.value })}
+                    placeholder="••••••••"
                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
                   />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                      Mobile Number *
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      maxLength={10}
-                      value={registrationForm.mobile}
-                      onChange={(e) => setRegistrationForm({ ...registrationForm, mobile: e.target.value.replace(/\D/g, "") })}
-                      placeholder="9876543210"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                      Password *
-                    </label>
-                    <input
-                      type="password"
-                      required
-                      value={registrationForm.password}
-                      onChange={(e) => setRegistrationForm({ ...registrationForm, password: e.target.value })}
-                      placeholder="••••••••"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  onClick={handleSendOtp}
-                  disabled={loading}
-                  className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-lg shadow-emerald-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
-                >
-                  {loading ? "Sending OTP..." : "Send Verification OTP"} <ArrowRight className="w-5 h-5" />
-                </button>
-              </>
-            ) : (
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                    Enter OTP sent to {email}
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    maxLength={6}
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
-                    placeholder="000000"
-                    className="w-full py-3.5 px-4 bg-slate-50 border border-slate-200 rounded-2xl text-2xl font-black text-center tracking-widest text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
-                  />
-                </div>
-
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setOtpSent(false)}
-                    className="w-1/3 py-3.5 rounded-2xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50 transition text-sm cursor-pointer"
-                  >
-                    Back
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleRegister}
-                    disabled={loading}
-                    className="w-2/3 py-3.5 rounded-2xl font-extrabold text-white bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-md shadow-emerald-500/25 transition text-sm cursor-pointer"
-                  >
-                    {loading ? "Registering..." : "Verify OTP & Continue"}
-                  </button>
                 </div>
               </div>
-            )}
-          </form>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-lg shadow-emerald-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+              >
+                {loading ? "Sending OTP..." : "Send Verification OTP"} <ArrowRight className="w-5 h-5" />
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleRegister} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+                  Enter OTP sent to {email}
+                </label>
+                <input
+                  type="text"
+                  required
+                  autoFocus
+                  maxLength={6}
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                  placeholder="000000"
+                  className="w-full py-3.5 px-4 bg-slate-50 border border-slate-200 rounded-2xl text-2xl font-black text-center tracking-widest text-slate-900 focus:ring-2 focus:ring-emerald-400 focus:border-emerald-500 outline-none transition"
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setOtpSent(false)}
+                  className="w-1/3 py-3.5 rounded-2xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50 transition text-sm cursor-pointer"
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-2/3 py-3.5 rounded-2xl font-extrabold text-white bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-md shadow-emerald-500/25 transition text-sm cursor-pointer"
+                >
+                  {loading ? "Registering..." : "Verify OTP & Continue"}
+                </button>
+              </div>
+            </form>
+          )
         ) : (
           /* Step 2: Merchant Shop Application Details */
           <form onSubmit={handleSubmitApplication} className="space-y-5">
