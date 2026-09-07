@@ -5,6 +5,7 @@ import SystemSetting from "../models/SystemSetting.js";
 import Otp from "../models/Otp.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import cloudinary from "../config/cloudinary.js";
 import { generateOTP, sendOTP, resetOTP } from "../utils/sendOtp.js";
 
 // ===========================================================
@@ -306,16 +307,16 @@ export const sellerSendOtp = async (req, res) => {
 
     const cleanEmail = email.toLowerCase().trim();
 
-    // If seller exists with password → already registered
-    const existingSeller = await Seller.findOne({ email: cleanEmail, password: { $exists: true, $ne: "" } });
+    // If seller already completed registration → cannot register again
+    const existingSeller = await Seller.findOne({ email: cleanEmail, registrationStatus: "completed" });
     if (existingSeller) {
       return res
         .status(400)
         .json({ success: false, message: "Email already registered as merchant. Please sign in." });
     }
 
-    // Clean up any legacy unverified dummy seller records
-    await Seller.deleteMany({ email: cleanEmail, $or: [{ password: "" }, { password: null }, { password: { $exists: false } }] });
+    // Clean up any uncompleted/draft records for this email
+    await Seller.deleteMany({ email: cleanEmail, registrationStatus: { $ne: "completed" } });
 
     const otp = generateOTP();
 
@@ -356,7 +357,7 @@ const isStrongPassword = (pwd) => {
   return hasUpper && hasLower && hasNumber && hasSymbol;
 };
 
-// 5. VERIFY OTP + STEP 2 SELLER REGISTRATION
+// 5. VERIFY OTP + STEP 1 SELLER CREDENTIALS (DO NOT CREATE SELLER IN DB YET)
 export const verifySellerOtpAndRegister = async (req, res) => {
   try {
     const { email, otp, name, mobile, password } = req.body;
@@ -406,8 +407,8 @@ export const verifySellerOtpAndRegister = async (req, res) => {
       });
     }
 
-    // Check if seller already exists
-    const existingSeller = await Seller.findOne({ email: cleanEmail, password: { $exists: true, $ne: "" } });
+    // Check if seller already completed registration
+    const existingSeller = await Seller.findOne({ email: cleanEmail, registrationStatus: "completed" });
     if (existingSeller) {
       return res.status(400).json({
         success: false,
@@ -415,25 +416,30 @@ export const verifySellerOtpAndRegister = async (req, res) => {
       });
     }
 
-    // Clean up any stray dummy seller record
-    await Seller.deleteMany({ email: cleanEmail });
+    // Clean up any uncompleted records
+    await Seller.deleteMany({ email: cleanEmail, registrationStatus: { $ne: "completed" } });
 
-    // ONLY NOW create the seller document in database
-    const newSeller = await Seller.create({
-      name: name.trim(),
-      email: cleanEmail,
-      mobile: String(mobile).trim(),
-      password, // hashed automatically by SellerSchema pre('save')
-      registrationStatus: "step2",
-    });
+    // Generate signed temporary registration token valid for 1 hour
+    const registrationToken = jwt.sign(
+      {
+        email: cleanEmail,
+        name: name.trim(),
+        mobile: String(mobile).trim(),
+        password,
+        purpose: "seller_registration_step1",
+      },
+      process.env.JWT_SECRET || "zycart_secret_key",
+      { expiresIn: "1h" }
+    );
 
     // Delete the consumed OTP
     await Otp.deleteMany({ email: cleanEmail, purpose: "seller_registration" });
 
-    res.status(201).json({
+    // Note: Do NOT create any Seller document in database yet!
+    res.status(200).json({
       success: true,
-      message: "Step 2 completed. Proceed to seller details.",
-      sellerId: newSeller._id,
+      message: "Credentials and OTP verified! Proceed to shop details.",
+      registrationToken,
     });
   } catch (error) {
     console.error("verifySellerOtpAndRegister error:", error);
@@ -441,14 +447,44 @@ export const verifySellerOtpAndRegister = async (req, res) => {
   }
 };
 
-// 6. STEP 3: SUBMIT SELLER BUSINESS DETAILS
+// 6. STEP 2: SUBMIT SELLER BUSINESS DETAILS & CREATE SELLER IN DB
 export const submitSellerDetails = async (req, res) => {
   try {
-    const { sellerId, shopName, shopType, pan, aadhar, bankAccount, gst, address } = req.body;
+    const { registrationToken, sellerId, shopName, shopType, pan, aadhar, bankAccount, gst, address } = req.body;
 
-    // Validate sellerId
-    if (!sellerId) {
-      return res.status(400).json({ success: false, message: "Seller ID is required" });
+    let sellerAccountData = null;
+
+    if (registrationToken) {
+      try {
+        const decoded = jwt.verify(
+          registrationToken,
+          process.env.JWT_SECRET || "zycart_secret_key"
+        );
+        if (decoded.purpose !== "seller_registration_step1") {
+          return res.status(400).json({ success: false, message: "Invalid registration token." });
+        }
+        sellerAccountData = decoded;
+      } catch (err) {
+        return res.status(400).json({
+          success: false,
+          message: "Registration session expired or invalid. Please verify your credentials again.",
+        });
+      }
+    } else if (sellerId) {
+      const existing = await Seller.findById(sellerId);
+      if (!existing) {
+        return res.status(404).json({ success: false, message: "Seller not found" });
+      }
+      sellerAccountData = {
+        isExistingDoc: true,
+        sellerDoc: existing,
+        email: existing.email,
+      };
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Registration token is required. Please complete Step 1 first.",
+      });
     }
 
     // Check system settings for GST requirement
@@ -475,7 +511,7 @@ export const submitSellerDetails = async (req, res) => {
     const cleanPan = pan.trim().toUpperCase();
     const cleanAadhar = aadhar.replace(/\s+/g, "");
     const cleanBank = bankAccount.trim();
-    const cleanGst = gst.trim().toUpperCase();
+    const cleanGst = gst ? gst.trim().toUpperCase() : "";
 
     if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(cleanPan)) {
       return res.status(400).json({
@@ -498,58 +534,123 @@ export const submitSellerDetails = async (req, res) => {
       });
     }
 
-    if (gst && gst.trim()) {
+    if (cleanGst) {
       if (!/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(cleanGst)) {
         return res.status(400).json({
           success: false,
           message: "Invalid GSTIN format (Must be 15 characters, e.g. 22AAAAA0000A1Z5).",
         });
       }
-    }
 
-    let seller = await Seller.findById(sellerId);
-
-    if (!seller)
-      return res.status(404).json({ success: false, message: "Seller not found" });
-
-    // Check if seller is in correct registration step
-    if (seller.registrationStatus !== "step2") {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Please complete previous steps first (OTP verification and basic details)" 
-      });
-    }
-
-    // Add seller business details (trim whitespace)
-    seller.shopName = shopName.trim();
-    seller.shopType = shopType.trim();
-    seller.pan = pan.trim();
-    seller.aadhar = aadhar.trim();
-    seller.bankAccount = bankAccount.trim();
-    seller.gst = gst.trim();
-    seller.registrationStatus = "completed";
-    
-    if (address) seller.address = address;
-
-    // Handle Auto-Approve Seller system setting
-    if (settings?.autoApproveSellers) {
-      seller.isApproved = true;
-      seller.approvalDate = new Date();
-    }
-
-    try {
-      await seller.save();
-    } catch (saveError) {
-      // Handle duplicate key errors for unique fields
-      if (saveError.code === 11000) {
-        const field = Object.keys(saveError.keyPattern)[0];
-        return res.status(400).json({ 
-          success: false, 
-          message: `This ${field} is already registered. Please use a different ${field}.` 
+      if (cleanPan && cleanGst.length >= 12 && cleanGst.slice(2, 12) !== cleanPan) {
+        return res.status(400).json({
+          success: false,
+          message: "GSTIN characters 3 to 12 must match your PAN number!",
         });
       }
-      throw saveError;
     }
+
+    // Optional license file upload to Cloudinary
+    let licenseUrl = "";
+    if (req.file && req.file.buffer) {
+      try {
+        const uploadPromise = new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { folder: "zycart/seller_licenses", resource_type: "auto" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result.secure_url);
+            }
+          );
+          stream.end(req.file.buffer);
+        });
+        licenseUrl = await uploadPromise;
+      } catch (err) {
+        console.error("Error uploading license to Cloudinary:", err);
+      }
+    }
+
+    let seller;
+
+    if (sellerAccountData.isExistingDoc) {
+      seller = sellerAccountData.sellerDoc;
+      seller.shopName = shopName.trim();
+      seller.shopType = shopType.trim();
+      seller.pan = cleanPan;
+      seller.aadhar = cleanAadhar;
+      seller.bankAccount = cleanBank;
+      seller.gst = cleanGst;
+      if (licenseUrl) seller.license = licenseUrl;
+      if (address) seller.address = address;
+      seller.registrationStatus = "completed";
+
+      if (settings?.autoApproveSellers) {
+        seller.isApproved = true;
+        seller.approvalDate = new Date();
+      }
+
+      try {
+        await seller.save();
+      } catch (saveError) {
+        if (saveError.code === 11000) {
+          const field = Object.keys(saveError.keyPattern || {})[0] || "field";
+          return res.status(400).json({ 
+            success: false, 
+            message: `This ${field} is already registered. Please use a different ${field}.` 
+          });
+        }
+        throw saveError;
+      }
+    } else {
+      // Check if email already registered as completed
+      const existing = await Seller.findOne({
+        email: sellerAccountData.email,
+        registrationStatus: "completed",
+      });
+      if (existing) {
+        return res.status(400).json({
+          success: false,
+          message: "Email already registered as merchant. Please sign in.",
+        });
+      }
+
+      // Clean up any uncompleted records
+      await Seller.deleteMany({ email: sellerAccountData.email });
+
+      // NOW CREATE THE SELLER IN DATABASE ONCE ALL STEPS ARE COMPLETE!
+      const autoApprove = !!settings?.autoApproveSellers;
+      try {
+        seller = await Seller.create({
+          name: sellerAccountData.name,
+          email: sellerAccountData.email,
+          mobile: sellerAccountData.mobile,
+          password: sellerAccountData.password, // Pre('save') hook in Seller model hashes password
+          shopName: shopName.trim(),
+          shopType: shopType.trim(),
+          pan: cleanPan,
+          aadhar: cleanAadhar,
+          bankAccount: cleanBank,
+          gst: cleanGst,
+          license: licenseUrl,
+          address: address || {},
+          registrationStatus: "completed",
+          isApproved: autoApprove,
+          approvalDate: autoApprove ? new Date() : null,
+        });
+      } catch (createError) {
+        if (createError.code === 11000) {
+          const field = Object.keys(createError.keyPattern || {})[0] || "field";
+          return res.status(400).json({
+            success: false,
+            message: `This ${field} is already registered. Please use a different ${field}.`,
+          });
+        }
+        throw createError;
+      }
+    }
+
+    // Delete any remaining OTP for this email
+    await Otp.deleteMany({ email: seller.email, purpose: "seller_registration" });
 
     res.status(201).json({
       success: true,
@@ -559,7 +660,8 @@ export const submitSellerDetails = async (req, res) => {
       seller: sanitizeSeller(seller),
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    console.error("submitSellerDetails error:", error);
+    res.status(500).json({ success: false, message: error.message || "Server error" });
   }
 };
 

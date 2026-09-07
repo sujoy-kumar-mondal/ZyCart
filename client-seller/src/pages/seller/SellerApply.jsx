@@ -17,7 +17,7 @@ const SellerApply = () => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-  const [sellerId, setSellerId] = useState(null);
+  const [registrationToken, setRegistrationToken] = useState(() => sessionStorage.getItem("sellerRegToken") || null);
 
   const [registrationForm, setRegistrationForm] = useState({
     name: "",
@@ -96,13 +96,14 @@ const SellerApply = () => {
       });
 
       if (res.data.success) {
-        setSellerId(res.data.sellerId);
-        if (res.data.sellerId) {
-          localStorage.setItem("sellerId", res.data.sellerId);
+        if (res.data.registrationToken) {
+          setRegistrationToken(res.data.registrationToken);
+          sessionStorage.setItem("sellerRegToken", res.data.registrationToken);
         }
-        toast.success("Registration successful! Complete shop details.");
+        toast.success("Credentials verified! Complete shop details.");
         setStep(2);
         setOtpSent(false);
+        setOtp("");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Registration failed!");
@@ -166,16 +167,23 @@ const SellerApply = () => {
       }
     }
 
-    const sellerIdToUse = sellerId || localStorage.getItem("sellerId") || user?.id;
+    const tokenToUse = registrationToken || sessionStorage.getItem("sellerRegToken");
 
-    if (!sellerIdToUse) {
-      return toast.error("Seller ID not found. Please register first.");
+    if (!tokenToUse && !user?.id) {
+      toast.error("Registration session expired. Please verify your credentials first.");
+      setStep(1);
+      return;
     }
 
     setLoading(true);
 
     const data = new FormData();
-    data.append("sellerId", sellerIdToUse);
+    if (tokenToUse) {
+      data.append("registrationToken", tokenToUse);
+    }
+    if (user?.id) {
+      data.append("sellerId", user.id);
+    }
     data.append("shopName", form.shopName.trim());
     data.append("shopType", form.shopType.trim());
     data.append("pan", cleanPan);
@@ -192,6 +200,7 @@ const SellerApply = () => {
 
       if (res.data.success) {
         toast.success("Application submitted! Admin review in progress.");
+        sessionStorage.removeItem("sellerRegToken");
         localStorage.removeItem("sellerId");
         navigate("/");
       }
@@ -451,13 +460,25 @@ const SellerApply = () => {
               />
             </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-lg shadow-emerald-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
-            >
-              {loading ? "Submitting..." : "Submit Merchant Application"}
-            </button>
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setStep(1);
+                  setOtpSent(false);
+                }}
+                className="w-1/3 py-4 rounded-2xl border border-slate-200 font-bold text-slate-700 hover:bg-slate-50 transition text-sm cursor-pointer"
+              >
+                Back
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-2/3 py-4 rounded-2xl font-extrabold text-white text-base bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] shadow-lg shadow-emerald-500/25 transition transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+              >
+                {loading ? "Submitting..." : "Submit Application"}
+              </button>
+            </div>
           </form>
         )}
       </motion.div>

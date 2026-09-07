@@ -200,18 +200,17 @@ sellerSchema.pre("save", function (next) {
   if (this.registrationStatus === "completed") {
     const missingFields = [];
     
-    // Step 2 fields (filled in verifySellerOtpAndRegister)
+    // Basic account fields
     if (!this.name) missingFields.push("name");
     if (!this.mobile) missingFields.push("mobile");
     if (!this.password) missingFields.push("password");
     
-    // Step 3 fields (filled in submitSellerDetails)
+    // Business fields
     if (!this.shopName) missingFields.push("shopName");
     if (!this.shopType) missingFields.push("shopType");
     if (!this.pan) missingFields.push("pan");
     if (!this.aadhar) missingFields.push("aadhar");
     if (!this.bankAccount) missingFields.push("bankAccount");
-    if (!this.gst) missingFields.push("gst");
     
     if (missingFields.length > 0) {
       return next(new Error(`Cannot complete registration: missing required fields: ${missingFields.join(", ")}`));
